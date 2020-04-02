@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Site Title   -->
+<title>租车</title>
+
+<script src="js/rentloader.js" type="text/javascript" charset="utf-8"></script>
+<!-- Srtyle switcher -->
+
+
+
+<style type="text/css">
+#container {
+	height: 700px;
+}
+
+label {
+	max-width: none;
+}
+/* 解决百度地图与bootstap的冲突 */
+img {
+	/* 解决百度地图与模板homesytle.css的冲突 */
+	max-width: 200%;
+	height: auto;
+}
+/*去除百度地图商标*/
+.anchorBL {
+	display: none;
+}
+</style>
+</head>
+
+<body>
+	<!--头部：页面导航栏-->
+	<div th:replace="part/user_navmenu::#header"></div>
+	<section id="inner-title" class="inner-title">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4 col-lg-4">
+					<h2>
+						<a th:href="@{rentcar.html}"
+							style="color: white; cursor: pointer;">租车</a>
+					</h2>
+				</div>
+				<!-- <div class="col-md-3 col-lg-3">
+					<h2>
+						<a id="returnCar"
+							style="color: white; cursor: pointer; display: none;">还车</a>
+					</h2>
+				</div> -->
+				<div class="col-md-4 col-lg-4">
+					<h2>
+						<a th:href="@{userrentinfo.html}" id="paymentBtn"
+							style="color: white; cursor: pointer; display: none;">
+							您有订单未支付！ </a>
+					</h2>
+				</div>
+				<div class="col-md-4 col-lg-4">
+					<div class="breadcrumbs">
+						<ul>
+							<li>当前页面:</li>
+							<li><a th:href="@{homepage.html}">主页</a></li>
+							<li><a th:href="@{rentcar.html}">租车</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- 地图 -->
+	<section id="section16" class="section16" style="padding: 10px 0;">
+		<div id="container" class="col-md-12"></div>
+		<!-- 地图容器 -->
+	</section>
+	<!-- end 地图 -->
+	
+	<!-- 页面底部章节footer-top -->
+	<div th:replace="part/user_navmenu::#footer-top"></div>
+	<!-- 页面底部章节footer-bottom -->
+	<div th:replace="part/user_navmenu::#footer-bottom"></div>
+	<!-- Start Switcher -->
+	<div th:replace="part/user_navmenu::#subject_switch"></div>
+	<!-- End Switcher -->
+
+	<!-- 上报故障模态框 -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">故障上报</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" role="form" id="malfunctionform">
+						<div class="form-group">
+							<label for="account" class="col-sm-3 control-label"><span
+								class="fa fa-user fa-lg"></span>&nbsp;车辆编号：</label>
+							<div class="col-sm-8">
+								<!--<label class="form-control" id="carid" name="carid">6</label>-->
+								<input type="text" class="form-control" id="carid" name="carid"
+									readonly="readonly">
+							</div>
+
+						</div>
+						<div class="form-group">
+							<label for="account" class="col-sm-3 control-label"><span
+								class="fa fa-user fa-lg"></span>&nbsp;账号：</label>
+							<div class="col-sm-8">
+								<input type="hidden" class="form-control" id="userid"
+									name="userid">
+								<!--<label class="form-control" id="useraccount" name="useraccount" >test</label>-->
+								<input type="text" class="form-control" id="useraccount"
+									name="useraccount" readonly="readonly">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="account" class="col-sm-3 control-label"><span
+								class="fa fa-user fa-lg"></span>&nbsp;故障描述：</label>
+							<div class="col-sm-8">
+								<textarea cols="49" rows="10" placeholder="故障描述" name="describe"></textarea>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<a class="btn btn-default" data-dismiss="modal">关闭</a> <a
+						class="btn btn-primary" id="submit">提交</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal -->
+	</div>
+
+	<!--租车表  -->
+	<!-- <form id="rentform" action="addUserRentinfo" method="post">
+			<input type="number" name="userid" id="userid">
+			<input type="number" name="carid" id="carid">
+			<input type="hidden" name="rentaltime" id="rentaltime">
+			<input type="hidden" name="startlng" id="longitude">
+			<input type="hidden" name="startlat" id="latitude">
+		</form> -->
+
+	<!-- <script src="js/weather.js"></script> -->
+	<script src="js/switch.js"></script>
+</body>
+<!--显示头像-->
+<script type="text/javascript" th:inline="javascript">
+		$(function(){
+			var iconArry = [[${session.iconString}]]; 
+			console.log(typeof(iconArry));
+			iconArry = JSON.parse(iconArry);
+			var useraccount = [[${session.currentUserName}]];
+			//当有用户登录时，显示头像
+			if(useraccount != null && useraccount != ""){
+				//转换字符串
+				var str12 = arrayBufferToBase64(iconArry);
+				$("#usericon").css("background-image","url(data:image/png;base64,"+str12+")");
+				$("#usericon").css("background-size","100%");
+			}
+		});
+		function arrayBufferToBase64( buffer ) {
+	        var binary = '';
+	        var bytes = new Uint8Array( buffer );
+	        var len = bytes.byteLength;
+	        for (var i = 0; i < len; i++) {
+	            binary += String.fromCharCode( bytes[ i ] );
+	        }
+	        return window.btoa( binary );
+		}
+	</script>
+<script type="text/javascript" th:inline="javascript">
+		//当前选择车辆信息
+		var car;
+		//用户位置
+		var userpoint;
+		//默认用户所在城市
+		var usercity = "深圳市";
+		//默认用户所在经度
+		var userlng = 114.0333; 
+		//默认用户所在纬度 
+		var userlat = 22.666; 
+		//用户编号
+		var userid = [[${session.currentUser.userid}]];
+		//用户是否缴纳押金
+		var isdeposit = "未缴纳";
+		//用户是否有需要归还的车辆
+		var needReturn = false;
+		//用户是否有已还未支付的订单
+		var needPay = false;
+		//全部空闲车辆数组
+		var carArray;
+		//已显示的车辆标记数组
+		var showCarArray = [];
+		//是否显示其他车辆标记
+		var isShowOtherCar = true;
+		
+		/*查找当前用户信息*/
+		$(function(){
+			$.ajax({
+				type: "GET",
+				url: userid+"/restuserinfo",
+				async: false,
+				success: function(data){
+					isdeposit = data.data.isdeposit;
+				}
+			});
+		});
+		
+
+		var map = new BMap.Map("container");
+		var point = new BMap.Point(118.10, 24.57);
+		//初始化地图，设置默认定位地点
+		map.centerAndZoom(point, 15);
+		//启用滚轮放大缩小，默认禁用
+		map.enableScrollWheelZoom(true);
+
+		// 添加带有定位的导航控件
+		var navigationControl = new BMap.NavigationControl({
+			// 靠右上角位置
+			anchor: BMAP_ANCHOR_TOP_RIGHT,
+			//定义控件的偏移量
+			offset: new BMap.Size(10, 50),
+			// LARGE类型
+			type: BMAP_NAVIGATION_CONTROL_LARGE,
+			// 启用显示定位，会多出一个点
+			enableGeolocation: true
+		});
+		// 将导航控件添加地图map中，一个控件实例只能向地图中添加一次。
+		map.addControl(navigationControl);
+		
+
+		//用户定位----------------start
+		/* 创建一个用户标记 */
+		function createUserMarker(){
+			//页面显示天气信息
+			showWeather(usercity);
+			var label = new BMap.Label("你的位置",{offset:new BMap.Size(20,-10)});
+			var mk = new BMap.Marker(userpoint);
+			mk.setLabel(label);
+			map.addOverlay(mk);
+			
+			
+			if(isShowOtherCar == true){
+				// 缩放结束后的事件
+			    map.addEventListener('zoomend', showCarMarker);
+			    // 拖拽结束后的事件
+			    map.addEventListener("dragstart", showCarMarker);
+			}
+			map.panTo(userpoint);
+			
+			//用户是否处于租车状态
+			isreturn();
+		}
+		/* 根据ip定位的回调函数 */
+		function ipLocationCallback(result){
+			usercity = result.name;
+			//ip定位用户位置
+			userpoint = new BMap.Point(result.center.lng,result.center.lat);
+			//用户当前的经度
+			userlng=result.center.lng;
+			//用户当前的维度
+			userlat=result.center.lat;
+			console.log("ip定位！");
+			createUserMarker();
+		}
+		//浏览器定位------------start
+		var geolocation = new BMap.Geolocation();
+		geolocation.getCurrentPosition(function(r) {
+			var label;
+			if(this.getStatus() == BMAP_STATUS_SUCCESS) {
+				//通过浏览器获取的用户当前的位置
+				userpoint=r.point;
+				//用户当前的经度
+				userlng=r.point.lng;
+				//用户当前的维度
+				userlat=r.point.lat;
+				usercity = r.address.city;
+				alert('您的位置：'+r.point.lng+','+r.point.lat);
+				createUserMarker();	
+			} else {
+				if(this.getStatus() == 8) {
+					alert("浏览器定位超时，将使用IP地位！");
+					
+				}else{
+					alert("定位失败，使用IP地位！");
+				}
+				var myCity = new BMap.LocalCity();
+				myCity.get(ipLocationCallback);
+			}
+		}, {
+			enableHighAccuracy: true
+		});
+		//浏览器定位--------end
+		
+		//添加定位控件
+		var geolocationControl = new BMap.GeolocationControl();
+		geolocationControl.addEventListener("locationSuccess", function(e) {
+			// 定位成功事件
+			usercity = e.addressComponent.city;
+			userpoint = e.point;
+			userlng=e.point.lng;
+			userlat=e.point.lat;
+			//页面显示天气信息
+			showWeather(e.addressComponent.city);
+			console.log("当前定位地址为：" + e.addressComponent);
+		});
+		geolocationControl.addEventListener("locationError", function(e) {
+			// 定位失败事件
+			console.log("控件定位失败==="+e.message);
+			var myCity = new BMap.LocalCity();
+			myCity.get(ipLocationCallback);
+		});
+		map.addControl(geolocationControl);
+		//用户定位----------end
+		
+		
+		//显示用户当前所在城市当天天气信息
+		function showWeather(usercity){
+			console.log("天气信息-城市："+usercity);
+			$.post("weather",{usercity:usercity}, function(data) {
+				console.log(data);
+				/*data=JSON.parse(data);*/
+				$("#weather").html(data.weather);
+				$("#uv_index").html(data.uv_index);
+				$("#travel_index").html(data.travel_index);
+			});
+		}
+
+		//发送用户经纬度到后台
+		$("#returnCar").click(function () {
+			console.log("click");
+			$.ajax({
+				type: "POST", //提交的方法
+				url: "savelocal", //提交的地址  
+				data: {
+					userlng: userlng,
+					userlat: userlat
+				},
+				async: false,
+				success: function(data){
+					if(data.message == "保存成功"){
+						location.href = "returncar.html";
+					}
+				}
+			});
+		});
+
+			
+		//步行导航=========start
+		/* 步行导航类 */
+		var walking = new BMap.WalkingRoute(map, {
+			renderOptions: {
+				map: map,
+				autoViewport: true
+			}
+		});
+		/* 步行导航规划 */
+		function walk() {
+			var start = new BMap.Point(userlng, userlat);
+			var end = new BMap.Point(parseFloat(car.longitude), parseFloat(car.latitude));
+			walking.search(start, end);
+		}
+		//步行导航===========end
+		
+		/*
+		*判断用户是否正在使用租车
+		*/
+		function isreturn(){
+			$.ajax({
+				type: "GET", //提交的方法
+				url: "isreturn", //提交的地址  
+				xhrFields: {withCredentials: true}, 
+				crossDomain: true,
+				data: {
+					userid: [[${session.currentUser.userid}]]
+				}, 
+				async: false,
+				success: function(data) {
+					console.log("用户："+data.message);
+					if(data.message == "订单未支付") {
+						$("#paymentBtn").css("display", "block");
+						if(confirm("您有一个订单还未支付！是否进入？")){
+							needPay = false;
+							location.href = "userrentinfo.html";
+						}else{
+							needPay = true;
+						}
+					}else if(data.message == "用车"){
+						console.log("用户正在使用车辆");
+						needReturn = true;
+						car = data.data;
+						//判断用户和车辆的距离是否大于10米，如果大于则进行不行导航
+						var userPoint = new BMap.Point(userlng,userlat);
+						var carPoint = new BMap.Point(car.longitude,car.latitude);
+						var distance = Math.round(map.getDistance(userPoint,carPoint));
+						if(distance>10){
+							isShowOtherCar = false;
+							//步行路线规划
+							walk();
+							
+						}else{
+							isShowOtherCar = true;
+						}
+						hideOtherCarMk();
+						$("#returnCar").css("display", "block");
+					}else{
+						//显示车辆标记
+				    	showCarMarker();
+					}
+				}
+			});
+		}
+		
+		//展示模块
+		/* 获取全部空闲状态的车辆信息 */
+		$.post("showCar",{"state":"空闲"}, function(data) {
+			console.log(data.datas);
+			carArray = data.datas;
+		});
+		/* 在地图可视区上的车辆，用红色的标记显示出来 */
+		function showCarMarker(){
+			var bs = map.getBounds();   //获取可视区域
+			var bssw = bs.getSouthWest();   //可视区域左下角
+			var bsne = bs.getNorthEast();   //可视区域右上角
+			console.log("当前地图可视范围是：" + bssw.lng + "," + bssw.lat + "到" + bsne.lng + "," + bsne.lat);
+			//获取地图可视区的中间坐标
+			console.log("carArray.length="+carArray.length);
+			if(isShowOtherCar == true){
+				for(var i=carArray.length-1;i>=0;i--){
+					//筛选出可视范围内的车辆，并将其显示出来
+					if(bssw.lng<carArray[i].longitude && carArray[i].longitude<bsne.lng 
+							&& bssw.lat<carArray[i].latitude && carArray[i].latitude<bsne.lat){
+						this.cars = carArray[i];
+						console.log("显示车辆id："+carArray[i].carid);
+						//var label = new BMap.Label(carArray[i].carid,{offset:new BMap.Size(20,-10)});
+						var mk = new BMap.Marker(new BMap.Point(carArray[i].longitude, carArray[i].latitude));
+						//mk.setLabel(label);
+						//mk.addEventListener("click",markerAction2);
+						//动态为车辆标记添加点击事件
+						addClickHandler(carArray[i],mk)
+						//将显示的车辆标记添加都数组中
+						showCarArray.push(mk);
+						map.addOverlay(mk);
+						carArray.splice(i,1);
+					}
+				}
+				if(showCarArray.length > 0){
+					for(var i=0;i<showCarArray.length-1;i++){
+						showCarArray[i].show();
+					}
+				}
+			}
+		}
+		
+		/* 为marker添加点击事件 */
+		function addClickHandler(content,marker){
+			marker.addEventListener("click",function(e){
+				markerAction(content,e)}
+			);
+		}
+		
+		/* 车辆标记的点击事件 */
+		function markerAction(content,e) {
+			console.log("content:");
+			console.log(content);
+			car = content;
+			var infoWindow = new BMap.InfoWindow("<table class='table table-hover'><tbody><tr><td>汽车编号</td><td>" +
+					car.carid + "</td></tr><tr><td>租赁价格</td><td>" +
+					car.unitprice + "￥/小时</td></tr><tr><td>状态</td><td>" +
+					car.status + "</td></tr><tr><td><button class='btn btn-warning btn-xs' id='walkBt' onclick='walk()'>到此</button></td>" +
+					"<td><button class='btn btn-danger btn-xs' id='closeBt' onclick='javascript:map.closeInfoWindow()' >关闭</button></td></tr>" +
+					"<tr><td colspan=2 ><button class='btn btn-danger btn-xs btn-block' id='rentBt' onclick='reportFailure("+car.carid+")' >故障上报</button></td></tr>" +
+					"<tr><td colspan=2 ><button class='btn btn-info btn-xs btn-block' id='rentBt' onclick='rent()' >租车</button></td></tr>" +
+					"</tbody></table>", opts);
+			map.openInfoWindow(infoWindow, new BMap.Point(car.longitude,car.latitude)); //开启信息窗口  */
+		}
+
+		var opts = {
+			title: "汽车信息", // 信息窗口标题
+			enableMessage: true //设置允许信息窗发送短息
+		};
+
+		
+
+		//通过carid查找汽车信息返回car
+		function findCarByCarid(carid) {
+			console.log(carid);
+			console.log(typeof(carid));
+			$.ajax({
+				type: "GET", //提交的方法
+				url: carid+"/restcarinfo", //提交的地址  
+				// 序列化表单值  
+				async: false,
+				error: function(request) { //失败的话
+					alert("出错了");
+				},
+				success: function(data) { //成功
+					console.log(data);
+					car = data.data;
+					console.log(car);
+				}
+			});
+		}
+
+		/*添加点模块  */
+		function AddMarker() {
+			// 默认停靠位置和偏移量
+			this.defaultAnchor = BMAP_ANCHOR_TOP_LEFT;
+			this.defaultOffset = new BMap.Size(15, 630);
+		}
+		// 通过JavaScript的prototype属性继承于BMap.Control
+		AddMarker.prototype = new BMap.Control();
+		AddMarker.prototype.initialize = function(map) {
+			var div = document.createElement("ClearRoute");
+			div.appendChild(document.createTextNode("清除线路规划"));
+			div.style.cursor = "pointer";
+			div.style.border = "1px solid black";
+			div.style.backgroundColor = "white";
+			div.onclick = function(e) {
+				walking.clearResults();
+			}
+			map.getContainer().appendChild(div);
+			return div;
+		}
+		// 创建控件
+		var myCtrl = new AddMarker();
+		map.addControl(myCtrl);
+		
+		//租车
+		function rent() {
+			console.log(car);
+			if(needReturn != true) {
+				/* var isdeposit = [[${session.currentUser.isdeposit}]]; */
+				console.log(isdeposit);
+				if(isdeposit == "已缴纳") {
+					if(needPay == true){
+						$("#paymentBtn").css("display", "block");
+						if(confirm("您有一个订单还未支付！是否进入？")){
+							needPay = false;
+							location.href = "userrentinfo.html";
+						}else{
+							needPay = true;
+						}
+					}else if(confirm("是否租赁该车") == true) {
+						//将其他车辆标注隐藏
+						isShowOtherCar = false;
+						addUserRentinfo();
+						hideOtherCarMk();
+						map.closeInfoWindow();
+					}
+				} else {
+					if(confirm("您还未缴纳押金，是否前往缴纳押金？")){
+						location.href = "depositinfo.html";
+					}
+				}
+			} else {
+				alert("您还有汽车为归还，请先归还汽车！");
+			}
+		}
+
+		//添加用户租赁信息
+		function addUserRentinfo() {
+			var vNow = new Date().format("yyyy-MM-dd hh:mm:ss");
+			console.log(vNow);
+			var rentUserid = [[${session.currentUser.userid}]];
+			$.ajax({
+				type: "POST", //提交的方法
+				url: "addUserRentinfo", //提交的地址  
+				data: {
+					carid: car.carid,
+					rentaltime: vNow,
+					userid: rentUserid,
+					startlng:car.longitude,
+					startlat:car.latitude
+				},
+				async: false,
+				success: function(data){
+					console.log(data);
+					if(data.message == "添加成功"){
+						//判断用户和车辆的距离是否大于10米，如果大于则进行不行导航
+						var userPoint = new BMap.Point(userlng,userlat);
+						var carPoint = new BMap.Point(car.longitude,car.latitude);
+						var distance = Math.round(map.getDistance(userPoint,carPoint));
+						if(distance>10){
+							alert("租车成功！将为您导航步行到该车辆位置！");
+							//步行路线规划
+							walk();
+							
+						}else{
+							alert("祝您用车愉快！")
+						}
+					}
+					$("#returnCar").css("display", "block");
+				}
+			});
+			/* $("#rentaltime").val(vNow.format("yyyy-MM-dd"));
+			$("#carid").val(car.carid);
+			$("#userid").val('[[${session.currentUser.userid}]]');
+			$("#startlng").val(car.longitude);
+			$("#startlat").val(car.latitude); */
+		}
+		/* 隐藏除了租赁的其他车辆标注 */
+		function hideOtherCarMk(){
+			console.log("hideOtherCarMk==isShowOtherCar="+isShowOtherCar);
+			console.log(showCarArray);
+			console.log(car);
+			if(isShowOtherCar == false){
+				if(showCarArray.length>0){
+					for(var i=0;i<showCarArray.length;i++){
+						if(car != null && car != undefined && 
+								car.longitude==showCarArray[i].point.lng && car.latitude==showCarArray[i].point.lat){
+							continue;
+						}
+						showCarArray[i].hide();
+					}
+				}else{
+					var mk = new BMap.Marker(new BMap.Point(car.longitude, car.latitude));
+					addClickHandler(carArray[i],mk);
+					showCarArray.push(mk);
+					map.addOverlay(mk);
+				}
+			}
+		}
+		
+		/*打开故障上报模态框*/
+		function reportFailure(carid){
+			console.log("点击了："+carid);
+			$("#userid").val([[${session.currentUser.userid}]]);
+			$("#useraccount").val([[${session.currentUserName}]]);
+			$("#carid").val(carid);
+			$("#myModal").modal("show");
+		}
+		
+		/* 提交故障内容 */
+		$("#submit").click(function(){
+			var params = $("#malfunctionform").serializeJson();
+			console.log(params);
+	        console.log(JSON.stringify(params)); 
+	        
+			$.ajax({
+				type: "POST",
+				url: "restmalfunction",
+				data: JSON.stringify(params),
+				dataType: 'text',
+				processData: false,  
+				contentType: 'application/json',  
+				success: function(data){
+					alert("故障上报成功！");
+					$("#myModal").modal("hide");
+				}
+			}); 
+		});
+		/* 将表单的数据序列成json数据 */
+		$.fn.serializeJson=function(otherString){
+			var serializeObj={},
+			array=this.serializeArray();
+			$(array).each(function(){
+				if(serializeObj[this.name]){
+					serializeObj[this.name]+=';'+this.value;
+				}else{
+					serializeObj[this.name]=this.value;
+				}
+			});
+		
+			if(otherString!=undefined){
+				var otherArray = otherString.split(';');
+				$(otherArray).each(function(){
+					var otherSplitArray = this.split(':');
+					serializeObj[otherSplitArray[0]]=otherSplitArray[1];
+				});
+			}
+			return serializeObj;
+		};
+	</script>
+
+</html>

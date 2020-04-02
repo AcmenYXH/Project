@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<meta name="author" content="">
+		<!-- Site Title   -->
+		<title>注册</title>
+		<script th:src="@{/js/homeloader.js}" type="text/javascript" charset="utf-8"></script>
+		<script th:src="@{/js/main.js}" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" th:href="@{/css/userregister.css}"/>
+	</head>
+
+	<body class="bg">
+		<div id="outsideBox">
+			<div class="container">
+				<div class="modal-content">
+
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						<span class="fa fa-remove"></span>
+					</button>
+						<div class="logo-text">
+							<a href="userregister.html"><span><samp>C</samp>ar</span>Sharing</a>
+						</div>
+						<h4 class="modal-title" id="myModalLabel">注册</h4>
+					</div>
+
+					<div class="modal-body">
+						<form class="form-horizontal" role="form" id="registerUserForm" enctype="multipart/form-data">
+							<div class="form-group">
+								<label for="account" class="col-sm-3 control-label"><span class="fa fa-user fa-lg"></span>&nbsp;账号：</label>
+								<div class="col-sm-5">
+									<input type="text" class="form-control" id="useraccount" name="useraccount" placeholder="请输入账号…" >
+								</div>
+								<div class="col-sm-4">
+									<span id="txtaccount" ></span>
+								</div>
+							</div>
+							<!--<hr />-->
+							<div class="form-group">
+								<label for="password" class="col-sm-3 control-label"><span class="fa fa-send fa-lg"></span>&nbsp;密码：</label>
+								<div class="col-sm-5">
+									<input type="password" class="form-control" id="password" name="password" placeholder="请输入密码…" >
+								</div>
+								<div class="col-sm-4">
+									<span id="txtpsd" ></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="password1" class="col-sm-3 control-label"><span class="fa fa-send fa-lg"></span>&nbsp;确认密码：</label>
+								<div class="col-sm-5">
+									<input type="password" class="form-control" id="password1" name="password1" placeholder="确认密码…" >
+								</div>
+								<div class="col-sm-4">
+									<span id="txtpsd1" ></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="licence" class="col-sm-3 control-label"><span class="fa fa-file fa-lg"></span>&nbsp;驾照：</label>
+								<div class="col-sm-5">
+									<input type="file" class="form-control" id="icon1" name="icon1" >
+									<input type="file" class="form-control" id="licence1" name="licence1" >
+								</div>
+								<div class="col-sm-4">
+									<span id="txtlicence" ></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="phone" class="col-sm-3 control-label"><span class="fa fa-phone fa-lg"></span>&nbsp;手机号：</label>
+								<div class="col-sm-5">
+									<input type="text" class="form-control" id="phone" name="phone" placeholder="请输入手机号…"  >
+								</div>
+								<div class="col-sm-4">
+									<span id="txtphone" ></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="captcha" class="col-sm-3 control-label"><span class="fa fa-envelope fa-lg"></span>&nbsp;验证码：</label>
+								<div class="col-sm-5">
+									<input type="text" class="form-control" id="captcha" name="captcha" placeholder="验证码" >
+								</div>
+								<div class="col-sm-2">
+									<button id="sendCaptcha" type="button" class="btn btn-info" data-dismiss="modal"><span class="sends">获取验证码</span></button>
+								</div>
+								<div class="col-sm-2">
+									<span id="txtCaptcha" ></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-1">
+									
+								</div>
+								<div class="col-sm-10">
+									<input id="userAgreement" type="radio">阅读并接受《<a href="#">共享汽车用户协议</a>》及《<a href="#">共享汽车隐私权保护声明</a>》
+								</div>
+								<div class="col-sm-1">
+									<span id="txtAgreement" ></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-3">
+									
+								</div>
+								<div class="col-sm-2">
+									<a class="btn btn-primary" id="registerUser" name="registerUser" >
+										<span class="fa fa-edit"></span> 注册
+									</a>
+								</div>
+								<div class="col-sm-2">
+									<a th:href="@{login.html}" class="btn btn-default" id="returnBtn">
+										<span class="fa fa-share"></span>&nbsp;返回
+									</a>
+								</div>
+								<div class="col-sm-2">
+									<input type="reset" class="btn btn-default" value="重置">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-2"></div>
+								<div class="col-sm-8">
+									<p id="tipmessage" th:text="${msg}"></p>
+								</div>
+								<div class="col-sm-2"></div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--<script type="text/javascript" src="<%=basePath%>/js/jquery-1.10.2.js" ></script>-->
+		<script type="text/javascript">
+			var randNum; //验证码
+			var uniqueUserAccount = false;
+//			var uniqueUmail = false;
+			var uniquePhone = false;
+			var checkpsd1 = false;
+			var checkpsd2 = false;
+
+			//验证用户名
+			$("#useraccount").focus(function() {
+				$("#txtaccount").hide();
+			});
+			$("#useraccount").bind("blur", function() {
+				var useraccount = $("#useraccount").val().trim();
+				console.log(useraccount);
+				if(useraccount == "" || useraccount == null || useraccount == undefined) {
+					$("#txtaccount").html("账号不能为空");
+					$("#txtaccount").show();
+				} else {
+					$.ajax({
+						type: "GET",
+						url: "checkaccount",
+						data: {
+							useraccount: useraccount
+						},
+						async: false,
+						success: function(data) {
+							/* data = JSON.parse(data); */
+							console.log(data.data);
+							if(data.data == false) {
+								$("#txtaccount").html("账号已存在！");
+								$("#txtaccount").show();
+							} else if(data.data == true) {
+								$("#txtaccount").hide();
+								uniqueUserAccount = true;
+							}
+						}
+					});
+				}
+			});
+
+			//验证手机号
+			$("#phone").focus(function() {
+				$("#txtphone").hide();
+			});
+			$("#phone").bind("blur", function() {
+				var phone = $("#phone").val().trim();
+				console.log("phone:"+phone);
+				if(phone == "" || phone == null || phone == undefined) {
+					$("#txtphone").html("手机号不能为空");
+					$("#txtphone").show();
+				} else {
+					var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+					if(myreg.test(phone)) {
+						$.ajax({
+							type: "GET",
+							url: "checkphone",
+							data: {
+								phone: phone
+							},
+							async: false,
+							success: function(data) {
+								/* data = JSON.parse(data); */
+								console.log("返回数据："+data);
+								if(data.data == false) {
+									$("#txtphone").html("手机号已被注册!");
+									$("#txtphone").show();
+								} else if(data.data == true) {
+									$("#txtphone").hide();
+									uniquePhone = true;
+								}
+							}
+						});
+					} else {
+						$("#txtphone").html("手机号格式错误");
+						$("#txtphone").show();
+					}
+				}
+			});
+
+			//密码
+			//upsd txtpsd
+			$("#password").focus(function() {
+				$("#txtpsd").hide();
+			});
+			$("#password").bind("blur", function() {
+				var upsd = $("#password").val().trim();
+				console.log(upsd);
+				if(upsd == "" || upsd == null || upsd == undefined) {
+					$("#txtpsd").html("密码不能为空");
+					$("#txtpsd").show();
+				} else {
+					var myreg = /^([a-zA-Z0-9]|[._]){6,15}$/;
+					if(!myreg.test(upsd)) {
+						$("#txtpsd").html("密码格式错误(英文+数字+'.'+'_')!");
+						$("#txtpsd").show();
+					} else {
+						checkpsd1 = true;
+					}
+				}
+			});
+
+			//验证密码
+			//upsd1 txtpsd1
+			$("#password1").focus(function() {
+				$("#txtpsd1").hide();
+			});
+			$("#password1").bind("blur", function() {
+				var upsd1 = $("#password1").val().trim();
+				var upsd = $("#password").val().trim();
+				console.log(upsd);
+				if(upsd != upsd1) {
+					$("#txtpsd1").html("两次密码输入不一致错误");
+					$("#txtpsd1").show();
+				} else {
+					checkpsd2 = true;
+				}
+			});
+
+			//验证码
+			var InterValObj; //timer变量，控制时间
+		    var count = 60; //倒计时时间，间隔一秒执行
+		    var curCount; //当前剩余秒数
+		    var sendBtn = $('#sendCaptcha');
+			$("#sendCaptcha").click(function() {
+				$("#txtCaptcha").hide();
+				var userphone = $("#phone").val().trim();
+				var phone = {
+					"phone": userphone
+				}
+				console.log(userphone+uniquePhone);
+				if(userphone != "" && uniquePhone == true) {
+		        	console.log("正确");
+		            curCount = count;
+		            //设置button效果，开始计时
+		            sendBtn.attr("disabled", "true");
+		            sendBtn.text("请在" + curCount + "秒内输入");
+		            InterValObj = window.setInterval(SetRemainTimes, 1000); //启动计时器，1秒执行一次
+		            //向后台发送处理数据
+		            $.ajax({
+						type: "POST",
+						url: "send",
+						data: phone,
+						async: false,
+						success: function(data) {
+							/* data = JSON.parse(data); */
+							console.log(data.message)
+							randNum = data.message;
+						}
+					});
+		        } else {
+		            $("#txtCaptcha").html("手机号不正确！");
+					$("#txtCaptcha").show();
+		        }
+			});
+			//计时器调用函数
+			function SetRemainTimes() {
+		        if(curCount == 0) {
+		            window.clearInterval(InterValObj); //停止计时器
+		            sendBtn.removeAttr("disabled"); //启用按钮
+		            sendBtn.text("重新发送验证码");
+		        } else {
+		            curCount--;
+		            sendBtn.text("请在" + curCount + "秒内输入");
+		        }
+		    }
+			
+			
+			//获取焦点时隐藏提示框
+			$("#captcha").focus(function() {
+				$("#txtCaptcha").hide();
+			});
+			//表单验证
+			function checkInfo() {
+				var captcha = $("#captcha").val().trim();
+				console.log(typeof(captcha));
+				console.log(captcha);
+				var agree = $(":radio:checked");
+				console.log(agree.length);
+				if(uniqueUserAccount && uniquePhone && checkpsd1 && checkpsd2) {
+					if(agree.length == 0) {
+						alert("请先勾选用户协议");
+						$("#txtAgreement").html("请先勾选用户协议!");
+						$("#txtAgreement").show();
+						return false;
+					} else {
+						/* alert("captcha:"+captcha+",randNum:"+randNum); */
+						console.log(typeof(randNum));
+						console.log(randNum);
+						if(captcha == randNum) {
+							return true;
+						} else {
+							/* alert("验证码错误!"); */
+							$("#txtCaptcha").html("验证码错误!");
+							$("#txtCaptcha").show();
+							return false; 
+						}
+					}
+				} else {
+//					alert("别皮了，认真填写个人信息");
+					$("#tipmessage").html("别皮了，认真填写个人信息!");
+					$("#tipmessage").show();
+					return false; 
+				}
+			}
+			//提交表单
+			$("#registerUser").click(function(){
+				var checkResult = checkInfo();
+				console.log(checkResult);
+				if(checkResult == true){
+					var param = new FormData($('#registerUserForm')[0]);
+					console.log(param);
+					$.ajax({  
+						type: "POST",  
+						url:  "restuserinfo",  
+						data: param,  
+						processData: false,    //文件上传时该属性一定要为false
+						contentType: false,    //文件上传时该属性一定要为false
+						success: function(data){
+							if(data.message == "注册成功！"){
+								if(confirm("注册成功！是否跳转到登录页面？")){
+									location.href="login.html";
+								}
+							}
+						}, 
+						error: function(req, status, ex) {toastr.error("操作异常！");},  
+						timeout:60000  
+					});
+				}
+			});
+		</script>
+	</body>
+
+</html>

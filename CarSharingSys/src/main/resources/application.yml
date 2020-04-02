@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521:orcl
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    username: carsharingdb
+    password: oracle
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    servlet:
+      content-type: text/html
+    encoding: UTF-8
+    mode: HTML
+
+mybatis:
+  mapper-locations: classpath:com/carss/mapper/xml/*.xml
+  type-aliases-package: com.carss.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+

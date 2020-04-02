@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.carss.mapper.RentinfoMapper" >
+  <resultMap id="BaseResultMap" type="com.carss.entity.Rentinfo" >
+    <id column="RENTID" property="rentid" jdbcType="DECIMAL" />
+    <result column="USERID" property="userid" jdbcType="DECIMAL" />
+    <result column="CARID" property="carid" jdbcType="DECIMAL" />
+    <result column="RENTALTIME" property="rentaltime" jdbcType="TIMESTAMP" />
+    <result column="RETURNTIME" property="returntime" jdbcType="TIMESTAMP" />
+    <result column="AMOUNT" property="amount" jdbcType="DECIMAL" />
+    <result column="STARTLNG" property="startlng" jdbcType="VARCHAR" />
+    <result column="STARTLAT" property="startlat" jdbcType="VARCHAR" />
+    <result column="ENDLNG" property="endlng" jdbcType="VARCHAR" />
+    <result column="ENDLAT" property="endlat" jdbcType="VARCHAR" />
+    <result column="ISPLAY" property="isplay" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    RENTID, USERID, CARID, RENTALTIME, RETURNTIME, AMOUNT, STARTLNG, STARTLAT, ENDLNG, 
+    ENDLAT, ISPLAY
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.carss.entity.RentinfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from CARSHARINGDB.RENTINFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from CARSHARINGDB.RENTINFO
+    where RENTID = #{rentid,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="Integer" >
+    delete from CARSHARINGDB.RENTINFO
+    where RENTID = #{rentid,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.carss.entity.RentinfoExample" >
+    delete from CARSHARINGDB.RENTINFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.carss.entity.Rentinfo" >
+    insert into CARSHARINGDB.RENTINFO (RENTID, USERID, CARID, 
+      RENTALTIME, RETURNTIME, AMOUNT, 
+      STARTLNG, STARTLAT, ENDLNG, 
+      ENDLAT, ISPLAY)
+    values (#{rentid,jdbcType=DECIMAL}, #{userid,jdbcType=DECIMAL}, #{carid,jdbcType=DECIMAL}, 
+      #{rentaltime,jdbcType=TIMESTAMP}, #{returntime,jdbcType=TIMESTAMP}, #{amount,jdbcType=DECIMAL}, 
+      #{startlng,jdbcType=VARCHAR}, #{startlat,jdbcType=VARCHAR}, #{endlng,jdbcType=VARCHAR}, 
+      #{endlat,jdbcType=VARCHAR}, #{isplay,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.carss.entity.Rentinfo" >
+    insert into CARSHARINGDB.RENTINFO
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="rentid != null" >
+        RENTID,
+      </if>
+      <if test="userid != null" >
+        USERID,
+      </if>
+      <if test="carid != null" >
+        CARID,
+      </if>
+      <if test="rentaltime != null" >
+        RENTALTIME,
+      </if>
+      <if test="returntime != null" >
+        RETURNTIME,
+      </if>
+      <if test="amount != null" >
+        AMOUNT,
+      </if>
+      <if test="startlng != null" >
+        STARTLNG,
+      </if>
+      <if test="startlat != null" >
+        STARTLAT,
+      </if>
+      <if test="endlng != null" >
+        ENDLNG,
+      </if>
+      <if test="endlat != null" >
+        ENDLAT,
+      </if>
+      <if test="isplay != null" >
+        ISPLAY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="rentid != null" >
+        #{rentid,jdbcType=DECIMAL},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=DECIMAL},
+      </if>
+      <if test="carid != null" >
+        #{carid,jdbcType=DECIMAL},
+      </if>
+      <if test="rentaltime != null" >
+        to_date(#{rentaltime,jdbcType=TIMESTAMP},'yyyy-mm-dd hh24:mi:ss'),
+      </if>
+      <if test="returntime != null" >
+        to_date(#{returntime,jdbcType=TIMESTAMP},'yyyy-mm-dd hh24:mi:ss'),
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="startlng != null" >
+        #{startlng,jdbcType=VARCHAR},
+      </if>
+      <if test="startlat != null" >
+        #{startlat,jdbcType=VARCHAR},
+      </if>
+      <if test="endlng != null" >
+        #{endlng,jdbcType=VARCHAR},
+      </if>
+      <if test="endlat != null" >
+        #{endlat,jdbcType=VARCHAR},
+      </if>
+      <if test="isplay != null" >
+        #{isplay,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.carss.entity.RentinfoExample" resultType="java.lang.Integer" >
+    select count(*) from CARSHARINGDB.RENTINFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update CARSHARINGDB.RENTINFO
+    <set >
+      <if test="record.rentid != null" >
+        RENTID = #{record.rentid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.userid != null" >
+        USERID = #{record.userid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.carid != null" >
+        CARID = #{record.carid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.rentaltime != null" >
+        RENTALTIME = #{record.rentaltime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.returntime != null" >
+        RETURNTIME = #{record.returntime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.amount != null" >
+        AMOUNT = #{record.amount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.startlng != null" >
+        STARTLNG = #{record.startlng,jdbcType=VARCHAR},
+      </if>
+      <if test="record.startlat != null" >
+        STARTLAT = #{record.startlat,jdbcType=VARCHAR},
+      </if>
+      <if test="record.endlng != null" >
+        ENDLNG = #{record.endlng,jdbcType=VARCHAR},
+      </if>
+      <if test="record.endlat != null" >
+        ENDLAT = #{record.endlat,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isplay != null" >
+        ISPLAY = #{record.isplay,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update CARSHARINGDB.RENTINFO
+    set RENTID = #{record.rentid,jdbcType=DECIMAL},
+      USERID = #{record.userid,jdbcType=DECIMAL},
+      CARID = #{record.carid,jdbcType=DECIMAL},
+      RENTALTIME = #{record.rentaltime,jdbcType=TIMESTAMP},
+      RETURNTIME = #{record.returntime,jdbcType=TIMESTAMP},
+      AMOUNT = #{record.amount,jdbcType=DECIMAL},
+      STARTLNG = #{record.startlng,jdbcType=VARCHAR},
+      STARTLAT = #{record.startlat,jdbcType=VARCHAR},
+      ENDLNG = #{record.endlng,jdbcType=VARCHAR},
+      ENDLAT = #{record.endlat,jdbcType=VARCHAR},
+      ISPLAY = #{record.isplay,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.carss.entity.Rentinfo" >
+    update CARSHARINGDB.RENTINFO
+    <set >
+      <if test="userid != null" >
+        USERID = #{userid,jdbcType=DECIMAL},
+      </if>
+      <if test="carid != null" >
+        CARID = #{carid,jdbcType=DECIMAL},
+      </if>
+      <if test="rentaltime != null" >
+        RENTALTIME = to_date(#{rentaltime,jdbcType=TIMESTAMP},'yyyy-mm-dd hh24:mi:ss'),
+      </if>
+      <if test="returntime != null" >
+        RETURNTIME = to_date(#{returntime,jdbcType=TIMESTAMP},'yyyy-mm-dd hh24:mi:ss'),
+      </if>
+      <if test="amount != null" >
+        AMOUNT = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="startlng != null" >
+        STARTLNG = #{startlng,jdbcType=VARCHAR},
+      </if>
+      <if test="startlat != null" >
+        STARTLAT = #{startlat,jdbcType=VARCHAR},
+      </if>
+      <if test="endlng != null" >
+        ENDLNG = #{endlng,jdbcType=VARCHAR},
+      </if>
+      <if test="endlat != null" >
+        ENDLAT = #{endlat,jdbcType=VARCHAR},
+      </if>
+      <if test="isplay != null" >
+        ISPLAY = #{isplay,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where RENTID = #{rentid,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.carss.entity.Rentinfo" >
+    update CARSHARINGDB.RENTINFO
+    set USERID = #{userid,jdbcType=DECIMAL},
+      CARID = #{carid,jdbcType=DECIMAL},
+      RENTALTIME = #{rentaltime,jdbcType=TIMESTAMP},
+      RETURNTIME = #{returntime,jdbcType=TIMESTAMP},
+      AMOUNT = #{amount,jdbcType=DECIMAL},
+      STARTLNG = #{startlng,jdbcType=VARCHAR},
+      STARTLAT = #{startlat,jdbcType=VARCHAR},
+      ENDLNG = #{endlng,jdbcType=VARCHAR},
+      ENDLAT = #{endlat,jdbcType=VARCHAR},
+      ISPLAY = #{isplay,jdbcType=VARCHAR}
+    where RENTID = #{rentid,jdbcType=DECIMAL}
+  </update>
+</mapper>

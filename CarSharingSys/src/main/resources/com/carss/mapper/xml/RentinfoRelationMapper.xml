@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.carss.mapper.RentinfoRelationMapper">
+  <select id="selectAllRentinfo" resultType="hashmap">
+    select rentinfo.* ,useraccount,brand,unitprice
+    from rentinfo
+    inner join userinfo on userinfo.userid = rentinfo.userid
+    inner join carinfo on carinfo.carid = rentinfo.carid
+  </select>
+  <select id="selectDetailByRentinfo" resultType="hashmap">
+    select rentid,rentinfo.userid,rentinfo.carid,to_char(rentaltime,'yyyy-mm-dd hh24:mi:ss') as rentaltime,to_char(returntime,'yyyy-mm-dd hh24:mi:ss') as returntime,amount,startlng,startlat,endlng,endlat,isplay,useraccount,brand,unitprice
+    from rentinfo
+    inner join userinfo on userinfo.userid = rentinfo.userid
+    inner join carinfo on carinfo.carid = rentinfo.carid
+    <where>
+    	<if test="rentid != null">
+    		and rentinfo.rentid = #{rentid}
+    	</if>
+    	<if test="userid != null">
+    		and rentinfo.userid = #{userid}
+    	</if>
+    	<if test="carid != null">
+    		and rentinfo.carid = #{carid}
+    	</if>
+    	<if test="isplay != null">
+    		and rentinfo.isplay = #{isplay}
+    	</if>
+    </where>
+  </select>
+  <select id="selectDetailByRentid" resultType="hashmap">
+    select rentid,rentinfo.userid,rentinfo.carid,to_char(rentaltime,'yyyy-mm-dd hh24:mi:ss') as rentaltime,to_char(returntime,'yyyy-mm-dd hh24:mi:ss') as returntime,amount,startlng,startlat,endlng,endlat,isplay,useraccount,brand,unitprice
+    from rentinfo
+    inner join userinfo on userinfo.userid = rentinfo.userid
+    inner join carinfo on carinfo.carid = rentinfo.carid
+    where rentinfo.rentid = #{rentid}
+  </select>
+  <select id="selectDetailByUserid" resultType="hashmap">
+    select rentinfo.* ,useraccount,brand,unitprice
+    from rentinfo
+    inner join userinfo on userinfo.userid = rentinfo.userid
+    inner join carinfo on carinfo.carid = rentinfo.carid
+    where rentinfo.userid = #{userid}
+  </select>
+  <select id="selectDetailByCarid" resultType="hashmap">
+    select rentinfo.* ,useraccount,brand,unitprice
+    from rentinfo
+    inner join userinfo on userinfo.userid = rentinfo.userid
+    inner join carinfo on carinfo.carid = rentinfo.carid
+    where rentinfo.carid = #{carid}
+  </select>
+  <select id="selectCarWithAmount" resultType="hashmap">
+	select c.brand,sum(r.amount) as grossamount
+	from carinfo c
+	left join rentinfo r on c.carid = r.carid
+	group by c.brand
+	order by sum(r.amount) desc
+  </select>
+  <select id="selectCarWithUserNum" resultType="hashmap">
+  	select * from(
+    select brand as brand, sum(usernum) as usernum
+	from carinfo
+	INNER JOIN (select carid,count(*) as usernum from rentinfo group by carid) t on t.carid = carinfo.carid
+	group by brand
+	) t order by t.usernum desc
+  </select>
+  <select id="selectCarWithRN" resultType="hashmap">
+    select * from(
+       select t.*,rownum rn from(select * from carinfo order by repairnum desc)t 
+ 	) where rn between 1 and 20
+  </select>
+  <select id="selectMonthlyProfits" resultType="hashmap">
+    select to_char(t.returntime,'yyyy-MM') AS dates,sum(t.amount) sale,c.brand
+	from (
+	     select r.carid,r.returntime,r.amount from rentinfo r 
+	     where r.returntime is not null and extract(year from r.returntime) = #{year}
+	) t
+	inner join carinfo c on c.carid = t.carid 
+	group by c.brand,to_char(t.returntime,'yyyy-MM')
+	order by to_char(t.returntime,'yyyy-MM') desc
+  </select>
+</mapper>

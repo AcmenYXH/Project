@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>前端用户页面部件</title>
+</head>
+<body>
+	<!-- 页面头部 -->
+	<header id="header" class="head">
+		<div class="top-header">
+			<div class="container">
+				<div class="row ">
+					<ul class="contact-detail2 col-sm-6 pull-left">
+						<li><a href="#" target="_blank"><i class="fa fa-mobile"></i>Call
+								US + 1 (1800) 666 888 8</a></li>
+						<li><a href="#" target="_blank"><i
+								class="fa fa-envelope-o"></i> carsharing@gmail.com</a></li>
+					</ul>
+					<div class="social-links col-sm-6 pull-right">
+						<ul class="social-icons pull-right">
+							<li><a href="#" target="_blank"><i
+									class="fa fa-facebook"></i></a></li>
+							<li><a href="#" target="_blank"><i class="fa fa-twitter"></i></a>
+							</li>
+							<li><a href="#" target="_blank"><i
+									class="fa fa-pinterest"></i></a></li>
+							<li><a href="#" target="_blank"><i class="fa fa-skype"></i></a>
+							</li>
+							<li><a href="#" target="_blank"><i
+									class="fa fa-dribbble"></i></a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<nav class="navbar navbar-default navbar-1"
+			style="margin-bottom: 0px;">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse"
+						data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span> <span
+							class="icon-bar"></span> <span class="icon-bar"></span> <span
+							class="icon-bar"></span>
+					</button>
+					<div class="logo-text">
+						<a class="navbar-brand" th:href="@{homepage.html}"> <span><samp>C</samp>ar</span>Sharing
+						</a>
+					</div>
+				</div>
+				<!-- 天气显示======start -->
+				<div th:if="${#httpServletRequest.getServletPath()} eq '/rentcar.html' ">
+					<span id="weather" class="navbar-brand text-center col-md-3"></span> 
+					<span id="uv_index" class="navbar-brand col-md-2"></span>
+					<span id="travel_index" class="navbar-brand col-md-2"></span>
+				</div>
+				<!-- 天气显示======end -->
+				<div class="collapse navbar-collapse"
+					id="bs-example-navbar-collapse-1" data-hover="dropdown"
+					data-animations="fadeIn">
+					<ul class="nav nav-pills navbar-right" style="margin-top: 5px;">
+						<li><a th:href="@{homepage.html}"><span
+								class="fa fa-home fa-lg"></span>主页</a></li>
+						<li><a th:href="@{rentcar.html}">租车 </a></li>
+						<li><a id="returnCar" href="#" style="display:none;">还车 </a></li>
+						<li><a th:href="@{aboutus.html}">关于我们</a></li>
+
+						<li th:if="${session.currentUserName} eq null"
+							style="background-color: rgb(0, 174, 240);"><a
+							th:href="@{login.html}" class="btn btn-primary"
+							style="color: white;"> <span class="fa fa-user fa-lg"></span>登录
+						</a></li>
+
+						<li th:if="${session.currentUserName} ne null" class="dropdown">
+							<a th:if="${session.iconString} eq 'null'"
+							class="dropdown-toggle" data-toggle="dropdown"> 用户:<span
+								th:text="${session.currentUserName}"></span>
+						</a> <a th:if="${session.iconString} ne 'null'" id="usericon"
+							class="dropdown-toggle" data-toggle="dropdown"
+							style="width: 40px; height: 40px; border-radius: 100%;"> </a>
+							<ul class="dropdown-menu" aria-labelledby="dropdownScale">
+								<li th:if="${session.iconString} eq null" class="scale-item"
+									data-value="0"><a>用户:<span
+										th:text="${session.currentUserName}"></span></a></li>
+								<li class="scale-item" data-value="1"><a
+									th:href="@{userinfo.html}">个人信息</a></li>
+								<li class="scale-item" data-value="2"><a>余额:<span
+										th:text="${session.currentUser.purse}"></span></a></li>
+								<li class="scale-item" data-value="3"><a
+									th:href="@{depositinfo.html}"><span fa fa-edit></span>押金管理</a></li>
+								<li class="scale-item" data-value="3"><a
+									th:href="@{UserFootprint.html}"><span fa fa-edit></span>我的订单</a></li>
+								<li class="scale-item" data-value="4"><a th:href="logout">退出系统</a></li>
+							</ul>
+						</li>
+					</ul>
+
+				</div>
+				<!--/.nav-collapse -->
+			</div>
+		</nav>
+	</header>
+
+	<!-- 页面底部章节section5 -->
+	<section id="section5" class="section-margine section-5-background">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12 col-lg-12">
+					<div class="section-5-box-text-cont wow fadeInUp">
+						<h2>查看其他优惠活动</h2>
+						<p>我们会定期发布新的活动和更新。 参与我们的活动，您将始终获得最优质的支持。 我们会说明有关我们活动的所有问题</p>
+						<a href="#" class="btn btn-primary">行动起来吧！</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 页面底部章节footer-top -->
+	<section id="footer-top" class="footer-top">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-3 col-lg-3">
+					<div class="footer-top-box">
+						<h4>关于我们</h4>
+						<p>
+							关于共享汽车 <br> 加入我们 <br> 服务协议 <br>
+						</p>
+					</div>
+					<div class="footer-top-box">
+						<h4>办公时间</h4>
+						<b>周一至周五：</b> 上午9点至下午6点 <br /> <b>星期二 - 星期三：</b> 特别任命
+					</div>
+				</div>
+				<div class="col-md-3 col-lg-3">
+					<div class="footer-top-box">
+						<h4>最新产品及活动</h4>
+						<ul>
+							<li><a href="#">新能源汽车</a></li>
+							<li><a href="#">特斯拉</a></li>
+							<li><a href="#">电气混合型</a></li>
+							<li><a href="#">新用户活动</a></li>
+							<li><a href="#">免押金活动</a></li>
+							<li><a href="#">低碳城市活动</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-md-3 col-lg-3">
+					<div class="footer-top-box">
+						<h4>标签</h4>
+						<div class="tag">
+							<a href="#">全球独创性</a>
+						</div>
+						<div class="tag">
+							<a href="#">共享</a>
+						</div>
+						<div class="tag">
+							<a href="#">创新</a>
+						</div>
+						<div class="tag">
+							<a href="#">伙伴</a>
+						</div>
+						<div class="tag">
+							<a href="#">新能源</a>
+						</div>
+						<div class="tag">
+							<a href="#">合作</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3 col-lg-3">
+					<div class="footer-top-box">
+						<h4>联系我们</h4>
+						<p>
+							<b>地址 : </b> 三体星球 <br /> <b>电话: </b> +9849494875 <br /> <b>邮箱:
+							</b> carsharing@gmail.com
+						</p>
+					</div>
+					<div class="footer-top-box">
+						<h4>订阅</h4>
+						<div class="cs-form">
+							<form action="#" method="post">
+								<div class="input-holder">
+									<input type="email" placeholder="邮箱地址"> <label>
+										<i class="fa fa-location-arrow fa-2x"></i> <input
+										class="submit-bgcolor" type="submit" value="submit">
+									</label>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	<!-- 页面底部章节footer-bottom -->
+	<section id="footer-bottom" class="footer-bottom">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-9 col-lg-9">
+					<div class="copyright">
+						<a href="#" class="btn btn-primary wow bounceInUp">回到顶部<i
+							class="fa fa-angle-double-right"></i></a> &nbsp; <a
+							th:href="@{aboutus.html}" class="btn btn-seconday wow bounceInUp">了解更多<i
+							class="fa fa-angle-double-right"></i></a>
+					</div>
+				</div>
+				<div class="col-lg-3">
+					<ul class="list-inline social-buttons">
+						<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+						<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+						<li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	
+	<!-- 页面底部章节 -->
+	<div class="demo_changer" id="subject_switch">
+		<div class="demo-icon">
+			<i class="fa fa-cog fa-spin fa-2x"></i>
+		</div>
+		<div class="form_holder">
+			<div class="row">
+				<h4 class="text-center">更换主题</h4>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div class="predefined_styles">
+						<hr>
+						<h4>主题颜色</h4>
+						<!-- MODULE #3 -->
+						<a href="#" rel="pink" class="styleswitch"><img
+							src="images/icons/pink.png" alt=""></a> <a href="#"
+							rel="purple" class="styleswitch"><img
+							src="images/icons/purple.png" alt=""></a> <a href="#"
+							rel="blue" class="styleswitch"><img
+							src="images/icons/blue.png" alt=""></a> <a href="#" rel="green"
+							class="styleswitch"><img src="images/icons/green.png" alt=""></a>
+						<a href="#" rel="red" class="styleswitch"><img
+							src="images/icons/red.png" alt=""></a> <a href="#" rel="yellow"
+							class="styleswitch"><img src="images/icons/yellow.png" alt=""></a>
+						<a href="#" rel="orange" class="styleswitch"><img
+							src="images/icons/orange.png" alt=""></a> <a href="#"
+							rel="grey" class="styleswitch"><img
+							src="images/icons/grey.png" alt=""></a>
+						<!-- END MODULE #3 -->
+					</div>
+					<!-- end predefined_styles -->
+				</div>
+				<!-- end col -->
+			</div>
+			<!-- end row -->
+		</div>
+	</div>
+</body>
+</html>

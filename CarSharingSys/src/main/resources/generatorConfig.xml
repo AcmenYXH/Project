@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration
+		PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+		"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+	
+	<!-- 指定数据连接驱动jar地址 -->
+	<classPathEntry location="D:\\sts-4.3.0.RELEASE\\driver\\ojdbc14.jar" />
+	
+	<!-- 一个数据库一个context -->
+	<context id="CarSharingSys">
+		<!-- 注释 -->
+		<commentGenerator >
+			<property name="suppressAllComments" value="true"/><!-- 是否取消注释 -->
+		</commentGenerator>
+		
+		<!-- jdbc连接 -->
+		<jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver"
+			connectionURL="jdbc:oracle:thin:@192.168.13.67:1521:orcl"
+			userId="carsharingdb"
+			password="oracle" />
+		
+		<!-- 生成实体类地址 -->	
+		<javaModelGenerator targetPackage="com.carss.entity"
+			targetProject="CarSharingSys" >
+			<!-- 是否针对string类型的字段在set的时候进行trim调用 -->
+			<property name="trimStrings" value="true"/>
+		</javaModelGenerator>
+		
+		<!-- 生成mapxml文件 -->
+		<sqlMapGenerator targetPackage="com.carss.mapper.xml"
+			targetProject="CarSharingSys" >
+		</sqlMapGenerator>
+		
+		<!-- 生成mapxml对应client，也就是接口dao -->	
+		<javaClientGenerator targetPackage="com.carss.mapper"
+			targetProject="CarSharingSys" type="XMLMAPPER" >
+		</javaClientGenerator>
+
+		<!-- 配置表信息 -->
+		<table schema="carsharingdb" tableName="admininfo" domainObjectName="Admininfo">
+			<columnOverride column="adminid" javaType="Integer"></columnOverride>
+		</table>
+
+		<table schema="carsharingdb" tableName="carinfo" domainObjectName="Carinfo">
+			<columnOverride column="carid" javaType="Integer"></columnOverride>
+			<columnOverride column="unitprice" javaType="Double"></columnOverride>
+			<columnOverride column="repairnum" javaType="Integer"></columnOverride>
+		</table>
+
+		<table schema="carsharingdb" tableName="userinfo" domainObjectName="Userinfo">
+			<columnOverride column="userid" javaType="Integer"></columnOverride>
+			<columnOverride column="icon" jdbcType="BLOB"></columnOverride>
+			<columnOverride column="licence" jdbcType="BLOB"></columnOverride>
+			<columnOverride column="purse" javaType="Double"></columnOverride>
+			<columnOverride column="integral" javaType="Integer"></columnOverride>
+			<columnOverride column="credit" javaType="Integer"></columnOverride>
+		</table>
+
+		<table schema="carsharingdb" tableName="rentinfo" domainObjectName="Rentinfo">
+			<columnOverride column="rentid" javaType="Integer"></columnOverride>
+			<columnOverride column="userid" javaType="Integer"></columnOverride>
+			<columnOverride column="carid" javaType="Integer"></columnOverride>
+			<columnOverride column="amount" javaType="Double"></columnOverride>
+		</table>
+
+		<table schema="carsharingdb" tableName="malfunction" domainObjectName="Malfunction">
+			<columnOverride column="malid" javaType="Integer"></columnOverride>
+			<columnOverride column="userid" javaType="Integer"></columnOverride>
+			<columnOverride column="carid" javaType="Integer"></columnOverride>
+		</table>
+
+	</context>
+</generatorConfiguration>

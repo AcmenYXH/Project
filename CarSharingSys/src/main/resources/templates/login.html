@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<meta name="author" content="">
+		<!-- Site Title   -->
+		<title>Login</title>
+		<script type="text/javascript" th:src="@{/js/loginloader.js}"></script>
+		<script type="text/javascript" th:src="@{/js/main.js}"></script>
+		<link rel="stylesheet" type="text/css" th:href="@{/css/login.css}"/>
+	</head>
+
+	<body class="bg">
+		<div id="outsideBox">
+			<div class="container">
+				<div class="modal-content">
+					<div class="modal-header">
+						<a th:href="@{homepage.html}">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="fa fa-remove fa-lg"></span></button>
+						</a>
+						<div class="logo-text"><span><samp>C</samp>ar</span>Sharing</div>
+						<h4 class="modal-title" id="myModalLabel">登录</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal" role="form" action="tologin" method="post">
+							<div class="form-group">
+								<label for="account" class="col-sm-4 control-label"><span class="fa fa-user fa-lg"></span>&nbsp;账号：</label>
+								<div class="col-sm-6">
+									<input type="text" class="form-control" name="account" placeholder="请输入账号…" required autofocus>
+								</div>
+								<div class="col-sm-2"></div>
+							</div>
+							<div class="form-group">
+								<label for="account" class="col-sm-4 control-label"><i class="fa fa-send"></i>&nbsp;密码：</label>
+								<div class="col-sm-6">
+									<input type="password" class="form-control" name="password" placeholder="请输入密码…" required autofocus>
+								</div>
+								<div class="col-sm-2"></div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-3"></div>
+								<div class="col-sm-3">
+									<a th:href="@{forget_password.html}"><span class="fa fa-wrench"></span>忘记密码?</a>
+								</div>
+								<div class="col-sm-3">
+									<a th:href="@{userregister.html}"><span class="fa fa-edit"></span>注册</a>
+								</div>
+								<div class="col-sm-5"></div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-2"></div>
+								<div class="col-sm-4">
+									<button type="submit" class="btn btn-primary">
+										<span class="fa fa-user fa-lg"></span>&nbsp;登录
+									</button>
+								</div>
+								<div class="col-sm-4">
+									<a th:href="@{homepage.html}" class="btn btn-default" id="returnBtn">
+										<span class="fa fa-share fa-lg"></span>&nbsp;返回
+									</a>
+								</div>
+								<div class="col-sm-2"></div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-2"></div>
+								<div class="col-sm-8">
+									<p id="tipmessage" th:text="${msg}"></p>
+								</div>
+								<div class="col-sm-2"></div>
+							</div>
+					   </form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" th:inline="javascript">
+		 	//$.backstretch("/images/login-bg.jpg", {speed: 500}); 
+		  	var msg = [[${msg}]];
+		  	if(msg!=""&&msg!=undefined){
+		  		toastr.warning(msg);
+		  	}	
+		</script>
+	</body>
+</html>

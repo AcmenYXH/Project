@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http:www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Site Title   -->
+<title>押金管理</title>
+
+<script src="js/homeloader.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/main2.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>
+	<!--头部：页面导航栏-->
+	<div th:replace="part/user_navmenu::#header"></div>
+
+	<section id="section3" class="section-margine section3-background "
+		style="margin: 0;">
+		<div class="over-bg">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-3 col-lg-3">
+						<div class="section-3-box"></div>
+					</div>
+					<div class="col-md-3 col-lg-3">
+						<div class="section-3-box"></div>
+					</div>
+					<div class="col-md-3 col-lg-3">
+						<div class="section-3-box"></div>
+					</div>
+
+					<div class="col-md-3 col-lg-3">
+						<div class="section-3-box"></div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="section2" class="section-margine">
+		<div class="container">
+			<div class="row">
+				<div class="sec-title text-center">
+					<h2>押金信息</h2>
+					<span class="double-border"></span>
+				</div>
+				<div class="modal-body" style="text-align: left; height: 400px;">
+					<form class="form-horizontal" role="form" style="">
+						<table class="table" style="text-align: center;">
+							<tbody>
+								<tr>
+									<th style="width: 20%"><label
+										class="col-sm-2 control-label" style="width: 400px;"><span
+											class="fa fa-user"></span>&nbsp;账&emsp;号&nbsp;:</label></th>
+									<td><span th:text="${session.currentUser.useraccount}"></span></td>
+
+								</tr>
+								<tr>
+									<th><label for="inputPassword"
+										class="col-sm-2 control-label" style="width: 400px;"><span
+											class="fa fa-phone"></span>&nbsp;手&emsp;机&nbsp;:</label></th>
+									<td><span th:text="${session.currentUser.phone}"></span></td>
+
+								</tr>
+								<tr>
+									<th><label for="inputPassword"
+										class="col-sm-2 control-label" style="width: 400px;"><span
+											class="fa fa-check"></span>是否已缴押金:</label></th>
+									<td><span id="isdeposit"></span></td>
+
+								</tr>
+								<tr>
+									<td colspan="3"><a href="#" id="paydeposit"
+										class="btn btn-primary"> <span class="fa fa-paypal"></span>支付押金
+									</a> <a href="#" id="returndeposit" class="btn btn-warning"> <span
+											class="fa fa-reply"></span>退还押金
+									</a> <a th:href="@{homepage.html}" id="paydeposit"
+										class="btn btn-default"> <span class="fa fa-share"></span>返回
+									</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+	</section>
+
+	<!-- 页面底部章节section5 -->
+	<div th:replace="part/user_navmenu::#section5"></div>
+	<!-- 页面底部章节footer-top -->
+	<div th:replace="part/user_navmenu::#footer-top"></div>
+	<!-- 页面底部章节footer-bottom -->
+	<div th:replace="part/user_navmenu::#footer-bottom"></div>
+	<!-- Start Switcher -->
+	<div th:replace="part/user_navmenu::#subject_switch"></div>
+	<!-- End Switcher -->
+
+	<!-- 支付宝 -->
+	<form id="alipayment" name="alipayment" action="payamount"
+		method="post" style="display: none;">
+		<input id="WIDout_trade_no" name="WIDout_trade_no" /> <input
+			id="WIDsubject" name="WIDsubject" /> <input id="WIDtotal_amount"
+			name="WIDtotal_amount" /> <input id="WIDbody" name="WIDbody" /> <input
+			id="rid" name="rid" type="number" /> <input type="hidden"
+			name="returntime" id="returntime">
+	</form>
+
+	<script th:src="@{switcher/switch.js}"></script>
+	<script th:src="@{js/datetimeformat.js}"></script>
+</body>
+<!--显示图片-->
+<script type="text/javascript" th:inline="javascript">
+		$(function(){
+			var iconArry = [[${session.iconString}]]; 
+			var licenceArry = [[${session.licenceString}]]; 
+			iconArry = JSON.parse(iconArry);
+			licenceArry = JSON.parse(licenceArry);
+			
+			var useraccount = [[${session.currentUserName}]];
+			
+			//当有用户登录时，显示头像
+			if(useraccount != null && useraccount != ""){
+				//转换字符串
+				var str12 = arrayBufferToBase64(iconArry);
+			    var str13 = arrayBufferToBase64(licenceArry);
+				$("#usericon").css("background-image","url(data:image/png;base64,"+str12+")");
+				$("#usericon").css("background-size","100%");
+				$("#userlicence").css("background-image","url(data:image/png;base64,"+str13+")");
+				$("#userlicence").css("background-size","100%");
+			}
+		});
+		function arrayBufferToBase64( buffer ) {
+	        var binary = '';
+	        var bytes = new Uint8Array( buffer );
+	        var len = bytes.byteLength;
+	        for (var i = 0; i < len; i++) {
+	            binary += String.fromCharCode( bytes[ i ] );
+	        }
+	        return window.btoa( binary );
+		}
+	</script>
+<!--押金管理-->
+<script type="text/javascript">
+		//押金数额
+		var deposit = 200;
+		//登录的账号
+		var useraccount = '[[${session.currentUserName}]]';
+		//登录的用户编号
+		var userid = [[${session.currentUser.userid}]];
+		//是否缴纳押金
+		var isdeposit = "未缴纳";
+		
+		/*查找当前用户信息*/
+		$(function(){
+			$.ajax({
+				type: "GET",
+				url: userid+"/restuserinfo",
+				async: false,
+				success: function(data){
+					$("#isdeposit").text(data.data.isdeposit);
+					isdeposit = data.data.isdeposit;
+				}
+			});
+		});
+		
+		/*缴纳押金*/
+		$("#paydeposit").click(function () {
+			if(isdeposit == "已缴纳"){
+				alert("您已缴纳押金！");
+			}else{
+				//模拟押金缴纳成功
+				$.ajax({
+					type: "PUT",
+					url: "editdeposit",
+					data: {
+						userid: userid,
+						isdeposit: "已缴纳"
+					},
+					async: false,
+					success: function(data){
+						if(data.message == "修改成功"){
+							console.log("缴纳成功！");
+						}
+					}
+				});
+				//跳转支付页面
+				GetDateNow();
+				console.log("执行returnbike()");
+				$("#alipayment").submit();
+			}
+		});
+		
+		/*退还押金*/
+		$("#returndeposit").click(function(){
+			if(isdeposit == "未缴纳"){
+				alert("你还未缴纳押金！");
+			}else{
+				$.ajax({
+					type: "PUT",
+					url: "editdeposit",
+					data: {
+						userid: userid,
+						isdeposit: "未缴纳"
+					},
+					async: false,
+					success: function(data){
+						if(data.message == "修改成功"){
+							alert("押金退还成功！");
+							location.reload();
+						}
+					}
+				});
+			}
+		});
+		
+		//支付宝表单js
+		function GetDateNow() {
+			var vNow = new Date();
+			var sNow = "";
+			sNow += String(vNow.getFullYear());
+			sNow += String(vNow.getMonth() + 1);
+			sNow += String(vNow.getDate());
+			sNow += String(vNow.getHours());
+			sNow += String(vNow.getMinutes());
+			sNow += String(vNow.getSeconds());
+			sNow += String(vNow.getMilliseconds());
+			$("#WIDout_trade_no").val(sNow);
+			$("#WIDsubject").val("缴纳押金");
+			$("#WIDtotal_amount").val(deposit);
+			$("#WIDbody").val("用户:" + useraccount + "\t押金:" + deposit+"￥");
+			$("#rid").val(userid);
+			$("#returntime").val(vNow.format("yyyy-MM-dd hh:mm:ss"));
+		}
+	</script>
+
+</html>

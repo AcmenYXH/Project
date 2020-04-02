@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http:www.thymeleaf.org">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!--  定时刷新：60s-->
+		<meta http-equiv="refresh" content="60">
+		<!-- Site Title   -->
+		<title>还车信息</title>
+		<script src="js/rentloader.js" type="text/javascript" charset="utf-8"></script>
+
+	</head>
+
+	<body>
+		<!--头部：页面导航栏-->
+		<div th:replace="part/user_navmenu::#header"></div>
+
+		<section id="section3" class="section-margine section3-background ">
+			<div class="over-bg">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-3 col-lg-3">
+							<div class="section-3-box">
+
+							</div>
+						</div>
+						<div class="col-md-3 col-lg-3">
+							<div class="section-3-box">
+
+							</div>
+						</div>
+						<div class="col-md-3 col-lg-3">
+							<div class="section-3-box">
+
+							</div>
+						</div>
+
+						<div class="col-md-3 col-lg-3">
+							<div class="section-3-box">
+
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="section2" class="section-margine">
+			<div class="container">
+				<div class="row">
+					<div class="sec-title text-center">
+						<h2>还车信息</h2>
+						<span class="double-border"></span>
+					</div>
+					<div class="modal-body" style="text-align:left;height:600px;">
+						<form class="form-horizontal" role="form" style="">
+							<table class="table" style="text-align: center;">
+								<tbody>
+									<tr>
+										<th style="width:20%;" colspan="2">
+											<label class="col-sm-2 control-label" style="width:400px;"> <span class="fa fa-list"></span>&nbsp;租赁信息&ensp;</label>
+										</th>
+
+									</tr>
+									<tr>
+										<th style="width:20%">
+											<label class="col-sm-2 control-label" style="width:400px;"><span class="fa fa-user"> </span>&nbsp;租赁编号&nbsp;:</label>
+										</th>
+										<td><span id="rentid" ></span></td>
+
+									</tr>
+									<tr>
+										<th style="width:20%">
+											<label class="col-sm-2 control-label" style="width:400px;"><span class="fa fa-user"></span>&nbsp;用&emsp;&emsp;户&nbsp;:</label>
+										</th>
+										<td><span id="useraccount" ></span></td>
+
+									</tr>
+									<tr>
+										<th>
+											<label for="inputPassword" class="col-sm-2 control-label" style="width:400px;"><span class="fa fa-send"></span>&nbsp;汽车编号&nbsp;:</label>
+										</th>
+										<td><span id="carid" ></span></td>
+
+									</tr>
+									<tr>
+										<th>
+											<label for="inputPassword" class="col-sm-2 control-label" style="width:400px;"><span class="fa fa-envelope"></span>&nbsp;租车时间&nbsp;:</label>
+										</th>
+										<td><span id="rentaltime" ></span></td>
+									</tr>
+									<tr>
+										<th>
+											<label for="inputPassword" class="col-sm-2 control-label" style="width:400px;"><span class="fa fa-envelope"></span>&nbsp;还车时间&nbsp;:</label>
+										</th>
+										<td><span id="returntime"></span></td>
+									</tr>
+									<tr>
+										<th>
+											<label for="inputPassword" class="col-sm-2 control-label" style="width:400px;"> <span class="fa fa-tint fa-lg"></span>&nbsp;租&emsp;&emsp;金&nbsp;:</label>
+										</th>
+										<td><span id="amount"></span></td>
+
+									</tr>
+									<tr>
+										<td colspan="3">
+											<a class="btn btn-primary" onclick="returncar()">
+												<span class="fa fa-comment"></span> 归还
+											</a>
+											<a class="btn btn-default" th:href="@{rentcar.html}">
+												<span class="fa fa-share"></span> 返回
+											</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</form>
+					</div>
+				</div>
+		</section>
+
+		
+		<!-- 页面底部章节section5 -->
+		<div th:replace="part/user_navmenu::#section5"></div>
+		<!-- 页面底部章节footer-top -->
+		<div th:replace="part/user_navmenu::#footer-top"></div>
+		<!-- 页面底部章节footer-bottom -->
+		<div th:replace="part/user_navmenu::#footer-bottom"></div>
+		<!-- Start Switcher -->
+		<div th:replace="part/user_navmenu::#subject_switch"></div>
+		<!-- End Switcher -->
+
+		<!-- 支付宝 -->
+		<form id="alipayment" name="alipayment" action="payamount" method="post" style="display: none;">
+			<input id="WIDout_trade_no" name="WIDout_trade_no" />
+			<input id="WIDsubject" name="WIDsubject" />
+			<input id="WIDtotal_amount" name="WIDtotal_amount" />
+			<input id="WIDbody" name="WIDbody" />
+			<input id="rid" name="rid" type="number" />
+			<input type="hidden" name="returntime" id="returntime">
+		</form>
+
+		<script src="js/switch.js"></script>
+	</body>
+	
+	<!--显示头像-->
+	<script type="text/javascript" th:inline="javascript">
+		$(function(){
+			var iconArry = [[${session.iconString}]]; 
+			console.log(typeof(iconArry));
+			iconArry = JSON.parse(iconArry);
+			var useraccount = '[[${session.currentUserName}]]';
+			//当有用户登录时，显示头像
+			if(useraccount != null && useraccount != ""){
+				//转换字符串
+				var str12 = arrayBufferToBase64(iconArry);
+				$("#usericon").css("background-image","url(data:image/png;base64,"+str12+")");
+				$("#usericon").css("background-size","100%");
+			}
+		});
+		function arrayBufferToBase64( buffer ) {
+	        var binary = '';
+	        var bytes = new Uint8Array( buffer );
+	        var len = bytes.byteLength;
+	        for (var i = 0; i < len; i++) {
+	            binary += String.fromCharCode( bytes[ i ] );
+	        }
+	        return window.btoa( binary );
+		}
+	</script>
+	
+	<script>
+		//租赁金额
+		var amount;
+		//租赁时长
+		var time;
+		//还车时间
+		var returntime = new Date();
+		//租赁编号
+		var rentid;
+		//汽车编号
+		var carid;
+		var result = false;
+		
+		$(function () {
+			$.ajax({
+				type: "GET", //提交的方法
+				url: "getuserrentinfo", //提交的地址  
+				data: {
+					userid: [[${session.currentUser.userid}]]
+				}, // 序列化表单值  
+				async: false,
+				success: function(data) { //成功
+					console.log(data);
+					if(data.data.result == "false"){
+						if(confirm("订单已支付！查看订单")){
+							location.href="UserFootprint.html";
+						}else{
+							location.href="rentcar.html";
+						}
+					}else{
+						var rentaltime = data.data.RENTALTIME;
+						rentaltime = new Date(rentaltime.replace(/-/g, "/"));
+						time = Math.ceil((returntime - rentaltime) / (1000 * 60*60));
+						console.log(time);
+						amount = (data.data.UNITPRICE * time);
+						rentid = data.data.RENTID;
+						carid = data.data.CARID;
+						$("#amount").html(amount + "￥");
+						$("#rentid").html(data.data.RENTID);
+						$("#carid").html(data.data.CARID);
+						$("#rentaltime").html(data.data.RENTALTIME);
+						$("#returntime").html(returntime.format("yyyy-MM-dd hh:mm:ss"));
+						$("#useraccount").html('[[${session.currentUser.useraccount}]]');
+					}
+				}
+			});
+		});
+		
+		//returncar()事件：还车
+		function returncar() {
+			isreturncar();
+			console.log(result);
+			if(!result){
+				editRentinfo();
+				//模拟押金缴纳成功
+				$.ajax({
+					type: "PUT",
+					url: "payrent",
+					data: {
+						rentid: rentid,
+						isplay: "已支付"
+					},
+					async: false,
+					success: function(data){
+						if(data.message == "修改成功"){
+							console.log("支付成功！");
+						}
+					}
+				});
+				GetDateNow();
+				console.log("执行returnbike()");
+				$("#alipayment").submit(); 
+			}else{
+				alert("您已经归还该车辆了！");
+			}
+			
+		}
+		
+		//确认车辆是否已经归还
+		function isreturncar(){
+			$.ajax({
+				type:"GET",
+				url: rentid+"/restrentinfo",
+				async:false,
+				success: function(data){
+					console.log(data.datas[0].RETURNTIME);
+					if(data.datas[0].RETURNTIME != undefined||data.datas[0].RETURNTIME !=null){
+						result = true;
+					}else{
+						result = false;
+					}
+				}
+			});
+		}
+		
+		
+		//完善租赁信息
+		function editRentinfo(){
+			var returnTime = returntime.format("yyyy-MM-dd hh:mm:ss");
+			$.ajax({
+				type:"PUT",
+				url:"edituserrentinfo",
+				data: {
+					rentid: rentid,
+					carid: carid,
+					returntime: returnTime,
+					amount: amount,
+					endlng: [[${session.userLocal.userlng}]],
+					endlat: [[${session.userLocal.userlat}]]
+				},
+				async:false,
+				success: function(data){
+					console.log(data);
+					if(data.message == "成功完善"){
+						alert("还车成功！前往支付");
+						
+					}
+				}
+			});
+		}
+				
+		//支付宝表单js
+		function GetDateNow() {
+			var vNow = new Date();
+			var sNow = "";
+			sNow += String(vNow.getFullYear());
+			sNow += String(vNow.getMonth() + 1);
+			sNow += String(vNow.getDate());
+			sNow += String(vNow.getHours());
+			sNow += String(vNow.getMinutes());
+			sNow += String(vNow.getSeconds());
+			sNow += String(vNow.getMilliseconds());
+			$("#WIDout_trade_no").val(sNow);
+			$("#WIDsubject").val("汽车租赁");
+			$("#WIDtotal_amount").val(amount);
+			$("#WIDbody").val("汽车编号:" + carid + "\t使用时长:" + time+"小时");
+			$("#rid").val(rentid);
+			$("#returntime").val(vNow.format("yyyy-MM-dd hh:mm:ss"));
+		}
+	</script>
+
+</html>

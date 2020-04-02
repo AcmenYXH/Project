@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>后台管理页面部件</title>
+</head>
+<body>
+	<nav class="navbar navbar-default top-navbar" role="navigation"
+		id="header">
+		<div class="navbar-header">
+			<span class="navbar-brand"> <strong>共享汽车后台管理系统</strong>
+			</span>
+		</div>
+		<ul class="nav navbar-top-links navbar-right">
+			<li class="dropdown"><a class="dropdown-toggle"
+				data-toggle="dropdown" href="#" aria-expanded="false">
+					<span th:text="${session.currentUserName }"></span>
+					<i class="fa fa-user fa-fw"></i> <i
+					class="fa fa-caret-down"></i>
+			</a>
+				<ul class="dropdown-menu dropdown-user">
+					<li><a href="logout"><i
+							class="fa fa-sign-out fa-fw"></i> 登出 </a></li>
+				</ul></li>
+		</ul>
+	</nav>
+
+	<nav class="navbar-default navbar-side" role="navigation" id="side">
+		<div class="sidebar-collapse">
+			<ul class="nav" id="main-menu">
+				<li><a th:href="@{showCarinfo.html}"> <i
+						class="fa fa-desktop"></i>车辆管理
+				</a></li>
+				<li><a th:href="@{showUserinfo.html}"> <i
+						class="fa fa-table"></i>客户管理
+				</a></li>
+				<li><a th:href="@{showMalfunction.html}"> <i
+						class="fa fa-table"></i>故障管理
+				</a></li>
+				<li><a th:href="@{showRentinfo.html}"> <i
+						class="fa fa-desktop"></i>租赁信息
+				</a></li>
+				<li><a th:href="@{statistical.html}"> <i
+						class="fa fa-desktop"></i>统计信息
+				</a></li>
+			</ul>
+		</div>
+	</nav>
+</body>
+</html>

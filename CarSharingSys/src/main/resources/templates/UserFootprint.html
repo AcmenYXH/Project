@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http:www.thymeleaf.org">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- Site Title   -->
+		<title>租赁信息</title>
+		<script th:src="@{js/homeloader.js}" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" th:href="@{css/bootstrap-table.css}"/>
+		<script src="js/bootstrap-table.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/bootstrap-table-zh-CN.js" type="text/javascript" charset="utf-8"></script>
+		<script th:src="@{/js/toastr.js}" type="text/javascript"></script>
+		<script th:src="@{/js/tip.js}" type="text/javascript"></script>
+		<script th:src="@{/js/restful.js}" type="text/javascript"></script>
+		<script th:src="@{/js/echarts.common.min.js}" type="text/javascript"></script>
+		<script th:src="@{/js/jquery.metisMenu.js}" type="text/javascript"></script>
+		<script th:src="@{/js/jquery.backstretch.min.js}" type="text/javascript"></script>
+		<!-- 消除百度地图和boostrap的冲突 -->
+		<link rel="stylesheet" type="text/css" href="css/UserFootprint.css"/>
+		<!-- 百度地图api -->
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=E0wKA0gRCRdmNTfsjA49shTqFAf1bW21"></script>
+	</head>
+
+	<body>
+		<!--头部：页面导航栏-->
+		<div th:replace="part/user_navmenu::#header"></div>
+
+		<section id="section3" class="section-margine section3-background" style="margin: 0;">
+			<div class="over-bg">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-3 col-lg-3">
+							<div class="section-3-box">
+
+							</div>
+						</div>
+						<div class="col-md-3 col-lg-3">
+							<div class="section-3-box">
+
+							</div>
+						</div>
+						<div class="col-md-3 col-lg-3">
+							<div class="section-3-box">
+
+							</div>
+						</div>
+
+						<div class="col-md-3 col-lg-3">
+							<div class="section-3-box">
+
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="section2" class="section-margine">
+			<div class="container">
+				<div class="row">
+					<div class="sec-title text-center">
+						<h2>租赁信息</h2>
+						<span class="double-border"></span>
+					</div>
+					<div class="modal-body" style="text-align:left;height:600px;">
+						<div class="table-responsive">
+							<form id="formSearch" class="form-horizontal">
+								<div class="form-group" style="margin:15px">
+									<label class="control-label col-sm-2" for="userid">租赁编号:</label>
+									<div class="col-sm-2">
+										<input type="hidden" class="form-control" id="userid" th:value="${session.currentUser.userid}">
+										<input type="text" class="form-control" id="rentid"/>
+									</div>
+									<label class="control-label col-sm-2" for="carid">车辆编号:</label>
+									<div class="col-sm-2">
+										<input type="text" class="form-control" id="carid" />
+									</div>
+									<div class="col-sm-4" style="text-align:center;">
+										<button type="button" id="btn_query" class="btn btn-primary">
+											<span class="fa fa-search" aria-hidden="true"></span> 查 询
+										</button>
+									</div>
+								</div>
+							</form>
+							<div id="toolbar" class="btn-group">
+								<button id="btn_delete" type="button" class="btn btn-default">
+									<span class="fa fa-remove" aria-hidden="true"></span> 删除
+								</button>
+							</div>
+							<!-- 订单表格start -->
+							<table class="table table-striped table-bordered table-hover" id="td_rentinfo">
+							</table>
+							<!-- 订单表格end -->
+							
+							<!-- 订单详情模态框start -->
+							<div class="modal fade" id="detailmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+											<h4 class="modal-title" id="myModalLabelfile">订单详情</h4>
+										</div>
+										<div class="modal-body">
+											<!--百度地图start-->
+											<div id="allmap"></div>
+											<!--百度地图end-->
+											<div id="rentcontent">
+												<form class="form-horizontal" role="form">
+													<div class="row">
+														<label class="col-sm-3 control-label"><span class="fa fa-user"></span>&nbsp;用户账号：</label>
+														<div class="col-sm-3">
+													      	<p class="form-control-static" id="modal_useraccount"></p>
+													    </div>
+														<label class="col-sm-3 control-label"><span class="fa fa-align-justify"></span>&nbsp;租赁编号：</label>
+														<div class="col-sm-3">
+													      	<p class="form-control-static" id="modal_rentid"></p>
+													    </div>
+													</div>
+													<div class="row">
+														<label class="col-sm-3 control-label"><span class="fa fa-clock-o"></span>&nbsp;驾驶时长：</label>
+														<div class="col-sm-3">
+													      	<p class="form-control-static" id="drivertime"></p>
+													    </div>
+														<label class="col-sm-3 control-label"><span class="fa fa-car"></span>&nbsp;行程距离：</label>
+														<div class="col-sm-3">
+													      	<p class="form-control-static" id="tripdistance"></p>
+													    </div>
+													</div>
+													<div class="row">
+														<label class="col-sm-3 control-label"><span class="fa fa-leaf"></span>&nbsp;节约排量：</label>
+														<div class="col-sm-3">
+													      	<p class="form-control-static" id="emissions"></p>
+													    </div>
+														<label class="col-sm-3 control-label"><span class="fa fa-yen fa-lg"></span>&nbsp;租赁金额：</label>
+														<div class="col-sm-3">
+													      	<p class="form-control-static" id="modal_amount"></p>
+													    </div>
+													</div>
+												</form>
+											</div>
+										</div>
+										<div class="modal-footer"> 
+											<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- 订单详情模态框end -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 页面底部章节section5 -->
+		<div th:replace="part/user_navmenu::#section5"></div>
+		<!-- 页面底部章节footer-top -->
+		<div th:replace="part/user_navmenu::#footer-top"></div>
+		<!-- 页面底部章节footer-bottom -->
+		<div th:replace="part/user_navmenu::#footer-bottom"></div>
+		<!-- Start Switcher -->
+		<div th:replace="part/user_navmenu::#subject_switch"></div>
+		<!-- End Switcher -->
+		
+		<script th:src="@{/js/main2.js}"></script>
+		<script th:src="@{/js/switch.js}"></script>
+		
+	</body>
+	
+	<!--显示图片-->
+	<script type="text/javascript" th:inline="javascript">
+		$(function(){
+			var iconArry = [[${session.iconString}]]; 
+			var licenceArry = [[${session.licenceString}]]; 
+			console.log(typeof(iconArry));
+			console.log(typeof(licenceArry));
+			iconArry = JSON.parse(iconArry);
+			licenceArry = JSON.parse(licenceArry);
+			
+			var useraccount = [[${session.currentUserName}]];
+			
+			//当有用户登录时，显示头像
+			if(useraccount != null && useraccount != ""){
+				//转换字符串
+				var str12 = arrayBufferToBase64(iconArry);
+			    var str13 = arrayBufferToBase64(licenceArry);
+				$("#usericon").css("background-image","url(data:image/png;base64,"+str12+")");
+				$("#usericon").css("background-size","100%");
+				$("#userlicence").css("background-image","url(data:image/png;base64,"+str13+")");
+				$("#userlicence").css("background-size","100%");
+			}
+		});
+		function arrayBufferToBase64( buffer ) {
+	        var binary = '';
+	        var bytes = new Uint8Array( buffer );
+	        var len = bytes.byteLength;
+	        for (var i = 0; i < len; i++) {
+	            binary += String.fromCharCode( bytes[ i ] );
+	        }
+	        return window.btoa( binary );
+		}
+	</script>
+	<script>
+		$(function(){
+			
+			//为表格的每一行添加“详情”按钮的点击事件
+			window.operateEvents = {
+			    'click .RoleOfedit': function (e, value, row, index) {
+				     console.log(row);
+				     
+				     $("#detailmodal").modal('show');
+				     $('#detailmodal').on('shown.bs.modal', function(){
+				    	 mapContent(row);
+				     });
+			     }
+		    };
+			//初始化表格
+			var oTable = new TableInit();
+			oTable.Init();
+			
+			
+			//初始化按钮
+			var oButtonInit = new ButtonInit();
+			oButtonInit.Init();
+		});
+		
+		//定义表格类
+		var TableInit = function(){
+			var oTableInit = new Object();
+			
+			oTableInit.Init = function(){
+				$("#td_rentinfo").bootstrapTable({
+					url : "userrentinfo", //请求后台的URL（*）
+					method : "get", //请求方式（*）
+					toolbar : "#toolbar", //工具按钮用哪个容器
+					queryParamsType : "page", //默认风格
+					queryParams : oTableInit.queryParams,//传递参数（*）
+					pagination: true, //是否显示分页（*）
+					sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+					pageSize: 5,                       //每页的记录行数（*）
+					pageList: [5,10,25,50,100], 
+					sortable: true,
+					silentSort: true,  // 换页的时候自动记住排序
+					minimumCountColumns: 2,
+					clickToSelect: true,    //点击选中功能
+					columns : [ {
+						checkbox : true
+					}, {
+						field : "RENTID",
+						title : "租赁编号",
+						align: "center",
+	                    valign: "middle",
+	                    sortable: true // 开启排序功能
+					}, {
+						field : "USERACCOUNT",
+						title : "用户账号",
+						align: "center",
+	                    valign: "middle",
+	                    sortable: true // 开启排序功能
+					}, {
+						field : "CARID",
+						title : "车辆编号",
+						align: "center",
+	                    valign: "middle",
+	                    sortable: true // 开启排序功能
+					}, {
+						field : "BRAND",
+						title : "品牌",
+						align: "center",
+	                    valign: "middle",
+	                    sortable: true // 开启排序功能
+					},{
+						field : "RENTALTIME",
+						title : "开始时间",
+						align: "center",
+	                    valign: "middle",
+	                    sortable: true // 开启排序功能
+					}, {
+						field : "RETURNTIME",
+						title : "结束时间",
+						align: "center",
+	                    valign: "middle",
+	                    sortable: true // 开启排序功能
+					},{
+						field : "AMOUNT",
+						title : "租赁金额",
+						align: "center",
+						valign: "middle",
+						sortable: true // 开启排序功能
+					},{
+						field : "ISPLAY",
+						title : "是否支付",
+						align: "center",
+						valign: "middle",
+						sortable: true // 开启排序功能
+					},{
+						field : "operate",
+						title : "操作",
+						align: "center",
+						formatter: operateFormatter,
+		                events: operateEvents
+					}],  //改造JsonResult后就不需要配置这个属性了
+					responseHandler: function(res) {  //表格数据设置 
+						//console.log(res);
+		                return {
+		                    "total": res.pagedatas.total,//总记录数
+		                    "rows": res.pagedatas.list   //数据
+		                 };
+	            	}
+				});
+			}
+			//为表格添加操作按钮
+			function operateFormatter(value, row, index) {
+	            return ['<button type="button" class="RoleOfedit btn btn-info" >详情</button>'
+	            ].join('')
+	    	}
+			
+			
+			//得到查询的参数
+			oTableInit.queryParams = function(params) {
+				//console.log(params);
+				var temp = { //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
+					pageSize: params.pageSize,   //页面大小
+					pageNum: params.pageNumber,  //页码
+					//search: params.search,  //搜索框
+					sort: params.sortName,    //排序字段
+					order: params.sortOrder,  //排序方式
+					userid : $("#userid").val(),
+					rentid : $("#rentid").val(),
+					carid : $("#carid").val(),
+				};
+				return temp;
+			};
+			
+			return oTableInit;
+		}
+		
+		var ButtonInit = function() {
+			var oInit = new Object();
+	
+			oInit.Init = function() {
+				
+				$("#btn_delete").click(function() {
+					var arrselections = commonCheck(false);
+					if(arrselections==null)return;
+	
+					Tip.confirm({
+						message : "确认要删除选择的数据吗？"
+					}).on(function(e) {
+						if (!e) return;
+						var cus = arrselections;
+						$.delAll("restrentinfo", cus, function(res) {
+							commonChange(res);
+						});
+					});
+				});
+				
+				$("#btn_query").click(function() {
+					$("#td_rentinfo").bootstrapTable("refresh");
+				});
+			};
+	
+			return oInit;
+		};
+		
+		//统一取选中数据并做校验
+		function commonCheck(only){
+			var arrselections = $("#td_rentinfo").bootstrapTable("getSelections");
+			console.log(arrselections[0]);
+			if (arrselections.length <= 0) {
+				toastr.warning("请选择有效数据");
+				return null;
+			}
+			return arrselections;
+		}
+		
+		//针对增删改的返回内容做统一化处理
+		function commonChange(res){
+			if (res.state == 0) {
+	        	toastr.success(res.message);
+	        	
+	        	$("#td_rentinfo").bootstrapTable("refresh");
+	    	}else{
+	    		toastr.error(res.message);
+	    	}
+		}
+		
+		//订单详情模态框--内容填充
+		function mapContent(row){
+			/*初始化地图*/
+			var map = new BMap.Map("allmap",{minZoom:6,maxZoom:19});
+			var point = new BMap.Point(116.331398,39.897445);
+			map.centerAndZoom(point,14);
+			map.enableScrollWheelZoom(true);
+			
+			//用户起始点
+			var startpoint = new BMap.Point(row.STARTLNG,row.STARTLAT);
+			var endpoint = new BMap.Point(row.ENDLNG,row.ENDLAT);
+			
+			
+			//用直线连接两个点
+			var polyline = new BMap.Polyline(
+				[startpoint,endpoint],
+				{strokeColor:"green",//设置颜色
+				strokeWeight:5, //宽度
+				strokeOpacity:1//透明度
+				});
+			map.addOverlay(polyline);
+			
+			//起点的标记
+			var mk1 = new BMap.Marker(startpoint, {
+			  // 指定Marker的icon属性为Symbol
+			  icon: new BMap.Symbol(BMap_Symbol_SHAPE_POINT, {
+			    scale: 1.5,//图标缩放大小
+			    fillColor: "black",//填充颜色
+			    fillOpacity: 0.8//填充透明度
+			  })
+			});
+		    var label1 = new BMap.Label("起点",{offset:new BMap.Size(20,-10)});
+			mk1.setLabel(label1);
+			map.addOverlay(mk1);
+			//设置标志点的弹跳动画
+			mk1.setAnimation(BMAP_ANIMATION_BOUNCE);
+			//2s后清除动画
+			setTimeout(function(){mk1.setAnimation();}, 2100);
+			
+			//终点的标记
+			var mk2 = new BMap.Marker(endpoint,{
+			  // 指定Marker的icon属性为Symbol
+			  icon: new BMap.Symbol(BMap_Symbol_SHAPE_POINT, {
+			    scale: 1.5,//图标缩放大小
+			    fillColor: "red",//填充颜色
+			    fillOpacity: 0.8//填充透明度
+			  })
+			});
+		    var label2 = new BMap.Label("终点",{offset:new BMap.Size(20,-10)});
+			mk2.setLabel(label2);
+			map.addOverlay(mk2);
+			//2s后设置标志点的弹跳动画
+			setTimeout(function(){mk2.setAnimation(BMAP_ANIMATION_BOUNCE);},2100);
+			//2s后清除动画
+			setTimeout(function(){mk2.setAnimation();}, 4200);
+
+			
+			//行程距离
+			console.log("row.ENDLNG:"+row.ENDLNG);
+			console.log("row.ENDLAT:"+row.ENDLAT);
+			var tripdistance = Math.round(map.getDistance(startpoint,endpoint));
+			detailmodal(map,row,tripdistance);
+			/*
+			 * 移动地图，是地图的中心和容器的中心重合
+			 * 第一个参数是宽度，第二参数是高度
+			 * 基本设置是地图容器宽高的一半
+			 */
+			//map.panBy(350,150);
+			//让起点在地图上居中显示
+			map.panTo(startpoint);
+		}
+		
+		//模态框表单内容填充
+		function detailmodal(map,row,tripdistance){
+			//驾驶时长
+			var rentaltime = row.RENTALTIME;
+			var returntime = row.RETURNTIME;
+			rentaltime = new Date(rentaltime.replace(/-/g, "/"));
+			returntime = new Date(returntime.replace(/-/g, "/"));
+			var drivertime = Math.ceil((returntime - rentaltime) / (1000 * 60*60));
+			//节约排量
+			var emissions = tripdistance*0.001*51.531;//1公里减少二氧化碳排放51.531g	
+			
+			$("#modal_useraccount").text(row.USERACCOUNT);
+			$("#modal_rentid").text(row.RENTID);
+			$("#drivertime").text(drivertime+"小时");
+			if(tripdistance<1000){
+				if(tripdistance<500){
+					map.setZoom(17);
+				}else{
+					map.setZoom(16);
+				}
+				$("#tripdistance").text(tripdistance+"米");
+			}else if(tripdistance>1000){
+				tripdistance = tripdistance/1000;
+				if(tripdistance>2){
+					map.setZoom(12);
+				}
+				$("#tripdistance").text(tripdistance+"千米");
+			}
+			$("#emissions").text(emissions.toFixed(2)+"g");
+			$("#modal_amount").text(row.AMOUNT+"元");
+		}
+		
+	</script>
+
+</html>

@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.carss.mapper.UserinfoMapper" >
+  <resultMap id="BaseResultMap" type="com.carss.entity.Userinfo" >
+    <id column="USERID" property="userid" jdbcType="DECIMAL" />
+    <result column="USERACCOUNT" property="useraccount" jdbcType="VARCHAR" />
+    <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+    <result column="USERNAME" property="username" jdbcType="VARCHAR" />
+    <result column="IDCARD" property="idcard" jdbcType="VARCHAR" />
+    <result column="PHONE" property="phone" jdbcType="VARCHAR" />
+    <result column="ISDEPOSIT" property="isdeposit" jdbcType="VARCHAR" />
+    <result column="PURSE" property="purse" jdbcType="DECIMAL" />
+    <result column="INTEGRAL" property="integral" jdbcType="DECIMAL" />
+    <result column="CREDIT" property="credit" jdbcType="DECIMAL" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.carss.entity.UserinfoWithBLOBs" extends="BaseResultMap" >
+    <result column="ICON" property="icon" jdbcType="BLOB" />
+    <result column="LICENCE" property="licence" jdbcType="BLOB" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    USERID, USERACCOUNT, PASSWORD, USERNAME, IDCARD, PHONE, ISDEPOSIT, PURSE, INTEGRAL, 
+    CREDIT
+  </sql>
+  <sql id="Blob_Column_List" >
+    ICON, LICENCE
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.carss.entity.UserinfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from CARSHARINGDB.USERINFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.carss.entity.UserinfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from CARSHARINGDB.USERINFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from CARSHARINGDB.USERINFO
+    where USERID = #{userid,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="Integer" >
+    delete from CARSHARINGDB.USERINFO
+    where USERID = #{userid,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.carss.entity.UserinfoExample" >
+    delete from CARSHARINGDB.USERINFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.carss.entity.UserinfoWithBLOBs" >
+    insert into CARSHARINGDB.USERINFO (USERID, USERACCOUNT, PASSWORD, 
+      USERNAME, IDCARD, PHONE, 
+      ISDEPOSIT, PURSE, INTEGRAL, 
+      CREDIT, ICON, LICENCE)
+    values (#{userid,jdbcType=DECIMAL}, #{useraccount,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{username,jdbcType=VARCHAR}, #{idcard,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{isdeposit,jdbcType=VARCHAR}, #{purse,jdbcType=DECIMAL}, #{integral,jdbcType=DECIMAL}, 
+      #{credit,jdbcType=DECIMAL}, #{icon,jdbcType=BLOB}, #{licence,jdbcType=BLOB})
+  </insert>
+  <insert id="insertSelective" parameterType="com.carss.entity.UserinfoWithBLOBs" >
+    insert into CARSHARINGDB.USERINFO
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        USERID,
+      </if>
+      <if test="useraccount != null" >
+        USERACCOUNT,
+      </if>
+      <if test="password != null" >
+        PASSWORD,
+      </if>
+      <if test="username != null" >
+        USERNAME,
+      </if>
+      <if test="idcard != null" >
+        IDCARD,
+      </if>
+      <if test="phone != null" >
+        PHONE,
+      </if>
+      <if test="isdeposit != null" >
+        ISDEPOSIT,
+      </if>
+      <if test="purse != null" >
+        PURSE,
+      </if>
+      <if test="integral != null" >
+        INTEGRAL,
+      </if>
+      <if test="credit != null" >
+        CREDIT,
+      </if>
+      <if test="icon != null" >
+        ICON,
+      </if>
+      <if test="licence != null" >
+        LICENCE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        #{userid,jdbcType=DECIMAL},
+      </if>
+      <if test="useraccount != null" >
+        #{useraccount,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="idcard != null" >
+        #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="isdeposit != null" >
+        #{isdeposit,jdbcType=VARCHAR},
+      </if>
+      <if test="purse != null" >
+        #{purse,jdbcType=DECIMAL},
+      </if>
+      <if test="integral != null" >
+        #{integral,jdbcType=DECIMAL},
+      </if>
+      <if test="credit != null" >
+        #{credit,jdbcType=DECIMAL},
+      </if>
+      <if test="icon != null" >
+        #{icon,jdbcType=BLOB},
+      </if>
+      <if test="licence != null" >
+        #{licence,jdbcType=BLOB},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.carss.entity.UserinfoExample" resultType="java.lang.Integer" >
+    select count(*) from CARSHARINGDB.USERINFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update CARSHARINGDB.USERINFO
+    <set >
+      <if test="record.userid != null" >
+        USERID = #{record.userid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.useraccount != null" >
+        USERACCOUNT = #{record.useraccount,jdbcType=VARCHAR},
+      </if>
+      <if test="record.password != null" >
+        PASSWORD = #{record.password,jdbcType=VARCHAR},
+      </if>
+      <if test="record.username != null" >
+        USERNAME = #{record.username,jdbcType=VARCHAR},
+      </if>
+      <if test="record.idcard != null" >
+        IDCARD = #{record.idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phone != null" >
+        PHONE = #{record.phone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isdeposit != null" >
+        ISDEPOSIT = #{record.isdeposit,jdbcType=VARCHAR},
+      </if>
+      <if test="record.purse != null" >
+        PURSE = #{record.purse,jdbcType=DECIMAL},
+      </if>
+      <if test="record.integral != null" >
+        INTEGRAL = #{record.integral,jdbcType=DECIMAL},
+      </if>
+      <if test="record.credit != null" >
+        CREDIT = #{record.credit,jdbcType=DECIMAL},
+      </if>
+      <if test="record.icon != null" >
+        ICON = #{record.icon,jdbcType=BLOB},
+      </if>
+      <if test="record.licence != null" >
+        LICENCE = #{record.licence,jdbcType=BLOB},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update CARSHARINGDB.USERINFO
+    set USERID = #{record.userid,jdbcType=DECIMAL},
+      USERACCOUNT = #{record.useraccount,jdbcType=VARCHAR},
+      PASSWORD = #{record.password,jdbcType=VARCHAR},
+      USERNAME = #{record.username,jdbcType=VARCHAR},
+      IDCARD = #{record.idcard,jdbcType=VARCHAR},
+      PHONE = #{record.phone,jdbcType=VARCHAR},
+      ISDEPOSIT = #{record.isdeposit,jdbcType=VARCHAR},
+      PURSE = #{record.purse,jdbcType=DECIMAL},
+      INTEGRAL = #{record.integral,jdbcType=DECIMAL},
+      CREDIT = #{record.credit,jdbcType=DECIMAL},
+      ICON = #{record.icon,jdbcType=BLOB},
+      LICENCE = #{record.licence,jdbcType=BLOB}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update CARSHARINGDB.USERINFO
+    set USERID = #{record.userid,jdbcType=DECIMAL},
+      USERACCOUNT = #{record.useraccount,jdbcType=VARCHAR},
+      PASSWORD = #{record.password,jdbcType=VARCHAR},
+      USERNAME = #{record.username,jdbcType=VARCHAR},
+      IDCARD = #{record.idcard,jdbcType=VARCHAR},
+      PHONE = #{record.phone,jdbcType=VARCHAR},
+      ISDEPOSIT = #{record.isdeposit,jdbcType=VARCHAR},
+      PURSE = #{record.purse,jdbcType=DECIMAL},
+      INTEGRAL = #{record.integral,jdbcType=DECIMAL},
+      CREDIT = #{record.credit,jdbcType=DECIMAL}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.carss.entity.UserinfoWithBLOBs" >
+    update CARSHARINGDB.USERINFO
+    <set >
+      <if test="useraccount != null" >
+        USERACCOUNT = #{useraccount,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        PASSWORD = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        USERNAME = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="idcard != null" >
+        IDCARD = #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        PHONE = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="isdeposit != null" >
+        ISDEPOSIT = #{isdeposit,jdbcType=VARCHAR},
+      </if>
+      <if test="purse != null" >
+        PURSE = #{purse,jdbcType=DECIMAL},
+      </if>
+      <if test="integral != null" >
+        INTEGRAL = #{integral,jdbcType=DECIMAL},
+      </if>
+      <if test="credit != null" >
+        CREDIT = #{credit,jdbcType=DECIMAL},
+      </if>
+      <if test="icon != null" >
+        ICON = #{icon,jdbcType=BLOB},
+      </if>
+      <if test="licence != null" >
+        LICENCE = #{licence,jdbcType=BLOB},
+      </if>
+    </set>
+    where USERID = #{userid,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.carss.entity.UserinfoWithBLOBs" >
+    update CARSHARINGDB.USERINFO
+    set USERACCOUNT = #{useraccount,jdbcType=VARCHAR},
+      PASSWORD = #{password,jdbcType=VARCHAR},
+      USERNAME = #{username,jdbcType=VARCHAR},
+      IDCARD = #{idcard,jdbcType=VARCHAR},
+      PHONE = #{phone,jdbcType=VARCHAR},
+      ISDEPOSIT = #{isdeposit,jdbcType=VARCHAR},
+      PURSE = #{purse,jdbcType=DECIMAL},
+      INTEGRAL = #{integral,jdbcType=DECIMAL},
+      CREDIT = #{credit,jdbcType=DECIMAL},
+      ICON = #{icon,jdbcType=BLOB},
+      LICENCE = #{licence,jdbcType=BLOB}
+    where USERID = #{userid,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.carss.entity.Userinfo" >
+    update CARSHARINGDB.USERINFO
+    set USERACCOUNT = #{useraccount,jdbcType=VARCHAR},
+      PASSWORD = #{password,jdbcType=VARCHAR},
+      USERNAME = #{username,jdbcType=VARCHAR},
+      IDCARD = #{idcard,jdbcType=VARCHAR},
+      PHONE = #{phone,jdbcType=VARCHAR},
+      ISDEPOSIT = #{isdeposit,jdbcType=VARCHAR},
+      PURSE = #{purse,jdbcType=DECIMAL},
+      INTEGRAL = #{integral,jdbcType=DECIMAL},
+      CREDIT = #{credit,jdbcType=DECIMAL}
+    where USERID = #{userid,jdbcType=DECIMAL}
+  </update>
+</mapper>

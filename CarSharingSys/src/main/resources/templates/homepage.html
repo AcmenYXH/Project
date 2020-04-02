@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<!-- Site Title   -->
+<title>Home</title>
+
+<script type="text/javascript" th:src="@{/js/homeloader.js}"></script>
+<script type="text/javascript" th:src="@{/js/main.js}"></script>
+
+</head>
+
+<body>
+	<!--头部：页面导航栏-->
+	<div th:replace="part/user_navmenu::#header"></div>
+	<section id="slider" class="">
+		<div id="myCarousel" class="carousel slide" data-ride="carousel">
+			<!-- Carousel indicators -->
+			<ol class="carousel-indicators">
+				<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+				<li data-target="#myCarousel" data-slide-to="1"></li>
+				<li data-target="#myCarousel" data-slide-to="2"></li>
+			</ol>
+			<!-- Wrapper for carousel items -->
+			<div class="carousel-inner">
+				<!--1st item start-->
+				<div class="item active">
+					<img src="images/slide/1.jpg" class="img-responsive"
+						alt="First Slide Image">
+					<div class="carousel-caption">
+						<h1 class="wow slideInLeft color-while">前路太多精彩。</h1>
+						<h3 class="wow slideInRight color-while">你从未停下前进的脚步，在这里，开启你的自由人生！</h3>
+						<a th:href="@{rentcar.html}"
+							class="btn btn-primary btn-lg wow bounceInUp">租车 <i
+							class="fa fa-angle-double-right"></i></a> &nbsp; <a
+							th:href="@{aboutus.html}"
+							class="btn btn-seconday btn-lg wow bounceInUp">更多 <i
+							class="fa fa-angle-double-right"></i></a>
+					</div>
+				</div>
+				<!--1st item end-->
+				<!--2nd item start-->
+				<div class="item">
+					<img src="images/slide/2.jpg" class="img-responsive"
+						alt="Second Slide Image">
+					<div class="carousel-caption">
+						<h1 class="wow slideInLeft color-white">节能减排、低碳生活。</h1>
+						<h3 class="wow slideInRight color-white">我们致力于为提供环保、便捷、舒适、灵活的都市智能出行服务</h3>
+						<a th:href="@{rentcar.html}"
+							class="btn btn-primary btn-lg wow bounceInUp">租车 <i
+							class="fa fa-angle-double-right"></i></a> &nbsp; <a
+							th:href="@{aboutus.html}"
+							class="btn btn-seconday btn-lg wow bounceInUp">更多 <i
+							class="fa fa-angle-double-right"></i></a>
+					</div>
+				</div>
+				<!--2nd item end-->
+				<!--3rd item start-->
+				<div class="item">
+					<img src="images/slide/3.jpg" class="img-responsive"
+						alt="Third Slide Image">
+					<div class="carousel-caption">
+						<h1 class="wow slideInLeft color-white">让世界没有陌生的角落</h1>
+						<h3 class="wow slideInRight color-white">我们支持全国58个主流城市，出行更方便。</h3>
+						<a th:href="@{rentcar.html}"
+							class="btn btn-primary btn-lg wow bounceInUp">租车<i
+							class="fa fa-angle-double-right"></i></a> &nbsp; <a
+							th:href="@{aboutus.html}"
+							class="btn btn-seconday btn-lg wow bounceInUp">更多<i
+							class="fa fa-angle-double-right"></i></a>
+					</div>
+				</div>
+				<!--3rd item end-->
+			</div>
+			<!-- Carousel controls -->
+
+			<a class="carousel-control left" href="#myCarousel" data-slide="prev">
+				<span class="carousel-arrow"> <i
+					class="fa fa-angle-left fa-2x"></i></span>
+			</a> <a class="carousel-control right" href="#myCarousel"
+				data-slide="next"> <span class="carousel-arrow"><i
+					class="fa fa-angle-right fa-2x"></i></span>
+			</a>
+		</div>
+	</section>
+	<section id="section2" class="section-margine">
+		<div class="container">
+			<div class="row">
+				<div class="sec-title text-center">
+					<h2>欢迎来到 CarSharing.</h2>
+					<span class="double-border"></span>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="section3" class="section-margine section3-background ">
+		<div class="over-bg">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-3 col-lg-3">
+						<div class="section-3-box">
+							<figure>
+								<i class="fa fa-group fa-2x"></i>
+							</figure>
+							<h3>
+								<span class="counter">200000000</span>+
+							</h3>
+							<h4>用户</h4>
+						</div>
+					</div>
+					<div class="col-md-3 col-lg-3">
+						<div class="section-3-box">
+							<figure>
+								<i class="fa fa-glass fa-2x"></i>
+							</figure>
+							<h3>
+								<span class="counter">400</span>+
+							</h3>
+							<h4>奖项</h4>
+						</div>
+					</div>
+					<div class="col-md-3 col-lg-3">
+						<div class="section-3-box">
+							<figure>
+								<i class="fa fa-desktop fa-2x"></i>
+							</figure>
+							<h3>
+								<span class="counter">1000</span>+
+							</h3>
+							<h4>项目</h4>
+						</div>
+					</div>
+
+					<div class="col-md-3 col-lg-3">
+						<div class="section-3-box">
+							<figure>
+								<i class="fa fa-star fa-2x"></i>
+							</figure>
+							<h3>
+								<span class="counter">95</span>%
+							</h3>
+							<h4>评价</h4>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</section>
+	<section id="section8" class="section-8 section-margine">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12 col-lg-12">
+					<div class="sec-title text-center wow fadeInUp">
+						<span class="tagline">用户体验</span>
+						<h2>What People Say</h2>
+						<span class="double-border"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="testimonial_wrapper">
+						<div class="testimonial_slider wow fadeInUp">
+							<div class="single_testimonial">
+								<div class="testmonial_img">
+									<img src="images/people/1.jpg" alt="images">
+								</div>
+								<div class="testimonial_contents">
+									<div class="name_desig">
+										<p class="name">Karla Lima</p>
+										<span class="desig">Marketting Officer</span>
+									</div>
+									<div class="testimonial_text">
+										<p>Nam liber tempor cum soluta nobis eleifend option
+											congue mperdiet doming id quod mazim placerat facer possim
+											as. Typi non habent claritatem insitam.</p>
+									</div>
+								</div>
+							</div>
+							<div class="single_testimonial">
+								<div class="testmonial_img">
+									<img src="images/people/2.jpg" alt="images">
+								</div>
+								<div class="testimonial_contents">
+									<div class="name_desig">
+										<p class="name">Enrique Igloo</p>
+										<span class="desig">Manager</span>
+									</div>
+									<div class="testimonial_text">
+										<p>Nam liber tempor cum soluta nobis eleifend option
+											congue mperdiet doming id quod mazim placerat facer possim
+											as. Typi non habent claritatem insitam.</p>
+									</div>
+								</div>
+							</div>
+							<div class="single_testimonial">
+								<div class="testmonial_img">
+									<img src="images/people/3.jpg" alt="images">
+								</div>
+								<div class="testimonial_contents">
+									<div class="name_desig">
+										<p class="name">dream boy</p>
+										<span class="desig">Manager</span>
+									</div>
+									<div class="testimonial_text">
+										<p>Nam liber tempor cum soluta nobis eleifend option
+											congue mperdiet doming id quod mazim placerat facer possim
+											as. Typi non habent claritatem insitam.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- 页面底部章节section5 -->
+	<div th:replace="part/user_navmenu::#section5"></div>
+	<!-- 页面底部章节footer-top -->
+	<div th:replace="part/user_navmenu::#footer-top"></div>
+	<!-- 页面底部章节footer-bottom -->
+	<div th:replace="part/user_navmenu::#footer-bottom"></div>
+	<!-- Start Switcher -->
+	<div th:replace="part/user_navmenu::#subject_switch"></div>
+	<!-- End Switcher -->
+	
+	<!-- 需要手动初始化主题切换样式，否则无法使用 -->
+	<script type="text/javascript" th:src="@{/switcher/switch.js}"></script>
+</body>
+
+<!-- 显示头像 -->
+<script type="text/javascript" th:inline="javascript">
+		$(function(){
+			var iconArry = [[${session.iconString}]]; 
+			console.log("头像："+typeof(iconArry));
+			console.log("头像："+iconArry);
+			if(iconArry != "null"){
+				iconArry = JSON.parse(iconArry);
+				var useraccount = [[${session.currentUserName}]];
+				//当有用户登录时，显示头像
+				if(useraccount != null && useraccount != ""){
+					//转换字符串
+					var str12 = arrayBufferToBase64(iconArry);
+				    console.log("str121:"+str12);
+					$("#usericon").css("background-image","url(data:image/png;base64,"+str12+")");
+					$("#usericon").css("background-size","100%");
+				}
+			}
+			
+			//获取当前窗口的Url
+			console.log("url="+window.location.href);
+			//结果：http://localhost:61768/Home/Index?id=2&age=18
+
+			//获取当前窗口的主机名
+			console.log("host ="+window.location.host);
+			//结果：localhost:6768
+
+			//获取当前窗口的端口
+			console.log("port = "+window.location.port);
+			//结果：61768
+
+			//获取当前窗口的路径
+			var pathname = window.location.pathname
+			console.log("pathname ="+ pathname);
+			console.log(pathname=="/tologin");
+			//结果：/Home/Index
+
+			//获取当前文档的Url
+			console.log("URL ="+ document.URL);
+			//结果：http://localhost:61768/Home/Index?id=2&age=18
+
+			//获取参数
+			console.log("search ="+ window.location.search);
+		});
+		function arrayBufferToBase64( buffer ) {
+	        var binary = '';
+	        var bytes = new Uint8Array( buffer );
+	        var len = bytes.byteLength;
+	        for (var i = 0; i < len; i++) {
+	            binary += String.fromCharCode( bytes[ i ] );
+	        }
+	        return window.btoa( binary );
+		}
+	</script>
+<script>
+		$(function() {
+			$('#myModal').modal('hide')
+		});
+	</script>
+<script>
+		$('#myModal').on('show.bs.modal', function(e) {
+			//设置模态框的水平垂直方向的位置；
+		});
+
+		function centerModals() {　　
+			$('#myModal').each(function(i) {　　　　
+				var $clone = $(this).clone().css('display', 'block').appendTo('body');　　　　
+				var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);　　　　
+				top = top > 0 ? top : 0;　　　　
+				$clone.remove();　　　　
+				$(this).find('.modal-content').css("margin-top", top);　　
+			});
+		};
+		$('#myModal').on('show.bs.modal', centerModals);
+		$(window).on('resize', centerModals);
+	</script>
+<script>
+		$(function() {
+			$('#myModal').on('hide.bs.modal',
+				function() {
+					alert('是否确认关闭！');
+				})
+		});
+	</script>
+
+</html>

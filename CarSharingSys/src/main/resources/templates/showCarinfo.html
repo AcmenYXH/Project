@@ -1,0 +1,487 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta content="" name="description" />
+	<meta content="webthemez" name="author" />
+	<title>车辆管理</title>
+	<script type="text/javascript" th:src="@{/js/loader.js}"></script>
+	<link rel="stylesheet" type="text/css" th:href="@{css/showCarInfoMap.css}"/>
+</head>
+<body>
+	<div id="wrapper">
+		<!--头部：页面标题栏-->
+		<div th:replace="part/navmenu::#header"></div>
+		<!--导航栏：页面菜单栏-->
+		<div th:replace="part/navmenu::#side"></div>
+		<!--表格-->
+		<div id="page-wrapper">
+			<div id="page-inner">
+				<div class="row">
+					<div class="col-md-12">
+						<!-- start dataTables -->
+						<!-- 表格格式：面板中嵌套表格 -->
+						<div class="panel panel-default">
+							<!-- 面板头放：页面标题，刷新按钮，添加按钮 -->
+							<div class="panel-heading">
+								<h3>车辆管理</h3>
+							</div>
+							<!-- 面板体放：表格内容，按照dataTable格式来构造-->
+							<div class="panel-body">
+								<form id="formSearch" class="form-horizontal">
+									<div class="form-group" style="margin:15px">
+										<label class="control-label col-sm-1" for="brand">品牌:</label>
+										<div class="col-sm-1">
+											<input type="text" class="form-control" id="brand"/>
+										</div>
+										<label class="control-label col-sm-2" for="minAmount">最小租赁单价:</label>
+										<div class="col-sm-2">
+											<input type="text" class="form-control" id="minAmount" value="0" />
+										</div>
+										<label class="control-label col-sm-2" for="minAmount">最大租赁单价:</label>
+										<div class="col-sm-2">
+											<input type="text" class="form-control" id="maxAmount" value="100"/>
+										</div>
+										<div class="col-sm-2" style="text-align:center;">
+											<button type="button" id="btn_query" class="btn btn-primary">
+												<span class="glyphicon glyphicon-search" aria-hidden="true"></span> 查 询
+											</button>
+										</div>
+									</div>
+								</form>
+								<div id="toolbar" class="btn-group">
+									<button id="btn_add" type="button" class="btn btn-default">
+										<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 新增
+									</button>
+									<button id="btn_edit" type="button" class="btn btn-default">
+										<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> 修改
+									</button>
+									<button id="btn_delete" type="button" class="btn btn-default">
+										<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> 删除
+									</button>
+								</div>
+								<!-- @@@@@@@@@@@@     表格数据     @@@@@@@@@@@@@ -->
+								<table id="tb_goods" class="table table-striped table-bordered table-hover"></table>
+								<!-- @@@@@@@@@@@@     表格数据     @@@@@@@@@@@@@ -->
+							</div>
+						</div>
+						<!--End dataTables -->
+						<!-- 按钮触发模态框 -->
+						<!-- 添加车辆模态框myModal----start -->
+						<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+							aria-labelledby="myModalLabel" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal"
+											aria-hidden="true">×</button>
+										<!-- 表单嵌套表格：规范表单格式 -->
+										<form role="form" id="editForm">
+											<div class="form-group">
+												<table class="table" style="font: '黑体';">
+													<thead>
+														<tr>
+															<th>车辆信息：<input type="hidden" id="carid" name="carid" class="form-control"></th>
+															<th></th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td><b>车辆品牌：</b></td>
+															<td><input type="text" id="carbrand" name="brand" class="form-control"/></td>
+														</tr>
+														<tr>
+															<td><b>入库时间：</b></td>
+															<td><input type="date" id="addtime" name="addtime" class="form-control"/></td>
+														</tr>
+														<tr>
+															<td><b>车辆状态：</b></td>
+															<td>
+																<select id="statusSelect" name="status" class="form-control">
+																	<option selected = "selected">空闲</option>
+																	<option>正在使用</option>
+																	<option>维修中</option>
+																</select>
+															</td>
+														</tr>
+														<tr>
+															<td><b>租赁单价：</b></td>
+															<td><input type="number" id="unitprice" name="unitprice" step="0.1" maxlength="9" class="form-control"/></td>
+														</tr>
+														<tr>
+															<td><b>经度：</b></td>
+															<td><input type="text" id="longitude" name="longitude" class="form-control"/></td>
+														</tr>
+														<tr>
+															<td><b>纬度：</b></td>
+															<td><input type="text" id="latitude" name="latitude" class="form-control"/></td>
+														</tr>
+														<tr>
+															<td><b>维修次数：</b></td>
+															<td><input type="text" id="repairnum" name="repairnum" class="form-control"/></td>
+														</tr>
+													</tbody>
+												</table>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+													<input value="提交" class="btn btn-primary" id="btn_submit">
+												</div>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- 添加车辆模态框myModal----end -->
+						<!-- 添加车辆的地图模态框myMap----start-->
+						<div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				                		<h4 class="modal-title" id="myModalLabel">地图点选添加车辆</h4>
+									</div>
+									<!-- 地图容器 -->
+									<div class="modal-body" id="mapContainer">
+									</div>
+									<div class="modal-footer">
+						                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						            </div>
+								</div>
+							</div>
+						</div>
+						<!-- 添加车辆的地图模态框myMap----end-->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 引入百度地图API -->
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=E0wKA0gRCRdmNTfsjA49shTqFAf1bW21"></script>
+	<script type="text/javascript">
+		$(function(){
+			
+			//用户位置
+			var userpoint;
+			//存放单次添加的车辆位置信息
+			var addCarArray = new Array();
+			//添加车辆的经度
+			var carlng;
+			//添加车辆的纬度 
+			var carlat;
+			
+			//地图
+			var map = new BMap.Map("mapContainer");
+
+			//初始化表格
+			var oTable = new TableInit();
+			oTable.Init();
+			
+			//初始化按钮
+			var oButtonInit = new ButtonInit();
+			oButtonInit.Init(map,userpoint,addCarArray,carlng,carlat);
+			
+			
+			
+		});
+		
+		//定义表格类
+		var TableInit = function(){
+			var oTableInit = new Object();
+			
+			oTableInit.Init = function(){
+				$("#tb_goods").bootstrapTable({
+					url : "restcarinfo", //请求后台的URL（*）
+					method : "get", //请求方式（*）
+					toolbar : "#toolbar", //工具按钮用哪个容器
+					queryParamsType : "page", //默认风格
+					queryParams : oTableInit.queryParams,//传递参数（*）
+					pagination: true, //是否显示分页（*）
+					sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+					pageSize: 5,                       //每页的记录行数（*）
+					pageList: [5,10,25,50,100], 
+					sortable: true,
+					//sortName: "price",
+					//sortOrder: "desc",
+					silentSort: true,  // 换页的时候自动记住排序
+					showColumns: true,
+					minimumCountColumns: 2,
+					showRefresh: true,
+					clickToSelect: true,    //点击选中功能
+					showToggle: true,
+					columns : [ {
+						checkbox : true
+					}, {
+						field : "carid",
+						title : "车辆编号",
+						align: "center",
+	                    valign: "middle",
+	                    sortable: true // 开启排序功能
+					}, {
+						field : "brand",
+						title : "车辆品牌",
+						align: "center",
+	                    valign: "middle",
+	                    sortable: true // 开启排序功能
+					}, {
+						field : "addtime",
+						title : "入库时间",
+						align: "center",
+	                    valign: "middle",
+	                    sortable: true // 开启排序功能
+					}, {
+						field : "status",
+						title : "车辆状态",
+						align: "center",
+	                    sortable: true,
+	                    formatter: function(value){
+	                    	if(value == "空闲"){
+	                    		var status = '<span class="btn btn-primary btn-sm">'+value+'</span>';  
+	                    	}else if(value == "维修中"){
+	                    		var status = '<span class="btn btn-info btn-sm">'+value+'</span>';
+	                    	}else{
+	                    		var status = '<span class="btn btn-success btn-sm">'+value+'</span>';
+	                    	}
+	                    	return status;
+	                    }
+					}, {
+						field : "unitprice",
+						title : "租赁单价",
+						align: "center",
+	                    valign: "middle",
+	                    sortable: true // 开启排序功能
+					},{
+						field : "longitude",
+						title : "经度",
+						align: "center",
+						valign: "middle",
+						sortable: true // 开启排序功能
+					},{
+						field : "latitude",
+						title : "维度",
+						align: "center",
+						valign: "middle",
+						sortable: true // 开启排序功能
+					},{
+						field : "repairnum",
+						title : "维修次数",
+						align: "center",
+						valign: "middle",
+						sortable: true // 开启排序功能
+					}],  //改造JsonResult后就不需要配置这个属性了
+					responseHandler: function(res) {  //表格数据设置 
+						//console.log(res);
+		                return {
+		                    "total": res.pagedatas.total,//总记录数
+		                    "rows": res.pagedatas.list   //数据
+		                 };
+	            	}
+				});
+			}
+			//得到查询的参数
+			oTableInit.queryParams = function(params) {
+				//console.log(params);
+				var temp = { //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
+					pageSize: params.pageSize,   //页面大小
+					pageNum: params.pageNumber,  //页码
+					//search: params.search,  //搜索框
+					sort: params.sortName,    //排序字段
+					order: params.sortOrder,  //排序方式
+					brand : $("#brand").val(),
+					minAmount : $("#minAmount").val(),
+					maxAmount : $("#maxAmount").val()
+				};
+				return temp;
+			};
+			
+			return oTableInit;
+		}
+		
+		var ButtonInit = function() {
+			var oInit = new Object();
+			oInit.Init = function(map,userpoint,addCarArray,carlng,carlat) {
+				$("#btn_add").click(function(){
+					//清空上次添加车辆的信息
+					addCarArray.length = 0;		
+					//显示地图模态框
+					$("#mapModal").modal('show');
+				});
+				/* 
+				当地图模态框对用户可见时调用,
+				初始化地图（为防止中心点出现在左上角）
+				*/
+				$('#mapModal').on('shown.bs.modal', function(){
+					map = new BMap.Map("mapContainer");
+					//地图初始化配置
+					var mapInit = MapInit();
+					mapInit.Init(map,userpoint,addCarArray,carlng,carlat);
+					//给地图添加点击事件
+					map.addEventListener("click", function(e) {
+						/*显示添加车辆模态框*/
+						carlng = e.point.lng;
+						carlat = e.point.lat;
+						// 清空模态框里头的数据
+						$("#myModal").find(".form-control").val("");
+						$("#longitude").val(carlng);
+						$("#latitude").val(carlat);
+						$("#mapModal").modal('hide');
+						$("#myModal").modal('show');
+					});
+				});
+				/* 当添加车辆的模态框关闭时，显示地图模态框 */
+				$("#myModal").bind('hidden.bs.modal',function(){
+				  	$("#mapModal").modal('show');
+				});
+				
+				$("#btn_edit").click(function(){
+					var arrselections = commonCheck(true);
+					if(arrselections==null)return;
+					$("#editForm").setForm(arrselections[0]);
+					$("#myModal").modal();
+				});
+				
+				$("#btn_delete").click(function() {
+					var arrselections = commonCheck(false);
+					if(arrselections==null)return;
+	
+					Tip.confirm({
+						message : "确认要删除选择的数据吗？"
+					}).on(function(e) {
+						if (!e) return;
+						var cus = arrselections;
+						$.delAll("restcarinfo", cus, function(res) {
+							commonChange(res);
+						});
+					});
+				});
+				
+				$("#btn_submit").click(function(){
+					var param = $("#editForm").serializeJson();
+					console.log(param);
+					if($("#carid").val()!=""){   //不为空则做修改
+						$.edit("restcarinfo",param,function(res){
+							commonChange(res);
+						});
+					}else{
+						$.add("restcarinfo",param,function(res){
+							commonChange(res);
+							//当车辆添加成功，将新增车辆的位置保存到addCarArray中
+							if(res.state == 0){
+								var carpoint = new Map();
+								carpoint["lng"] = carlng;
+								carpoint["lat"] = carlat;
+								addCarArray.push(carpoint);
+							}
+						});
+					}
+				});
+	
+				$("#btn_query").click(function() {
+					$("#tb_goods").bootstrapTable("refresh");
+				});
+			};
+	
+			return oInit;
+		};
+		
+		var MapInit = function(){
+			var oInit = new Object();
+			//初始化地图
+			oInit.Init = function(map,userpoint,addCarArray,carlng,carlat) {
+				//开启鼠标滚轮缩放地图功能
+				map.enableScrollWheelZoom(true);
+				//根据ip定位管理员所在位置
+				var myCity = new BMap.LocalCity();
+				myCity.get(function(result){
+					console.log("carlng="+carlng+",carlat="+carlat);
+					//设置管理员所在城市
+					usercity = result.name;
+					//将ip定位管理员位置显示出来---start
+					userpoint = new BMap.Point(result.center.lng,result.center.lat);
+					var userlabel = new BMap.Label("你的位置", {
+						offset: new BMap.Size(20, -10)
+					});
+					userlabel.setStyle({
+						color : "green",
+						maxWidth:"none",   //去除bootstrap中样式
+						border:"0",
+						fontWeight :"bold"
+					});
+					var mk = new BMap.Marker(userpoint);
+					mk.setLabel(userlabel);
+					map.addOverlay(mk);
+					map.centerAndZoom(userpoint, 16);
+					//将ip定位管理员位置显示出来---end
+					
+					//当添加车辆成功时显示新增车辆标记
+					if(addCarArray.length >0){
+						$.each(addCarArray, function() {
+							var label = new BMap.Label("new", {
+								offset: new BMap.Size(20, -10)
+							});
+							label.setStyle({
+								color : "red",
+								maxWidth:"none",   //去除bootstrap中样式
+								border:"0"
+							});
+							var mk = new BMap.Marker(new BMap.Point(this.lng,this.lat));
+							mk.setLabel(label);
+							map.addOverlay(mk);
+						});
+						map.panTo(new BMap.Point(carlng,carlat));
+					}
+					
+					
+					//map.panTo(userpoint);
+				});
+			}
+			return oInit;
+		}
+		
+		/* 统一取选中数据并做校验 */
+		function commonCheck(only){
+			console.log($("#tb_goods").bootstrapTable("getData"));
+			var arrselections = $("#tb_goods").bootstrapTable("getSelections");
+			console.log(arrselections[0]);
+			if(only&&arrselections.length > 1){
+				toastr.warning("只能选择一行进行编辑");
+				return null;
+			}
+			if (arrselections.length <= 0) {
+				toastr.warning("请选择有效数据");
+				return null;
+			}
+			return arrselections;
+		}
+		
+		/* 针对增删改的返回内容做统一化处理 */
+		function commonChange(res){
+			if (res.state == 0) {
+	        	toastr.success(res.message);
+	        	$("#myModal").modal("hide");
+	        	$("#tb_goods").bootstrapTable("refresh");
+	    	}else{
+	    		toastr.error(res.message);
+	    	}
+		}
+		/* 创建一个用户标记 */
+		/* function userlocation() {
+			var label = new BMap.Label("你的位置", {
+				offset: new BMap.Size(20, -10)
+			});
+			var mk = new BMap.Marker(userpoint);
+			mk.setLabel(label);
+			map.addOverlay(mk);
+			map.panTo(userpoint);
+		} */
+		/* ip定位回调函数 */
+		/* function ipLocationCallback(result){
+			var usercity = result.name;
+			//ip定位管理员位置
+			userpoint = new BMap.Point(result.center.lng,result.center.lat);
+			userlocation();
+		} */
+	</script>
+</body>
+</html>

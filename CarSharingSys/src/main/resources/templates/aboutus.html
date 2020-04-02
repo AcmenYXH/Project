@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="keywords" content="Pixel">
+		<meta name="author" content="rkwebdesigns">
+		<!-- Site Title   -->
+		<title>关于我们</title>
+		<script src="js/homeloader.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+
+	<body>
+		<!--头部：页面导航栏-->
+		<div th:replace="part/user_navmenu::#header"></div>
+		
+		<section id="inner-title" class="inner-title">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6 col-lg-6">
+						<h2>关于我们</h2></div>
+					<div class="col-md-6 col-lg-6">
+						<div class="breadcrumbs">
+							<ul>
+								<li>当前页面:</li>
+								<li>
+									<a th:href="@{homepage.html}">主页</a>
+								</li>
+								<li>
+									<a th:href="@{aboutus.html}">关于我们</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<section id="section18" class="section-18 section-margine">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-8 col-lg-8">
+						<div class="textcont">
+							<h2>Welcome to CarSharing</h2>
+							<p  style="text-indent: 2em;">
+								自2012年起移动端出行服务模式大量涌现，主流的移动出行服务包括租车、拼车、代驾、出租车、专车（快车）与分时租赁等，
+								其中，专/快车、共享单车等共享出行服务成为其主流服务。作为移动出行行业的主流服务，共享出行包含专车、快车等网约车服务，
+								分时租赁服务，以及2016年火爆市场的共享单车服务；相比网约车的专/快车及顺风车，
+								而共享单车则是解决了用户“最后一公里”的出行问题，那么共享汽车则是共享单车的升级版，
+								它为你提供了更加高端、方便、快捷的城市的出行方式。目前共享汽车用户覆盖率正在快速增长，远超分时租赁用户群体。
+							</p>
+							<p style="text-indent: 2em;">
+								共享汽车通过互联网技术、移动支付方式以及运营模式的创新,让汽车走出“车棚”,实现“共享,其满足了大量城市出行需求,
+								有效缓解了交通拥堵、环境污染等城市顽疾,使得“共享汽车”热迅速风靡到了一二线城市。
+							</p>
+							<a href="#" class="btn btn-primary">了解更多<i class="fa fa-angle-double-right"></i></a>
+						</div>
+					</div>
+					<div class="col-md-4 col-lg-4">
+						<div class="section-18-img"><img src="images/about-us.jpg" class="img-responsive" alt=""></div>
+					</div>
+				</div>
+			</div>
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="about_section2">
+							<div class="about_us_title">
+								<h2>科技</h2>
+							</div>
+							<div class="about_section2_content">
+								<p>
+									全球领先的共享汽车平台。用户可通过手机解锁汽车，享受随时随地有车开的共享出行服务。操作更加简单的新能源共享汽车，
+									领先的移动物联网智能锁，全球领先的人工智能大数据平台“奇点”系统。建立起从用户舒适驾驶到以物联网为载体、
+									人工智能为核心的科技闭环。
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div class="about_section2">
+							<div class="about_us_title">
+								<h2>全球化 </h2>
+							</div>
+							<div class="about_section2_content">
+								<p>
+									在全球30个国家超过600座城市设置共享汽车组织，为群众提供共享出行服务，总会员超过300万。
+									其中Zipcar公司在欧美的20多座城市和200多所大学开展了共享汽车服务，参加的会员超过了70万。
+									目前，在海外由当地用户贡献的订单占比已超过90%，优秀的产品、技术和运营实力，
+									受到越来越多国家的认可，成为真正服务全球的共享汽车平台。
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 页面底部章节section5 -->
+		<div th:replace="part/user_navmenu::#section5"></div>
+		<!-- 页面底部章节footer-top -->
+		<div th:replace="part/user_navmenu::#footer-top"></div>
+		<!-- 页面底部章节footer-bottom -->
+		<div th:replace="part/user_navmenu::#footer-bottom"></div>
+		<!-- Start Switcher -->
+		<div th:replace="part/user_navmenu::#subject_switch"></div>
+		<!-- End Switcher -->
+	
+		<script src="switcher/switch.js"></script>
+	</body>
+	<!-- 显示头像 -->
+<script type="text/javascript" th:inline="javascript">
+		$(function(){
+			var iconArry = [[${session.iconString}]]; 
+			console.log("头像："+typeof(iconArry));
+			console.log("头像："+iconArry);
+			if(iconArry != "null"){
+				iconArry = JSON.parse(iconArry);
+				var useraccount = [[${session.currentUserName}]];
+				//当有用户登录时，显示头像
+				if(useraccount != null && useraccount != ""){
+					//转换字符串
+					var str12 = arrayBufferToBase64(iconArry);
+				    console.log("str121:"+str12);
+					$("#usericon").css("background-image","url(data:image/png;base64,"+str12+")");
+					$("#usericon").css("background-size","100%");
+				}
+			}
+			
+			//获取当前窗口的Url
+			console.log("url="+window.location.href);
+			//结果：http://localhost:61768/Home/Index?id=2&age=18
+
+			//获取当前窗口的主机名
+			console.log("host ="+window.location.host);
+			//结果：localhost:6768
+
+			//获取当前窗口的端口
+			console.log("port = "+window.location.port);
+			//结果：61768
+
+			//获取当前窗口的路径
+			var pathname = window.location.pathname
+			console.log("pathname ="+ pathname);
+			console.log(pathname=="/tologin");
+			//结果：/Home/Index
+
+			//获取当前文档的Url
+			console.log("URL ="+ document.URL);
+			//结果：http://localhost:61768/Home/Index?id=2&age=18
+
+			//获取参数
+			console.log("search ="+ window.location.search);
+		});
+		function arrayBufferToBase64( buffer ) {
+	        var binary = '';
+	        var bytes = new Uint8Array( buffer );
+	        var len = bytes.byteLength;
+	        for (var i = 0; i < len; i++) {
+	            binary += String.fromCharCode( bytes[ i ] );
+	        }
+	        return window.btoa( binary );
+		}
+	</script>
+	<script>
+		$(function() {
+			$('#myModal').modal('hide')
+		});
+	</script>
+	<script>
+		$('#myModal').on('show.bs.modal', function(e) {
+			//设置模态框的水平垂直方向的位置；
+		});
+
+		function centerModals() {　　
+			$('#myModal').each(function(i) {　　　　
+				var $clone = $(this).clone().css('display', 'block').appendTo('body');　　　　
+				var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);　　　　
+				top = top > 0 ? top : 0;　　　　
+				$clone.remove();　　　　
+				$(this).find('.modal-content').css("margin-top", top);　　
+			});
+		};
+		$('#myModal').on('show.bs.modal', centerModals);
+		$(window).on('resize', centerModals);
+	</script>
+	<script>
+		$(function() {
+			$('#myModal').on('hide.bs.modal',
+				function() {
+					alert('是否确认关闭！');
+				})
+		});
+	</script>
+
+</html>

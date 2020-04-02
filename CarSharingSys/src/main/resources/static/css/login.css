@@ -1,0 +1,24 @@
+#outsideBox {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+#outsideBox>.container {
+	height: 300px;
+	width: 500px;
+}
+
+.modal-content>.modal-body {
+	text-align: center;
+}
+
+.form-group button,#returnBtn {
+	text-shadow: black 5px 3px 3px;
+}
+
+
+#tipmessage {
+	color: red;
+}

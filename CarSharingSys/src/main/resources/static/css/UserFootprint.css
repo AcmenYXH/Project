@@ -1,0 +1,31 @@
+/*设置地图高度*/
+
+#allmap {
+	height: 400px;
+}
+
+#rentcontent {
+	height: 100px;
+}
+
+
+/* 解决百度地图与bootstap的冲突 */
+
+label {
+	max-width: none;
+}
+
+
+/* 解决百度地图与模板homesytle.css的冲突 */
+
+img {
+	max-width: 200%;
+	height: auto;
+}
+
+
+/*去除百度地图的logo和版权信息*/
+
+.anchorBL {
+	display: none;
+}

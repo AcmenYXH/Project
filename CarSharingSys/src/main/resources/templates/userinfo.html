@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http:www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Site Title   -->
+<title>用户个人信息</title>
+
+<script th:src="@{js/homeloader.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{js/main2.js}" type="text/javascript" charset="utf-8"></script>
+<style type="text/css">
+modal-body span {
+	color: red;
+}
+</style>
+
+</head>
+
+<body>
+	<!--头部：页面导航栏-->
+	<div th:replace="part/user_navmenu::#header"></div>
+
+	<!-- model -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true"
+		data-backdrop="static">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">×</button>
+					<h4 class="modal-title" id="myModalLabel">个人信息：</h4>
+				</div>
+				<div class="modal-body">
+					<form role="form" id="editUserForm" enctype="multipart/form-data">
+						<div class="form-group">
+							<table class="table" style="font: '黑体';">
+								<thead>
+									<tr>
+										<th><input type="hidden" id="userid" name="userid">
+											<input type="hidden" id="purse" name="purse"> <input
+											type="hidden" id="integral" name="integral"> <input
+											type="hidden" id="credit" name="credit"></th>
+										<th></th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td><b>原密码:</b></td>
+										<td><input type="password" id="oldpassword"
+											name="oldpassword" class="form-control" /></td>
+										<td><span id="txtOldPassword"></span></td>
+									</tr>
+									<tr>
+										<td><b>新密码：</b></td>
+										<td><input type="password" id="password" name="password"
+											class="form-control" required /></td>
+										<td><span id="txtPassword"></span></td>
+									</tr>
+									<tr>
+										<td><b>头像：</b></td>
+										<td><input type="hidden" id="icon" name="icon"
+											class="form-control" /> <input type="file" id="icon1"
+											name="icon1" class="form-control" /></td>
+										<td><span id="txtIcon"></span></td>
+									</tr>
+									<tr>
+										<td><b>真实姓名：</b></td>
+										<td><input type="text" id="username" name="username"
+											class="form-control" /></td>
+										<td><span id="txtUsername"></span></td>
+									</tr>
+									<tr>
+										<td><b>身份证号：</b></td>
+										<td><input type="text" id="idcard" name="idcard"
+											class="form-control" /></td>
+										<td><span id="txtIdcard"></span></td>
+									</tr>
+									<tr>
+										<td><b>手机号：</b></td>
+										<td><input type="number" id="phone" name="phone"
+											class="form-control" /></td>
+										<td><span id="txtPhone"></span></td>
+									</tr>
+									<tr>
+										<td><b>驾照：</b></td>
+										<td><input type="hidden" id="licence" name="licence"
+											class="form-control" /> <input type="file" id="licence1"
+											name="licence1" class="form-control" /></td>
+										<td><span id="txtLicence"></span></td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="modal-footer">
+								<a class="btn btn-default" data-dismiss="modal">关闭</a> <a
+									class="btn btn-primary" id="editUsertBtn">修改</a>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<section id="section3" class="section-margine section3-background "
+		style="margin: 0;">
+		<div class="over-bg">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-3 col-lg-3">
+						<div class="section-3-box"></div>
+					</div>
+					<div class="col-md-3 col-lg-3">
+						<div class="section-3-box"></div>
+					</div>
+					<div class="col-md-3 col-lg-3">
+						<div class="section-3-box"></div>
+					</div>
+
+					<div class="col-md-3 col-lg-3">
+						<div class="section-3-box"></div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="section2" class="section-margine">
+		<div class="container">
+			<div class="row">
+				<div class="sec-title text-center">
+					<h2>个人信息</h2>
+					<span class="double-border"></span>
+				</div>
+				<div class="modal-body" style="text-align: left; height: 400px;">
+					<form class="form-horizontal" role="form" style="">
+						<table class="table" style="text-align: center;">
+							<tbody>
+								<tr>
+									<th style="width: 20%"><label
+										class="col-sm-2 control-label" style="width: 400px;"><span
+											class="fa fa-user"></span>&nbsp;账&emsp;号&nbsp;:</label></th>
+									<td><span th:text="${session.currentUser.useraccount}"></span></td>
+
+								</tr>
+								<tr>
+									<th><label for="inputPassword"
+										class="col-sm-2 control-label" style="width: 400px;"><span
+											class="fa fa-phone"></span>&nbsp;手&emsp;机&nbsp;:</label></th>
+									<td><span th:text="${session.currentUser.phone}"></span></td>
+
+								</tr>
+								<tr>
+									<th><label for="inputPassword"
+										class="col-sm-2 control-label" style="width: 400px;"><span
+											class="fa fa-id-card"></span>&nbsp;身份证&nbsp;:</label></th>
+									<td><span th:text="${session.currentUser.idcard}"></span></td>
+								</tr>
+								<tr>
+									<th><label for="inputPassword"
+										class="col-sm-2 control-label" style="width: 400px;"><span
+											class="fa fa-id-card-o"></span>&nbsp;驾&emsp;照&nbsp;:</label></th>
+									<td style=""><a> <img id="userlicence"
+											style="width: 60px; height: 40px;">
+									</a></td>
+								</tr>
+
+								<tr>
+									<th><label for="inputPassword"
+										class="col-sm-2 control-label" style="width: 400px;">
+											<span class="fa fa-tint"></span>&nbsp;余&emsp;额&nbsp;:
+									</label></th>
+									<td><span th:text="${session.currentUser.purse}+'￥'"></span></td>
+
+								</tr>
+								<tr>
+									<th><label for="inputPassword"
+										class="col-sm-2 control-label" style="width: 400px;">
+											<span class="fa fa-tint"></span>&nbsp;积&emsp;分&nbsp;:
+									</label></th>
+									<td><span th:text="${session.currentUser.integral}"></span></td>
+
+								</tr>
+								<tr>
+									<th><label for="inputPassword"
+										class="col-sm-2 control-label" style="width: 400px;">
+											<span class="fa fa-tint"></span>&nbsp;信&emsp;用&nbsp;:
+									</label></th>
+									<td><span th:text="${session.currentUser.credit}"></span></td>
+
+								</tr>
+								<tr>
+									<th><label for="inputPassword"
+										class="col-sm-2 control-label" style="width: 400px;"><span
+											class="fa fa-check"></span>是否已缴押金:</label></th>
+									<td><span th:text="${session.currentUser.isdeposit}"></span></td>
+
+								</tr>
+								<tr>
+									<td colspan="3"><a href="#" id="editUserInfo"
+										class="btn btn-default" data-toggle="modal"
+										data-target="#myModal"> <span class="fa fa-edit"></span>修改信息
+									</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+	</section>
+
+	<!-- 页面底部章节section5 -->
+	<div th:replace="part/user_navmenu::#section5"></div>
+	<!-- 页面底部章节footer-top -->
+	<div th:replace="part/user_navmenu::#footer-top"></div>
+	<!-- 页面底部章节footer-bottom -->
+	<div th:replace="part/user_navmenu::#footer-bottom"></div>
+	<!-- Start Switcher -->
+	<div th:replace="part/user_navmenu::#subject_switch"></div>
+	<!-- End Switcher -->
+
+	<script src="switcher/switch.js"></script>
+</body>
+<!--显示图片-->
+<script type="text/javascript" th:inline="javascript">
+		$(function(){
+			var iconArry = [[${session.iconString}]]; 
+			var licenceArry = [[${session.licenceString}]]; 
+			iconArry = JSON.parse(iconArry);
+			licenceArry = JSON.parse(licenceArry);
+			
+			var useraccount = [[${session.currentUserName}]];
+			
+			//当有用户登录时，显示头像
+			if(useraccount != null && useraccount != ""){
+				//转换字符串
+				var str12 = arrayBufferToBase64(iconArry);
+			    var str13 = arrayBufferToBase64(licenceArry);
+				console.log(str13);
+				$("#usericon").css("background-image","url(data:image/png;base64,"+str12+")");
+				$("#usericon").css("background-size","100%");
+				$("#userlicence").attr("src","data:image/png;base64,"+str13);
+			}
+		});
+		function arrayBufferToBase64( buffer ) {
+	        var binary = '';
+	        var bytes = new Uint8Array( buffer );
+	        var len = bytes.byteLength;
+	        for (var i = 0; i < len; i++) {
+	            binary += String.fromCharCode( bytes[ i ] );
+	        }
+	        return window.btoa( binary );
+		}
+	</script>
+<script>
+		$('#myModal').on('show.bs.modal', function(e) {
+			//设置模态框的水平垂直方向的位置；
+		});
+
+		function centerModals() {　　
+			$('#myModal').each(function(i) {　　　　
+				var $clone = $(this).clone().css('display', 'block').appendTo('body');　　　　
+				var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);　　　　
+				top = top > 0 ? top : 0;　　　　
+				$clone.remove();　　　　
+				$(this).find('.modal-content').css("margin-top", top);　　
+			});
+		};
+		$('#myModal').on('show.bs.modal', centerModals);
+		$(window).on('resize', centerModals);
+	</script>
+<script>
+		$(function() {
+			$('#myModal').on('hide.bs.modal',
+				function() {
+					alert('您修改的内容还未提交，是否确认关闭！');
+				})
+		});
+	</script>
+
+<script type="text/javascript">
+		
+		var userpassword = [[${session.currentUser.password}]];
+		var uniqueLicence = false;
+		var uniquePhone = true;
+		var checkpsd1 = false;
+		var checkpsd2 = false;
+			
+		$("#phone").focus(function() {
+				$("#txtphone").hide();
+			});
+		$("#phone").bind("blur", function() {
+			var phone = $("#phone").val().trim();
+			console.log(phone);
+			if(phone == "" || phone == null || phone == undefined) {
+				$("#txtphone").html("手机号不能为空");
+				$("#txtphone").show();
+				uniquePhone = false;
+			} else {
+				var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+				if(myreg.test(phone)) {
+					$.ajax({
+						type: "GET",
+						url: "checkphone",
+						data: {
+							phone: phone
+						},
+						async: false,
+						success: function(data) {
+							/* data = JSON.parse(data); */
+							console.log(data.data);
+							if(data.data == false) {
+								$("#txtphone").html("手机号已被注册!");
+								$("#txtphone").show();
+							} else if(data.data == true) {
+								$("#txtphone").hide();
+								uniquePhone = true;
+							}
+						}
+					});
+				} else {
+					$("#txtphone").html("手机号格式错误");
+					$("#txtphone").show();
+					uniquePhone = false;
+				}
+			}
+		});
+		
+		//密码
+		//upsd txtpsd
+		$("#oldpassword").focus(function() {
+			$("#txtOldPassword").hide();
+		});
+		$("#oldpassword").bind("blur", function() {
+			var olpsd = $("#oldpassword").val().trim();
+			console.log(olpsd);
+			if(olpsd == "" || olpsd == null || olpsd == undefined) {
+				$("#txtOldPassword").html("密码不能为空！");
+				$("#txtOldPassword").show();
+			} else {
+				var myreg = /^([a-zA-Z0-9]|[._]){6,15}$/;
+				if(!myreg.test(olpsd)) {
+					$("#txtOldPassword").html("密码格式错误(英文+数字+'.'+'_')!");
+					$("#txtOldPassword").show();
+				} else {
+					if(userpassword == olpsd){
+						checkpsd1 = true;
+					}else{
+						$("#txtOldPassword").html("原密码不正确!");
+						$("#txtOldPassword").show();
+					}
+				}
+			}
+		});
+
+		//验证密码
+		//upsd1 txtpsd1
+		$("#password").focus(function() {
+			$("#txtPassword").hide();
+		});
+		$("#password").bind("blur", function() {
+			var upsd = $("#password").val();
+			if(upsd == "" || upsd == null || upsd == undefined) {
+				$("#txtPassword").html("密码不能为空！");
+				$("#txtPassword").show();
+			} else {	
+				var myreg = /^([a-zA-Z0-9]|[._]){6,15}$/;
+				if(!myreg.test(upsd)) {
+					$("#txtPassword").html("密码格式错误(英文+数字+'.'+'_')!");
+					$("#txtPassword").show();
+				}else{
+					checkpsd2 = true;					
+				}
+			}
+		});
+		
+
+		//验证驾照
+		
+		$(function() {
+			var upsd = $("#licence").val();
+			console.log("upsd"+upsd);
+			if(upsd == "" || upsd == null || upsd == undefined) {
+				$("#txtLicence").html("驾照不能为空！");
+				$("#txtLicence").css("color","red");
+				$("#txtLicence").show();
+			} else {		
+				uniqueLicence = true;
+			}
+		});
+		
+		$("#editUsertBtn").click(function check() {
+			var upsd = $("#licence").val();
+			console.log("upsd"+upsd);
+			if(upsd == "" || upsd == null || upsd == undefined) {
+				$("#txtLicence").html("驾照不能为空！");
+				$("#txtLicence").show();
+			} else {		
+				uniqueLicence = true;
+			}
+			console.log(checkpsd1);
+			console.log(checkpsd2);
+			console.log(uniquePhone);
+			console.log(uniqueLicence);
+			if(checkpsd1 && checkpsd2 && uniquePhone && uniqueLicence){
+				var param = new FormData($('#editUserForm')[0]);
+				console.log(param);
+				$.ajax({  
+					type: "PUT",  
+					url:  "restuserinfo",  
+					data: param,  
+					processData: false,    //文件上传时该属性一定要为false
+					contentType: false,    //文件上传时该属性一定要为false
+					success: function(data){
+						if(data.message == "修改成功"){
+							alert("修改成功！");
+							location.href = "userinfo.html";
+						}
+					}, 
+					error: function(req, status, ex) {toastr.error("操作异常！");},  
+					timeout:60000  
+				});
+			}
+			
+		});
+
+		$("#editUserInfo").click(function () {
+			$("#userid").val('[[${session.currentUser.userid}]]');
+			$("#icon").val('[[${session.currentUser.icon}]]');
+			$("#username").val('[[${session.currentUser.username}]]');
+			$("#idcard").val('[[${session.currentUser.idcard}]]');
+			$("#phone").val('[[${session.currentUser.phone}]]');
+			$("#licence").val('[[${session.currentUser.licence}]]');			
+			$("#purse").val('[[${session.currentUser.purse}]]');			
+			$("#integral").val('[[${session.currentUser.integral}]]');			
+			$("#credit").val('[[${session.currentUser.credit}]]');			
+		});
+	</script>
+
+</html>

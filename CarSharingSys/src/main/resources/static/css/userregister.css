@@ -1,0 +1,37 @@
+#outsideBox {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+#outsideBox>.container {
+	height: 500px;
+	width: 700px;
+}
+
+.modal-content>.modal-body {
+	text-align: left;
+	/*line-height: 14px;*/
+}
+
+#txtname {
+	color: red;
+	font-size: 12px;
+}
+
+#icon1 {
+	display: none;
+}
+
+#registerUser,
+#returnBtn {
+	text-shadow: black 5px 3px 3px;
+}
+
+#tipmessage{
+	color: red;
+}
+.form-group>div>span{
+	color: red;
+}

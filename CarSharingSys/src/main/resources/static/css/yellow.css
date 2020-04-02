@@ -1,0 +1,51 @@
+.btn-primary,
+.section-1-box-icon-background,
+.section-10-background,
+.footer-top .submit-bgcolor,
+.footer-bottom ul.social-buttons li a,
+.dropdown-menu > li > a:hover,
+.inner-title,
+.section-11-box-icon-background,
+.logo-text samp,
+.demo_changer .demo-icon{
+	background: #F7C221;
+	background-color: #F7C221!important;
+}
+.navbar-collapse>.navbar-right>li>a{
+	color:#F7C221;
+	font-size: 16px;
+}
+.logo-text span,
+.navbar-1 .navbar-nav > li > a:hover, 
+.navbar-1 .navbar-nav > li > a:active,
+.navbar-1 .navbar-nav>li.active > a,
+.navbar-1 .navbar-nav > .open > a, 
+.navbar-1 .navbar-nav > .open > a:focus, 
+.navbar-1 .navbar-nav > .open > a:hover,
+.section-4-box-icon-cont i,
+.name_desig .name,
+.testimonial_text::before,
+.portfolioFilter a.current,
+.portfolioFilter,
+.section-20-box-icon-cont i,
+.section19 .section19-404 h1,
+.section16 .address h4,
+.btn-seconday{
+	color: #F7C221!important;
+}
+.btn-primary,
+.section-2-box-left{
+    border-color: #F7C221;
+}
+.btn-primary:hover,
+.footer-top .submit-bgcolor:hover,
+.footer-bottom ul.social-buttons li a:hover{
+    background-color: #d8a91c;
+}
+.btn-primary:hover {
+    border-color: #d8a91c;
+}
+
+.over-bg {
+    background-color: rgba(255, 200, 0, 0.9);
+}

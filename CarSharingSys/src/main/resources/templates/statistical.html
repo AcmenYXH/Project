@@ -1,0 +1,653 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta content="" name="description" />
+		<meta content="webthemez" name="author" />
+		<title>统计信息</title>
+		<script type="text/javascript" th:src="@{/js/loader.js}"></script>
+		<link rel="stylesheet" type="text/css" th:href="@{css/statisticalMap.css}"/>
+		<title>统计报表</title>
+	</head>
+
+	<body>
+		<div id="wrapper">
+			<!--头部：页面标题栏-->
+			<div th:replace="part/navmenu::#header"></div>
+			<!--导航栏：页面菜单栏-->
+			<div th:replace="part/navmenu::#side"></div>
+			<!--表格-->
+			<div id="page-wrapper">
+				<div id="page-inner">
+					<div class="row">
+						<div class="col-md-6 col-sm-12 col-xs-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">今年盈利折线图</div>
+								<div class="panel-body">
+									<div id="amount-bar-echarts" style="width:470px;height:300px"></div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-12 col-xs-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">汽车盈利环形图</div>
+								<div class="panel-body">
+									<div id="amount-doughnut-echarts" style="width:470px;height:300px"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 col-sm-12 col-xs-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">各品牌汽车接待客户数柱状图</div>
+								<div class="panel-body">
+									<div id="quantity-bar-echarts" style="width:470px;height:300px"></div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-12 col-xs-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">各品牌汽车接待客户数环形图</div>
+								<div class="panel-body">
+									<div id="quantity-doughnut-echarts" style="width:470px;height:300px"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 col-sm-12 col-xs-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">汽车维修柱状图</div>
+								<div class="panel-body">
+									<div id="repairnum-bar-echarts" style="width:470px;height:300px"></div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-12 col-xs-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">汽车维修环形图</div>
+								<div class="panel-body">
+									<div id="repairnum-doughnut-echarts" style="width:470px;height:300px"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-2">
+							
+						</div>
+						<div class="col-md-8 col-sm-12 col-xs-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">汽车分布情况</div>
+								<div class="panel-body" style="width:100%;height:650px">
+									<div id="car-distribution-container"></div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--<jsp:include page="/part/manager.js.jsp"></jsp:include>-->
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=E0wKA0gRCRdmNTfsjA49shTqFAf1bW21"></script>
+		<script type="text/javascript" src="//api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+		<script type="text/javascript" src="//api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
+		<script type="text/javascript">
+			var types = new Array();
+			var nums = new Array();
+			var amounts = new Array();
+			
+			
+
+			//echarts图表初始化：获得图表对象
+			var abeCharts = echarts.init(document.getElementById("amount-bar-echarts"));
+			var adeCharts = echarts.init(document.getElementById("amount-doughnut-echarts"));
+			var qbeCharts = echarts.init(document.getElementById("quantity-bar-echarts"));
+			var qdeCharts = echarts.init(document.getElementById("quantity-doughnut-echarts"));
+			var tbeCharts = echarts.init(document.getElementById("repairnum-bar-echarts"));
+			var tdeCharts = echarts.init(document.getElementById("repairnum-doughnut-echarts"));
+			
+			/* 查询车辆的月销售额 */
+			$.ajax({
+				type: "get",
+				dataType: "json",
+				url: "selectMonthlyProfits",
+				async: false,
+				success: function(data) {
+					console.log(data.datas);
+					//图例数组
+					var legendData = [];
+					var legendSet = new Set();
+					//x坐标轴数组
+					var xAxisDate = ["-01","-02","-03","-04","-05","-06","-07","-08","-09","-10","-11","-12"];
+					//series
+					var seriesItem = [];
+					//data
+					var itemData = new Map();
+					
+					$.each(data.datas, function() {
+						legendSet.add(this.BRAND);
+					});
+					//转换成数组
+					legendData = Array.from(legendSet);
+					//填装列
+					legendData.forEach(function(legend){
+						var item = new Map();
+						item['name'] = legend;
+						item['type'] = 'line';
+						itemData[legend] = [0,0,0,0,0,0,0,0,0,0,0,0];
+						item['data'] = itemData[legend];
+						seriesItem.push(item);
+					});
+					
+					//完善x坐标轴数组
+					var nowDate = new Date();
+					var year = nowDate.getFullYear();
+					for(var i=0;i<xAxisDate.length;i++){
+						xAxisDate[i] = year+xAxisDate[i];
+					}
+					$.each(data.datas, function() {
+						//将查询结果中的数据，插入到itemData数组中
+						itemData[this.BRAND][parseInt(this.DATES.slice(5,7))-1] = this.SALE;
+					});
+					console.log(xAxisDate);
+					console.log(itemData);
+					console.log(seriesItem);
+					
+					//配置折线图表
+					option = {
+						    
+						    tooltip: {
+						        trigger: 'axis'
+						    },
+						    legend: {
+						        data: legendData
+						    },
+						    grid: {
+						        left: '3%',
+						        right: '4%',
+						        bottom: '3%',
+						        containLabel: true
+						    },
+						    toolbox: {
+						        show: true,
+						     	// 1、右侧垂直显示
+						        orient: 'vertical',
+						    	// 2、竖向居中
+						        top: 'center',
+						        // 3、鼠标悬浮时，提示文字位于图标左边
+						        emphasis: {
+						          iconStyle: {
+						            textPosition:'left',
+						            textAlign:'right'
+						          }
+						        },
+						        feature: {
+						            magicType: {type: ['line', 'bar']},
+						            saveAsImage: {show: true, title: '保存图片'}
+						        }
+						    },
+						    xAxis: {
+						        type: 'category',
+						        boundaryGap: false,
+						        data: xAxisDate
+						    },
+						    yAxis: {
+						        type: 'value'
+						    },
+						    series: seriesItem
+						};
+					abeCharts.setOption(option);
+				}
+			});
+			
+			/* 按汽车品牌的查询汽车的盈利金额 */
+			$.ajax({
+				type: "get",
+				dataType: "json",
+				url: "selectCarWithAmount",
+				async: false,
+				success: function(data) {
+					console.log(data.datas);
+					var types = [];
+					var nums = [];
+					var seriesData = [];
+					$.each(data.datas, function() {
+						types.push(this.BRAND);
+						nums.push(this.GROSSAMOUNT);
+						var m = new Map();
+						m["name"] = this.BRAND;
+						m["value"] = this.GROSSAMOUNT;
+						seriesData.push(m);
+					});
+					console.log(seriesData);
+					//配置柱状图表
+					var abeOption = {
+							title: {
+						        text: '按品牌分类',
+						        left: 'center'
+						    },
+						 color: ['#3398DB'],
+						    tooltip : {
+						        trigger: 'axis',
+						        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+						            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+						        },
+						        /* formatter: function (params) {
+				            		return params[0].name+"<br>"+params[0].seriesName+"："+params[0].data+ "&nbsp(元)";
+				            	} */
+						        formatter: "{b} <br/>{a} : {c}(元)"
+						    },
+						    toolbox: {
+						        show: true,
+						     	// 1、右侧垂直显示
+						        orient: 'vertical',
+						    	// 2、竖向居中
+						        top: 'center',
+						        // 3、鼠标悬浮时，提示文字位于图标左边
+						        emphasis: {
+						          iconStyle: {
+						            textPosition:'left',
+						            textAlign:'right'
+						          }
+						        },
+						        feature: {
+						            magicType: {type: ['line', 'bar']},
+						            saveAsImage: {show: true, title: '保存图片'}
+						        }
+						    },
+						    grid: {
+						        left: '3%',
+						        right: '4%',
+						        bottom: '3%',
+						        containLabel: true
+						    },
+						    xAxis : [
+						        {
+						            type : 'category',
+						            data : types,
+						            axisTick: {
+						                alignWithLabel: true
+						            }
+						        }
+						    ],
+						    yAxis : [
+						        {
+						            type : 'value'
+						        }
+						    ],
+						    series : [
+						        {
+						            name:'总盈利金额',
+						            type:'bar',
+						            barWidth: '60%',
+						            data: nums
+						        }
+						    ]
+					};
+					//配置圆饼图表
+					var adeOption = {
+						title: {
+							text: '品牌分类',
+							x: 'center'
+						},
+						tooltip: {
+							trigger: 'item',
+							formatter: "{b} <br/>{a} : {c}元({d}%)"
+						},
+						 toolbox: {
+						        show: true,
+						     	// 1、右侧垂直显示
+						        orient: 'vertical',
+						    	// 2、竖向居中
+						        top: 'center',
+						        // 3、鼠标悬浮时，提示文字位于图标左边
+						        emphasis: {
+						          iconStyle: {
+						            textPosition:'left',
+						            textAlign:'right'
+						          }
+						        },
+						        feature: {
+						            saveAsImage: {show: true, title: '保存图片'}
+						        }
+						    },
+						legend: {
+							orient: 'vertical',
+							left: 'left',
+							data: types
+						},
+						series: [{
+							name: '总盈利金额',
+							type: 'pie',
+							radius: '55%',
+							center: ['50%', '60%'],
+							data: seriesData,
+							itemStyle: {
+								emphasis: {
+									shadowBlur: 10,
+									shadowOffsetX: 0,
+									shadowColor: 'rgba(0, 0, 0, 0.5)'
+								}
+							}
+						}]
+					};
+					//将图表配置，设置到图表对象中！
+					//abeCharts.setOption(abeOption);
+					adeCharts.setOption(adeOption);
+				}
+			});
+
+			/* 按共享汽车品牌查询汽车接待的客户数量 */
+			$.ajax({
+				type: "get",
+				dataType: "json",
+				url: "selectCarWithUserNum",
+				async: false,
+				success: function(data) {
+					console.log(data.datas);
+					var types = [];
+					var nums = [];
+					var seriesData = [];
+					$.each(data.datas, function() {
+						types.push(this.BRAND);
+						nums.push(this.USERNUM);
+						var m = new Map();
+						m["name"] = this.BRAND;
+						m["value"] = this.USERNUM;
+						seriesData.push(m);
+					});
+					console.log(seriesData);
+					//配置柱状图表
+					var qbeOption = {
+							title: {
+						        text: '按品牌分类',
+						        left: 'center'
+						    },
+						 color: ['#3398DB'],
+						    tooltip : {
+						        trigger: 'axis',
+						        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+						            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+						        }
+						    },
+						    toolbox: {
+						        show: true,
+						     	// 1、右侧垂直显示
+						        orient: 'vertical',
+						    	// 2、竖向居中
+						        top: 'center',
+						        // 3、鼠标悬浮时，提示文字位于图标左边
+						        emphasis: {
+						          iconStyle: {
+						            textPosition:'left',
+						            textAlign:'right'
+						          }
+						        },
+						        feature: {
+						            saveAsImage: {show: true, title: '保存图片'}
+						        }
+						    },
+						    grid: {
+						        left: '3%',
+						        right: '4%',
+						        bottom: '3%',
+						        containLabel: true
+						    },
+						    xAxis : [
+						        {
+						            type : 'category',
+						            data : types,
+						            axisTick: {
+						                alignWithLabel: true
+						            }
+						        }
+						    ],
+						    yAxis : [
+						        {
+						            type : 'value'
+						        }
+						    ],
+						    series : [
+						        {
+						            name:'接待客户数',
+						            type:'bar',
+						            barWidth: '60%',
+						            data: nums
+						        }
+						    ]
+					};
+					//配置圆饼图表
+					var qdeOption = {
+						title: {
+							text: '品牌分类',
+							x: 'center'
+						},
+						tooltip: {
+							trigger: 'item',
+							formatter: "{b} <br/>{a} : {c}个({d}%)"
+						},
+						toolbox: {
+					        show: true,
+					     	// 1、右侧垂直显示
+					        orient: 'vertical',
+					    	// 2、竖向居中
+					        top: 'center',
+					        // 3、鼠标悬浮时，提示文字位于图标左边
+					        emphasis: {
+					          iconStyle: {
+					            textPosition:'left',
+					            textAlign:'right'
+					          }
+					        },
+					        feature: {
+					            saveAsImage: {show: true, title: '保存图片'}
+					        }
+					    },
+						legend: {
+							orient: 'vertical',
+							left: 'left',
+							data: types
+						},
+						series: [{
+							name: '接待客户数',
+							type: 'pie',
+							radius: '55%',
+							center: ['50%', '60%'],
+							data: seriesData,
+							itemStyle: {
+								emphasis: {
+									shadowBlur: 10,
+									shadowOffsetX: 0,
+									shadowColor: 'rgba(0, 0, 0, 0.5)'
+								}
+							}
+						}]
+					};
+					//将图表配置，设置到图表对象中！
+					qbeCharts.setOption(qbeOption);
+					qdeCharts.setOption(qdeOption);
+				}
+			});
+			
+			/* 按汽车编号的查询汽车的维修次数 */
+			$.ajax({
+				type: "get",
+				dataType: "json",
+				url: "selectCarWithRN",
+				async: false,
+				success: function(data) {
+					console.log(data.datas);
+					var types = [];
+					var nums = [];
+					var seriesData = [];
+					$.each(data.datas, function() {
+						types.push(this.CARID);
+						nums.push(this.REPAIRNUM);
+						var m = new Map();
+						m["name"] = this.CARID;
+						m["value"] = this.REPAIRNUM;
+						seriesData.push(m);
+					});
+					console.log(seriesData);
+					//配置柱状图表
+					var tbeOption = {
+							title: {
+						        text: '维修次数前20位',
+						        left: 'center'
+						    },
+						 color: ['#3398DB'],
+						    tooltip : {
+						        trigger: 'axis',
+						        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+						            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+						        },
+						        formatter: "汽车编号 : {b}<br/>维修次数 : {c} (次)"
+						    },
+						    toolbox: {
+						        show: true,
+						     	// 1、右侧垂直显示
+						        orient: 'vertical',
+						    	// 2、竖向居中
+						        top: 'center',
+						        // 3、鼠标悬浮时，提示文字位于图标左边
+						        emphasis: {
+						          iconStyle: {
+						            textPosition:'left',
+						            textAlign:'right'
+						          }
+						        },
+						        feature: {
+						            saveAsImage: {show: true, title: '保存图片'}
+						        }
+						    },
+						    grid: {
+						        left: '3%',
+						        right: '4%',
+						        bottom: '3%',
+						        containLabel: true
+						    },
+						    xAxis : [
+						        {
+						            type : 'category',
+						            data : types,
+						            axisTick: {
+						                alignWithLabel: true
+						            }
+						        }
+						    ],
+						    yAxis : [
+						        {
+						            type : 'value'
+						        }
+						    ],
+						    series : [
+						        {
+						            name:'维修次数',
+						            type:'bar',
+						            barWidth: '60%',
+						            data: nums
+						        }
+						    ]
+					};
+					//配置圆饼图表
+					var tdeOption = {
+						title: {
+							text: '维修次数前20位',
+							x: 'center'
+						},
+						tooltip: {
+							trigger: 'item',
+							formatter: "{a} : {b}<br/>维修次数 : {c} 次({d}%)"
+						},
+						toolbox: {
+					        show: true,
+					     	// 1、右侧垂直显示
+					        orient: 'vertical',
+					    	// 2、竖向居中
+					        top: 'center',
+					        // 3、鼠标悬浮时，提示文字位于图标左边
+					        emphasis: {
+					          iconStyle: {
+					            textPosition:'left',
+					            textAlign:'right'
+					          }
+					        },
+					        feature: {
+					            saveAsImage: {show: true, title: '保存图片'}
+					        }
+					    },
+						legend: {
+							orient: 'vertical',
+							left: 'left',
+							data: types
+						},
+						series: [{
+							name: '汽车编号',
+							type: 'pie',
+							radius: '55%',
+							center: ['50%', '60%'],
+							data: seriesData,
+							itemStyle: {
+								emphasis: {
+									shadowBlur: 10,
+									shadowOffsetX: 0,
+									shadowColor: 'rgba(0, 0, 0, 0.5)'
+								}
+							}
+						}]
+					};
+					//将图表配置，设置到图表对象中！
+					tbeCharts.setOption(tbeOption);
+					tdeCharts.setOption(tdeOption);
+				}
+			});
+
+			$.ajax({
+				type: "get", //提交的方法
+				url: "allCarinfo", //提交的地址  
+				data: {},
+				async: false,
+				success: function(data){
+					console.log("aadfa");
+					console.log(data);
+					//车辆标记数组
+					var markers = [];
+					//初始化地图
+					var map = new BMap.Map("car-distribution-container");
+					var centerPoint = new BMap.Point(107.656273,36.349936);
+					//初始化地图，设置默认定位地点
+					map.centerAndZoom(centerPoint, 5);
+					//启用滚轮放大缩小，默认禁用
+					map.enableScrollWheelZoom(true);
+					//设置当地图容器发生改变时地图自动适应
+					map.enableAutoResize();
+					
+					map.addEventListener("click",function(e){
+						//alert(e.point.lng + "," + e.point.lat);
+						console.log(map.getZoom());
+					/* 	var bs = map.getBounds();   //获取可视区域
+						var bssw = bs.getSouthWest();   //可视区域左下角
+						var bsne = bs.getNorthEast();   //可视区域右上角
+						console.log(bs.getCenter()); */
+					}); 
+					$.each(data.datas, function() {
+						var mk = new BMap.Marker(new BMap.Point(this.longitude, this.latitude));
+						//map.addOverlay(mk);
+						markers.push(mk);
+						//最简单的用法，生成一个marker数组，然后调用markerClusterer类即可。
+						markerClusterer = new BMapLib.MarkerClusterer(map, {markers:markers,maxZoom:12,isAverangeCenter:true});
+					});
+					
+				}
+			});
+		</script>
+	</body>
+
+</html>

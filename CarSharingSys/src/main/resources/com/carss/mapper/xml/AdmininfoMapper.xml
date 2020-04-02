@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.carss.mapper.AdmininfoMapper" >
+  <resultMap id="BaseResultMap" type="com.carss.entity.Admininfo" >
+    <id column="ADMINID" property="adminid" jdbcType="DECIMAL" />
+    <result column="ADMINNAME" property="adminname" jdbcType="VARCHAR" />
+    <result column="ADMINPSD" property="adminpsd" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ADMINID, ADMINNAME, ADMINPSD
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.carss.entity.AdmininfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from CARSHARINGDB.ADMININFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from CARSHARINGDB.ADMININFO
+    where ADMINID = #{adminid,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="Integer" >
+    delete from CARSHARINGDB.ADMININFO
+    where ADMINID = #{adminid,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.carss.entity.AdmininfoExample" >
+    delete from CARSHARINGDB.ADMININFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.carss.entity.Admininfo" >
+    insert into CARSHARINGDB.ADMININFO (ADMINID, ADMINNAME, ADMINPSD
+      )
+    values (#{adminid,jdbcType=DECIMAL}, #{adminname,jdbcType=VARCHAR}, #{adminpsd,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.carss.entity.Admininfo" >
+    insert into CARSHARINGDB.ADMININFO
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="adminid != null" >
+        ADMINID,
+      </if>
+      <if test="adminname != null" >
+        ADMINNAME,
+      </if>
+      <if test="adminpsd != null" >
+        ADMINPSD,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="adminid != null" >
+        #{adminid,jdbcType=DECIMAL},
+      </if>
+      <if test="adminname != null" >
+        #{adminname,jdbcType=VARCHAR},
+      </if>
+      <if test="adminpsd != null" >
+        #{adminpsd,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.carss.entity.AdmininfoExample" resultType="java.lang.Integer" >
+    select count(*) from CARSHARINGDB.ADMININFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update CARSHARINGDB.ADMININFO
+    <set >
+      <if test="record.adminid != null" >
+        ADMINID = #{record.adminid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.adminname != null" >
+        ADMINNAME = #{record.adminname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.adminpsd != null" >
+        ADMINPSD = #{record.adminpsd,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update CARSHARINGDB.ADMININFO
+    set ADMINID = #{record.adminid,jdbcType=DECIMAL},
+      ADMINNAME = #{record.adminname,jdbcType=VARCHAR},
+      ADMINPSD = #{record.adminpsd,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.carss.entity.Admininfo" >
+    update CARSHARINGDB.ADMININFO
+    <set >
+      <if test="adminname != null" >
+        ADMINNAME = #{adminname,jdbcType=VARCHAR},
+      </if>
+      <if test="adminpsd != null" >
+        ADMINPSD = #{adminpsd,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ADMINID = #{adminid,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.carss.entity.Admininfo" >
+    update CARSHARINGDB.ADMININFO
+    set ADMINNAME = #{adminname,jdbcType=VARCHAR},
+      ADMINPSD = #{adminpsd,jdbcType=VARCHAR}
+    where ADMINID = #{adminid,jdbcType=DECIMAL}
+  </update>
+</mapper>
