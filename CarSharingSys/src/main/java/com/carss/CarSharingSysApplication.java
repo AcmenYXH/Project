@@ -2,6 +2,7 @@ package com.carss;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 
 import com.github.pagehelper.PageInterceptor;
@@ -12,6 +13,7 @@ import org.mybatis.spring.annotation.MapperScan;
 
 @SpringBootApplication
 @MapperScan("com.carss.mapper")
+@EnableCaching
 public class CarSharingSysApplication {
 
 	public static void main(String[] args) {
