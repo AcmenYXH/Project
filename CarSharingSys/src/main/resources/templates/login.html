@@ -29,18 +29,27 @@
 					<div class="modal-body">
 						<form class="form-horizontal" role="form" action="tologin" method="post">
 							<div class="form-group">
-								<label for="account" class="col-sm-4 control-label"><span class="fa fa-user fa-lg"></span>&nbsp;账号：</label>
+								<label class="col-sm-4 control-label"><span class="fa fa-user fa-lg"></span>&nbsp;账号：</label>
 								<div class="col-sm-6">
-									<input type="text" class="form-control" name="account" placeholder="请输入账号…" required autofocus>
+									<input type="text" class="form-control" id="account" name="account" placeholder="请输入账号…" required autofocus>
 								</div>
 								<div class="col-sm-2"></div>
 							</div>
 							<div class="form-group">
-								<label for="account" class="col-sm-4 control-label"><i class="fa fa-send"></i>&nbsp;密码：</label>
+								<label class="col-sm-4 control-label"><i class="fa fa-send"></i> 密码：</label>
 								<div class="col-sm-6">
-									<input type="password" class="form-control" name="password" placeholder="请输入密码…" required autofocus>
+									<input type="password" class="form-control" id="password" name="password" placeholder="请输入密码…" required autofocus>
 								</div>
 								<div class="col-sm-2"></div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-4 control-label">验证码：</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" id="verifycode" name="verifycode" placeholder="请输入验证码" required autofocus>
+								</div>
+								<div class="col-sm-4">
+									<img id="verifyimg"/>
+								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-sm-3"></div>
@@ -55,9 +64,9 @@
 							<div class="form-group">
 								<div class="col-sm-2"></div>
 								<div class="col-sm-4">
-									<button type="submit" class="btn btn-primary">
+									<a class="btn btn-primary" id="login">
 										<span class="fa fa-user fa-lg"></span>&nbsp;登录
-									</button>
+									</a>
 								</div>
 								<div class="col-sm-4">
 									<a th:href="@{homepage.html}" class="btn btn-default" id="returnBtn">
@@ -66,13 +75,13 @@
 								</div>
 								<div class="col-sm-2"></div>
 							</div>
-							<div class="form-group">
-								<div class="col-sm-2"></div>
-								<div class="col-sm-8">
-									<p id="tipmessage" th:text="${msg}"></p>
-								</div>
-								<div class="col-sm-2"></div>
-							</div>
+<!--							<div class="form-group">-->
+<!--								<div class="col-sm-2"></div>-->
+<!--								<div class="col-sm-8">-->
+<!--									<p id="tipmessage" th:text="${msg}"></p>-->
+<!--								</div>-->
+<!--								<div class="col-sm-2"></div>-->
+<!--							</div>-->
 					   </form>
 					</div>
 				</div>
@@ -81,10 +90,52 @@
 
 		<script type="text/javascript" th:inline="javascript">
 		 	//$.backstretch("/images/login-bg.jpg", {speed: 500}); 
-		  	var msg = [[${msg}]];
-		  	if(msg!=""&&msg!=undefined){
-		  		toastr.warning(msg);
-		  	}	
+		  	// var msg = [[${msg}]];
+		  	// if(msg!=""&&msg!=undefined){
+		  	// 	toastr.warning(msg);
+		  	// }
+
+			getvCode();
+			function getvCode() {
+				document.getElementById("verifyimg").src = timestamp("http://localhost:8080/verifyCode");
+			}
+			$("#verifyimg").click(getvCode);
+
+			//为url添加时间戳
+			function timestamp(url) {
+				var getTimestamp = new Date().getTime();
+				if (url.indexOf("?") > -1) {
+					url = url + "&timestamp=" + getTimestamp
+				} else {
+					url = url + "?timestamp=" + getTimestamp
+				}
+				return url;
+			};
+
+			//信息检验
+			$("#login").click(function () {
+				var account = $("#account").val().trim();
+				var password = $("#password").val().trim();
+				var verifyCode = $("#verifycode").val().trim();
+				console.log(verifyCode)
+				$.ajax({
+					type: "POST",
+					url:  "tologin",
+					data: {
+						account:account,
+						password:password,
+						verifyCode:verifyCode
+					},
+					success: function(data){
+						if(data.state != -1){
+							location.href = data.message;
+						}else{
+							toastr.error(data.message);
+						}
+					},
+					error: function(req, status, ex) {toastr.error("操作异常！");},
+				});
+			});
 		</script>
 	</body>
 </html>

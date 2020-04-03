@@ -1,9 +1,6 @@
 package com.carss.controller;
 
-import com.carss.entity.Admininfo;
-import com.carss.entity.UserinfoExample;
-import com.carss.entity.UserinfoWithBLOBs;
-import com.carss.entity.VerifyCode;
+import com.carss.entity.*;
 import com.carss.service.AdminService;
 import com.carss.service.UserinfoService;
 
@@ -18,8 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,8 +55,9 @@ public class AdminController {
      * @param request
      * @return
      */
-    @RequestMapping("tologin")
-    public String login(String account, String password,String verifyCode, HttpServletRequest request) {
+    @PostMapping("tologin")
+    @ResponseBody
+    public JsonResult login(String account, String password,String verifyCode, HttpServletRequest request) {
         //验证码
         String captchaCode = "";
         logger.info("account:{},password:{},verifycode:{}",account,password,verifyCode);
@@ -76,24 +73,24 @@ public class AdminController {
                 if (captchaCode.equals(verifyCode.toLowerCase())){
                     return checkLogin(account,password,request);
                 }else{
-                    return "验证码错误:"+verifyCode+"--"+captchaCode;
+                    return new JsonResult(JsonResult.ERROR,"验证码错误");
                 }
             }else{
-                return "验证码已过期";
+                return new JsonResult(JsonResult.ERROR,"验证码已过期");
             }
         }else{
-            return "请重新获取验证码";
+            return new JsonResult(JsonResult.ERROR,"请重新获取验证码");
         }
 
 
     }
 
-    public String checkLogin(String account, String password, HttpServletRequest request){
+    public JsonResult checkLogin(String account, String password, HttpServletRequest request){
         Admininfo admin = adminService.findByAnameAndApass(account, password);
         logger.info("====admin===="+JSONObject.fromObject(admin).toString());
         if(admin!=null) {
             request.getSession().setAttribute("currentUserName", admin.getAdminname());
-            return "showCarinfo";
+            return new JsonResult("showCarinfo");
         }else{
             logger.info("====finduser====");
             UserinfoExample ue = new UserinfoExample();
@@ -107,7 +104,7 @@ public class AdminController {
                 request.getSession().setAttribute("iconString",iconString);
                 String licenceString =  Arrays.toString(users.get(0).getLicence());
                 request.getSession().setAttribute("licenceString",licenceString);
-                return "homepage";
+                return new JsonResult("homepage");
             } else {
                 ue.clear();
                 ue.createCriteria().andPhoneEqualTo(account).andPasswordEqualTo(password);
@@ -120,10 +117,10 @@ public class AdminController {
                     request.getSession().setAttribute("iconString",iconString);
                     String licenceString =  Arrays.toString(userList.get(0).getLicence());
                     request.getSession().setAttribute("licenceString",licenceString);
-                    return "homepage";
+                    return new JsonResult("homepage");
                 } else {
-                    request.setAttribute("msg", "您输入的用户名密码有误，请重新登录");
-                    return "login";
+//                    request.setAttribute("msg", "您输入的用户名密码有误，请重新登录");
+                    return new JsonResult(JsonResult.ERROR,"您输入的用户名密码有误，请重新登录");
                 }
             }
         }

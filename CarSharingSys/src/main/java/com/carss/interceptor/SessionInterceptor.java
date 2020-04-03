@@ -34,7 +34,8 @@ public class SessionInterceptor implements HandlerInterceptor {
 		if(session.getAttribute("currentUserName")!=null||path.indexOf("login")!=-1||path.indexOf("homepage")!=-1
 				||path.indexOf("userregister")!=-1||path.indexOf("weather")!=-1||path.indexOf("send")!=-1
 				||path.indexOf("checkaccount")!=-1||path.indexOf("checkphone")!=-1||path.indexOf("restuserinfo")!=-1
-				||path.indexOf("aboutus")!=-1||path.indexOf("forget_password")!=-1||path.indexOf("forgetPassword")!=-1) {
+				||path.indexOf("aboutus")!=-1||path.indexOf("forget_password")!=-1||path.indexOf("forgetPassword")!=-1
+				||path.indexOf("verifyCode")!=-1) {
 			return true;
 		}else {
 			request.setAttribute("msg", "请重新登录！");
