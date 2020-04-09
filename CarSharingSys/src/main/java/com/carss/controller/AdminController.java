@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,19 +67,22 @@ public class AdminController {
         logger.info("======captchaKey:{}", captchaKey);
 
 
-        if(!captchaKey.isEmpty()){
+        if(!StringUtils.isEmpty(captchaKey)){
             if (redisTemplate.hasKey(captchaKey)){
                 captchaCode = redisTemplate.opsForValue().get(captchaKey).toString();
                 captchaCode = captchaCode.toLowerCase();
                 if (captchaCode.equals(verifyCode.toLowerCase())){
                     return checkLogin(account,password,request);
                 }else{
+                    logger.info("======验证结果:验证码校验错误");
                     return new JsonResult(JsonResult.ERROR,"验证码错误");
                 }
             }else{
+                logger.info("======验证结果:验证码校验错误");
                 return new JsonResult(JsonResult.ERROR,"验证码已过期");
             }
         }else{
+            logger.info("======验证结果:请重新获取验证码");
             return new JsonResult(JsonResult.ERROR,"请重新获取验证码");
         }
 

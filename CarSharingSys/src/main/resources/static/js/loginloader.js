@@ -78,4 +78,4 @@ document.write('<script src="'+getRootPath()+'/js/restful.js"></script>');
 document.write('<script src="'+getRootPath()+'/js/echarts.common.min.js"></script>');
 
 //3、初始化提示框
-document.write("<script>toastr.options.positionClass = 'toast-top-center';</script>")
+document.write("<script>toastr.options.positionClass = 'toast-top-center'</script>");

@@ -27,7 +27,7 @@
 						<h4 class="modal-title" id="myModalLabel">登录</h4>
 					</div>
 					<div class="modal-body">
-						<form class="form-horizontal" role="form" action="tologin" method="post">
+						<form class="form-horizontal" role="form" id="loginForm">
 							<div class="form-group">
 								<label class="col-sm-4 control-label"><span class="fa fa-user fa-lg"></span>&nbsp;账号：</label>
 								<div class="col-sm-6">
@@ -64,9 +64,9 @@
 							<div class="form-group">
 								<div class="col-sm-2"></div>
 								<div class="col-sm-4">
-									<a class="btn btn-primary" id="login">
+									<button type="submit" class="btn btn-primary" id="login">
 										<span class="fa fa-user fa-lg"></span>&nbsp;登录
-									</a>
+									</button>
 								</div>
 								<div class="col-sm-4">
 									<a th:href="@{homepage.html}" class="btn btn-default" id="returnBtn">
@@ -113,7 +113,7 @@
 			};
 
 			//信息检验
-			$("#login").click(function () {
+			$("#loginForm").submit(function () {
 				var account = $("#account").val().trim();
 				var password = $("#password").val().trim();
 				var verifyCode = $("#verifycode").val().trim();
@@ -126,8 +126,14 @@
 						password:password,
 						verifyCode:verifyCode
 					},
+					// beforeSend:function(){
+					// 	$("#loginForm").validate({
+					// 		debug:true
+					// 	}); // 验证表单提交
+					//
+					// },
 					success: function(data){
-						if(data.state != -1){
+						if(data.state != 1){
 							location.href = data.message;
 						}else{
 							toastr.error(data.message);
@@ -135,6 +141,7 @@
 					},
 					error: function(req, status, ex) {toastr.error("操作异常！");},
 				});
+				return false;
 			});
 		</script>
 	</body>
