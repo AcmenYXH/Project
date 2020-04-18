@@ -1,5 +1,6 @@
 package com.carss;
 
+import com.carss.utils.OrderUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +24,15 @@ public class CarSharingSysApplicationTests {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * 测试；订单工具类
+	 * 获取商家订单号
+	 */
+	@Test
+	public void getTradeIdTest() {
+		System.out.println(OrderUtils.getTradeId());
 	}
 
 }
