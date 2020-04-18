@@ -34,7 +34,6 @@ public class ReturnCarController {
 	/**
 	 * 获取用户的租赁信息
 	 * @param userid
-	 * @param request
 	 * @return
 	 */
 	@GetMapping("getuserrentinfo")

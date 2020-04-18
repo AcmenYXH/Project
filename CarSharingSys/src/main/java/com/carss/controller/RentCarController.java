@@ -111,6 +111,7 @@ public class RentCarController {
 	 */
 	@PostMapping("addUserRentinfo")
 	public JsonResult showCarInMap(Rentinfo rentinfo,HttpServletRequest request) {
+		logger.info("=======rentinfo-===="+JSONObject.fromObject(rentinfo).toString());
 		rentinfo.setTradeNo(OrderUtils.getTradeId());
 		rentinfoService.addRentinfo(rentinfo);
 		Carinfo rentCar = carinfoService.findByCarid(rentinfo.getCarid());

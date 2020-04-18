@@ -8,7 +8,7 @@
     inner join carinfo on carinfo.carid = rentinfo.carid
   </select>
   <select id="selectDetailByRentinfo" resultType="hashmap">
-    select rentid,rentinfo.userid,rentinfo.carid,to_char(rentaltime,'yyyy-mm-dd hh24:mi:ss') as rentaltime,to_char(returntime,'yyyy-mm-dd hh24:mi:ss') as returntime,amount,startlng,startlat,endlng,endlat,isplay,useraccount,brand,unitprice
+    select rentid,trade_no,rentinfo.userid,rentinfo.carid,to_char(rentaltime,'yyyy-mm-dd hh24:mi:ss') as rentaltime,to_char(returntime,'yyyy-mm-dd hh24:mi:ss') as returntime,amount,startlng,startlat,endlng,endlat,isplay,useraccount,brand,unitprice
     from rentinfo
     inner join userinfo on userinfo.userid = rentinfo.userid
     inner join carinfo on carinfo.carid = rentinfo.carid
@@ -28,7 +28,7 @@
     </where>
   </select>
   <select id="selectDetailByRentid" resultType="hashmap">
-    select rentid,rentinfo.userid,rentinfo.carid,to_char(rentaltime,'yyyy-mm-dd hh24:mi:ss') as rentaltime,to_char(returntime,'yyyy-mm-dd hh24:mi:ss') as returntime,amount,startlng,startlat,endlng,endlat,isplay,useraccount,brand,unitprice
+    select rentid,trade_no,rentinfo.userid,rentinfo.carid,to_char(rentaltime,'yyyy-mm-dd hh24:mi:ss') as rentaltime,to_char(returntime,'yyyy-mm-dd hh24:mi:ss') as returntime,amount,startlng,startlat,endlng,endlat,isplay,useraccount,brand,unitprice
     from rentinfo
     inner join userinfo on userinfo.userid = rentinfo.userid
     inner join carinfo on carinfo.carid = rentinfo.carid

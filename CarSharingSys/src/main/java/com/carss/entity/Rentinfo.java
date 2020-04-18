@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.PositiveOrZero;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Rentinfo {
@@ -63,16 +64,18 @@ public class Rentinfo {
         this.carid = carid;
     }
 
-    public Date getRentaltime() {
-        return rentaltime;
+    public String getRentaltime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return rentaltime == null ? null : sdf.format(rentaltime);
     }
 
     public void setRentaltime(Date rentaltime) {
         this.rentaltime = rentaltime;
     }
 
-    public Date getReturntime() {
-        return returntime;
+    public String getReturntime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return returntime == null ? null : sdf.format(returntime);
     }
 
     public void setReturntime(Date returntime) {
