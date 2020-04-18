@@ -16,7 +16,7 @@
 		
 		<!-- jdbc连接 -->
 		<jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver"
-			connectionURL="jdbc:oracle:thin:@192.168.13.67:1521:orcl"
+			connectionURL="jdbc:oracle:thin:@172.100.1.25:1521:orcl"
 			userId="carsharingdb"
 			password="oracle" />
 		
