@@ -9,6 +9,7 @@ import com.carss.exception.WebException;
 import com.carss.exception.enums.ErrorEnum;
 import com.carss.service.CarinfoService;
 import com.carss.service.RentinfoService;
+import com.carss.utils.OrderUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -110,7 +111,7 @@ public class RentCarController {
 	 */
 	@PostMapping("addUserRentinfo")
 	public JsonResult showCarInMap(Rentinfo rentinfo,HttpServletRequest request) {
-		System.out.println(rentinfo.getRentaltime());
+		rentinfo.setTradeNo(OrderUtils.getTradeId());
 		rentinfoService.addRentinfo(rentinfo);
 		Carinfo rentCar = carinfoService.findByCarid(rentinfo.getCarid());
 		request.getSession().setAttribute("rentCar", rentCar);
