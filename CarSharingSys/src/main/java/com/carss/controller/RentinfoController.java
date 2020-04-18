@@ -44,7 +44,7 @@ public class RentinfoController {
 
 	/**
 	 * 批量删除租赁信息
-	 * @param rentinfos
+	 * @param rentinfoUppers
 	 * @return
 	 */
 	@DeleteMapping("restrentinfo")
@@ -85,10 +85,8 @@ public class RentinfoController {
 	 * @param pageNum
 	 * @param sort
 	 * @param order
-	 * @param userid
+	 * @param rentid
 	 * @param carid
-	 * @param minAmount
-	 * @param maxAmount
 	 * @return
 	 */
 	@GetMapping("restrentinfo")
