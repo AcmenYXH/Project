@@ -68,9 +68,9 @@
 									</tr>
 									<tr>
 										<th style="width:20%">
-											<label class="col-sm-2 control-label" style="width:400px;"><span class="fa fa-user"> </span>&nbsp;租赁编号&nbsp;:</label>
+											<label class="col-sm-2 control-label" style="width:400px;"><span class="fa fa-user"> </span>&nbsp;订单编号&nbsp;:</label>
 										</th>
-										<td><span id="rentid" ></span></td>
+										<td><span id="tradeno" ></span></td>
 
 									</tr>
 									<tr>
@@ -180,8 +180,8 @@
 		var time;
 		//还车时间
 		var returntime = new Date();
-		//租赁编号
-		var rentid;
+		//订单编号
+		var tradeno;
 		//汽车编号
 		var carid;
 		var result = false;
@@ -208,7 +208,7 @@
 						time = Math.ceil((returntime - rentaltime) / (1000 * 60*60));
 						console.log(time);
 						amount = (data.data.UNITPRICE * time);
-						rentid = data.data.RENTID;
+						tradeno = data.data.TRADENO;
 						carid = data.data.CARID;
 						$("#amount").html(amount + "￥");
 						$("#rentid").html(data.data.RENTID);
@@ -288,7 +288,6 @@
 					console.log(data);
 					if(data.message == "成功完善"){
 						alert("还车成功！前往支付");
-						
 					}
 				}
 			});
@@ -305,7 +304,7 @@
 			sNow += String(vNow.getMinutes());
 			sNow += String(vNow.getSeconds());
 			sNow += String(vNow.getMilliseconds());
-			$("#WIDout_trade_no").val(sNow);
+			$("#WIDout_trade_no").val(tradeno);
 			$("#WIDsubject").val("汽车租赁");
 			$("#WIDtotal_amount").val(amount);
 			$("#WIDbody").val("汽车编号:" + carid + "\t使用时长:" + time+"小时");

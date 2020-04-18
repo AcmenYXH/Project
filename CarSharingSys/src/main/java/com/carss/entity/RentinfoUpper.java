@@ -32,6 +32,8 @@ public class RentinfoUpper {
 
     private String ISPLAY;
 
+    private String TRADENO;
+
 	public Integer getRENTID() {
 		return RENTID;
 	}
@@ -129,5 +131,12 @@ public class RentinfoUpper {
 	public void setISPLAY(String iSPLAY) {
 		ISPLAY = iSPLAY;
 	}
-    
+
+	public String getTRADENO() {
+		return TRADENO;
+	}
+
+	public void setTRADENO(String TRADENO) {
+		this.TRADENO = TRADENO;
+	}
 }
