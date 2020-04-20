@@ -25,6 +25,9 @@
     	<if test="isplay != null">
     		and rentinfo.isplay = #{isplay}
     	</if>
+        <if test="tradeNo != null">
+            and rentinfo.trade_no = #{tradeNo}
+        </if>
     </where>
   </select>
   <select id="selectDetailByRentid" resultType="hashmap">

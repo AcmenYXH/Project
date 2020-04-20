@@ -70,10 +70,11 @@
 						<div class="table-responsive">
 							<form id="formSearch" class="form-horizontal">
 								<div class="form-group" style="margin:15px">
-									<label class="control-label col-sm-2" for="userid">租赁编号:</label>
-									<div class="col-sm-2">
+									<label class="control-label col-sm-2" for="userid">订单编号:</label>
+									<div class="col-sm-4">
 										<input type="hidden" class="form-control" id="userid" th:value="${session.currentUser.userid}">
-										<input type="text" class="form-control" id="rentid"/>
+										<!--<input type="hidden" class="form-control" id="rentid"/>-->
+										<input type="text" class="form-control" id="tradeno"/>
 									</div>
 									<label class="control-label col-sm-2" for="carid">车辆编号:</label>
 									<div class="col-sm-2">
@@ -112,17 +113,21 @@
 												<form class="form-horizontal" role="form">
 													<div class="row">
 														<label class="col-sm-3 control-label"><span class="fa fa-user"></span>&nbsp;用户账号：</label>
-														<div class="col-sm-3">
+														<div class="col-sm-2">
 													      	<p class="form-control-static" id="modal_useraccount"></p>
 													    </div>
-														<label class="col-sm-3 control-label"><span class="fa fa-align-justify"></span>&nbsp;租赁编号：</label>
+														<!--<label class="col-sm-3 control-label"><span class="fa fa-align-justify"></span>&nbsp;租赁编号：</label>
 														<div class="col-sm-3">
 													      	<p class="form-control-static" id="modal_rentid"></p>
-													    </div>
+													    </div>-->
+														<label class="col-sm-3 control-label"><span class="fa fa-align-justify"></span>&nbsp;订单编号：</label>
+														<div class="col-sm-3">
+															<p class="form-control-static" id="modal_tradeno"></p>
+														</div>
 													</div>
 													<div class="row">
 														<label class="col-sm-3 control-label"><span class="fa fa-clock-o"></span>&nbsp;驾驶时长：</label>
-														<div class="col-sm-3">
+														<div class="col-sm-2">
 													      	<p class="form-control-static" id="drivertime"></p>
 													    </div>
 														<label class="col-sm-3 control-label"><span class="fa fa-car"></span>&nbsp;行程距离：</label>
@@ -132,7 +137,7 @@
 													</div>
 													<div class="row">
 														<label class="col-sm-3 control-label"><span class="fa fa-leaf"></span>&nbsp;节约排量：</label>
-														<div class="col-sm-3">
+														<div class="col-sm-2">
 													      	<p class="form-control-static" id="emissions"></p>
 													    </div>
 														<label class="col-sm-3 control-label"><span class="fa fa-yen fa-lg"></span>&nbsp;租赁金额：</label>
@@ -242,7 +247,7 @@
 					pagination: true, //是否显示分页（*）
 					sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
 					pageSize: 5,                       //每页的记录行数（*）
-					pageList: [5,10,25,50,100], 
+					pageList: [5],
 					sortable: true,
 					silentSort: true,  // 换页的时候自动记住排序
 					minimumCountColumns: 2,
@@ -250,8 +255,8 @@
 					columns : [ {
 						checkbox : true
 					}, {
-						field : "RENTID",
-						title : "租赁编号",
+						field : "TRADE_NO",
+						title : "订单编号",
 						align: "center",
 	                    valign: "middle",
 	                    sortable: true // 开启排序功能
@@ -330,7 +335,7 @@
 					sort: params.sortName,    //排序字段
 					order: params.sortOrder,  //排序方式
 					userid : $("#userid").val(),
-					rentid : $("#rentid").val(),
+					tradeid : $("#tradeno").val(),
 					carid : $("#carid").val(),
 				};
 				return temp;
@@ -473,7 +478,7 @@
 			var emissions = tripdistance*0.001*51.531;//1公里减少二氧化碳排放51.531g	
 			
 			$("#modal_useraccount").text(row.USERACCOUNT);
-			$("#modal_rentid").text(row.RENTID);
+			$("#modal_tradeno").text(row.TRADE_NO);
 			$("#drivertime").text(drivertime+"小时");
 			if(tripdistance<1000){
 				if(tripdistance<500){

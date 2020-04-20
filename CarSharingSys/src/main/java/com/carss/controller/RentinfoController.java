@@ -119,14 +119,14 @@ public class RentinfoController {
 	 */
 	@GetMapping("userrentinfo")
 	public JsonResult<Map<String,Object>> showUserRentPage(int pageSize,int pageNum,String sort,
-			String order,Integer userid,Integer rentid,Integer carid){
+			String order,Integer userid,String tradeno,Integer carid){
 		PageHelper.startPage(pageNum,pageSize,sort+" "+order);
 		Rentinfo rentinfo = new Rentinfo();
 		if(userid != null){
 			rentinfo.setUserid(userid);
 		}
-		if(rentid != null){
-			rentinfo.setRentid(rentid);
+		if(tradeno != null){
+			rentinfo.setTradeNo(tradeno);
 		}
 		if(carid != null){
 			rentinfo.setCarid(carid);

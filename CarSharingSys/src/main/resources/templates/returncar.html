@@ -183,7 +183,7 @@
 		//订单编号
 		var tradeno;
 		//租赁编号
-		var rentid
+		var rentid;
 		//汽车编号
 		var carid;
 		var result = false;
@@ -193,7 +193,8 @@
 				type: "GET", //提交的方法
 				url: "getuserrentinfo", //提交的地址  
 				data: {
-					userid: [[${session.currentUser.userid}]]
+					userid: [[${session.currentUser.userid}]],
+					isPlay: "未支付"
 				}, // 序列化表单值  
 				async: false,
 				success: function(data) { //成功
@@ -224,20 +225,20 @@
 			if(!result){
 				editRentinfo();
 				//模拟押金缴纳成功
-				$.ajax({
-					type: "PUT",
-					url: "payrent",
-					data: {
-						rentid: rentid,
-						isplay: "已支付"
-					},
-					async: false,
-					success: function(data){
-						if(data.message == "修改成功"){
-							console.log("支付成功！");
-						}
-					}
-				});
+				// $.ajax({
+				// 	type: "PUT",
+				// 	url: "payrent",
+				// 	data: {
+				// 		rentid: rentid,
+				// 		isplay: "已支付"
+				// 	},
+				// 	async: false,
+				// 	success: function(data){
+				// 		if(data.message == "修改成功"){
+				// 			console.log("支付成功！");
+				// 		}
+				// 	}
+				// });
 				GetDateNow();
 				console.log("执行returnbike()");
 				$("#alipayment").submit(); 

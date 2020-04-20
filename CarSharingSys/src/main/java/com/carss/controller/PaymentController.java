@@ -19,13 +19,13 @@ public class PaymentController {
 	private UserinfoService userinfoService;
 	@Autowired
 	private RentinfoService rentinfoService;
-	
-	
+
+
 	/**
 	 * 押金管理
-	 * @param user
-	 * @param icon
-	 * @param licence
+	 * @param userid
+	 * @param isdeposit
+	 * @param request
 	 * @return
 	 */
 	@PutMapping("editdeposit")
