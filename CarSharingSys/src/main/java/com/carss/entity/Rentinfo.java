@@ -11,21 +11,21 @@ import java.util.Date;
 public class Rentinfo {
     private Integer rentid;
 
-    @NotNull(message = "用户编号不能为空！")
+    //@NotNull(message = "用户编号不能为空！")
     private Integer userid;
 
-    @NotNull(message = "车辆编号不能为空！")
+    //@NotNull(message = "车辆编号不能为空！")
     private Integer carid;
 
-    @Past(message = "行程开始时间不能是未来时间！")
+    //@Past(message = "行程开始时间不能是未来时间！")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date rentaltime;
 
-    @Past(message = "行程结束时间不能是未来时间！")
+    //@Past(message = "行程结束时间不能是未来时间！")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date returntime;
 
-    @PositiveOrZero(message = "租赁金额不能为负数")
+    //@PositiveOrZero(message = "租赁金额不能为负数")
     private Double amount;
 
     private String startlng;

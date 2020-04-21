@@ -60,7 +60,7 @@
 								<tr>
 									<th style="width: 20%"><label
 										class="col-sm-2 control-label" style="width: 400px;"><span
-											class="fa fa-user"> </span>&nbsp;订单编号&nbsp;:</label></th>
+											class="fa fa-align-justify"> </span>&nbsp;订单编号&nbsp;:</label></th>
 									<td><span id="tradeno"></span></td>
 
 								</tr>
@@ -199,14 +199,15 @@
 		var carid;
 		//登录的用户编号
 		var userid = [[${session.currentUser.userid}]];
-		
+
 		$(function () {
 			$.ajax({
 				type: "GET", //提交的方法
 				url: "getuserrentinfo", //提交的地址  
 				data: {
-					userid: [[${session.currentUser.userid}]],
-					isPlay: "未支付"
+					userid: userid,
+					rid: [[${session.temp_rid}]],
+					isPlay: ""
 				}, // 序列化表单值  
 				async: false,
 				success: function(data) { //成功

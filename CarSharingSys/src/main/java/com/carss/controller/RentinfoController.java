@@ -125,7 +125,7 @@ public class RentinfoController {
 		if(userid != null){
 			rentinfo.setUserid(userid);
 		}
-		if(tradeno != null){
+		if(!tradeno.isEmpty()){
 			rentinfo.setTradeNo(tradeno);
 		}
 		if(carid != null){

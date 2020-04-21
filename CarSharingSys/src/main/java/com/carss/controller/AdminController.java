@@ -63,9 +63,9 @@ public class AdminController {
         String captchaCode = "";
         logger.info("account:{},password:{},verifycode:{}",account,password,verifyCode);
         //获取验证码的key
-        String captchaKey = request.getSession().getAttribute("captchaKey").toString();
+        //String captchaKey = request.getSession().getAttribute("captchaKey").toString();
+        String captchaKey = redisTemplate.opsForValue().get("captchaKey").toString();
         logger.info("======captchaKey:{}", captchaKey);
-
 
         if(!StringUtils.isEmpty(captchaKey)){
             if (redisTemplate.hasKey(captchaKey)){
@@ -159,6 +159,7 @@ public class AdminController {
             String captchaKey = ((Long) System.currentTimeMillis()).toString();
 
             redisTemplate.opsForValue().set(captchaKey, code, timeout, TimeUnit.SECONDS);
+            redisTemplate.opsForValue().set("captchaKey", captchaKey, timeout,TimeUnit.SECONDS);
             logger.info(code);
             //将VerifyCode绑定session
             request.getSession().setAttribute("captchaKey", captchaKey);

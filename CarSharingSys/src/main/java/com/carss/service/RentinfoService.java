@@ -49,6 +49,7 @@ public class RentinfoService {
      * @return
      */
     public boolean editRentinfo(Rentinfo rentinfo) {
+        System.out.println("对象rentid："+rentinfo.getRentid());
         return rentinfoMapper.updateByPrimaryKeySelective(rentinfo)>0;
     }
 
@@ -77,7 +78,8 @@ public class RentinfoService {
     public List<Map<String,Object>> findRentinfoByRentinfo(Rentinfo reninfo){
         return rentinfoRelationMapper.selectDetailByRentinfo(reninfo);
     }
-    
+
+
     public List<Map<String,Object>> findRentinfoByExample(RentinfoExample rentinfoExample){
       List<Rentinfo> rentinfos = rentinfoMapper.selectByExample(rentinfoExample);
       List<Map<String,Object>> rentinfoList = new ArrayList<Map<String, Object>>();
@@ -86,7 +88,10 @@ public class RentinfoService {
       }
       return rentinfoList;
   }
-    
+
+    public List<Rentinfo> findSimpleRentinfoByExample(RentinfoExample rentinfoExample){
+        return rentinfoMapper.selectByExample(rentinfoExample);
+    }
     /**
      * 按汽车品牌的查询汽车的盈利金额
      * @return

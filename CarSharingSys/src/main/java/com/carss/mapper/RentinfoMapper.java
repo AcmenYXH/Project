@@ -5,6 +5,7 @@ import com.carss.entity.RentinfoExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
+
 public interface RentinfoMapper {
     long countByExample(RentinfoExample example);
 

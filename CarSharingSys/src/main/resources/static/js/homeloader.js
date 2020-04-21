@@ -35,10 +35,10 @@ document.write('<link rel="stylesheet" href="'+getRootPath()+'/css/responsive.cs
 document.write('<link rel="stylesheet" id="switcher-css" media="all" href="'+getRootPath()+'/css/switcher.css"/>');
 //Switcher Only
 //Skins Style
-document.write('<link rel="alternate stylesheet" id="switcher-css" title="blue" media="all" href="'+getRootPath()+'/css/blue.css"/>');
+document.write('<link rel="alternate stylesheet" id="switcher-css" title="green" media="all" href="'+getRootPath()+'/css/green.css"/>');
 document.write('<link rel="alternate stylesheet" id="switcher-css" title="pink" media="all" href="'+getRootPath()+'/css/pink.css"/>');
 document.write('<link rel="alternate stylesheet" id="switcher-css" title="purple" media="all" href="'+getRootPath()+'/css/purple.css"/>');
-document.write('<link rel="alternate stylesheet" id="switcher-css" title="green" media="all" href="'+getRootPath()+'/css/green.css"/>');
+document.write('<link rel="alternate stylesheet" id="switcher-css" title="blue" media="all" href="'+getRootPath()+'/css/blue.css"/>');
 document.write('<link rel="alternate stylesheet" id="switcher-css" title="red" media="all" href="'+getRootPath()+'/css/red.css"/>');
 document.write('<link rel="alternate stylesheet" id="switcher-css" title="yellow" media="all" href="'+getRootPath()+'/css/yellow.css"/>');
 document.write('<link rel="alternate stylesheet" id="switcher-css" title="orange" media="all" href="'+getRootPath()+'/css/orange.css"/>');

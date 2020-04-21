@@ -55,6 +55,7 @@ public class RentCarController {
 		re2.createCriteria().andUseridEqualTo(userid).andIsplayEqualTo("未支付").andReturntimeIsNotNull();
 		List<Map<String,Object>> rentinfoList2 = rentinfoService.findRentinfoByExample(re2);
 		if(rentinfoList2.size()>0) {
+			request.getSession().setAttribute("temp_rid", rentinfoList2.get(0).get("RENTID"));
 			return new JsonResult("订单未支付");
 		}else if(rentinfoList1.size()>0) {
 			System.out.println(rentinfoList1.get(0).get("CARID"));

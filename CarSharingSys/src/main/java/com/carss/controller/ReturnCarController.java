@@ -37,22 +37,17 @@ public class ReturnCarController {
 	 * @return
 	 */
 	@GetMapping("getuserrentinfo")
-	public JsonResult<Map<String,Object>> getUserRentinfo(int userid,String isPlay,HttpServletRequest request){
-		RentinfoExample re = new RentinfoExample();
+	public JsonResult<Map<String,Object>> getUserRentinfo(Integer userid,Integer rid,String isPlay,HttpServletRequest request){
+		RentinfoExample rentinfoExample = new RentinfoExample();
+		RentinfoExample.Criteria re = rentinfoExample.createCriteria();
+		re.andUseridEqualTo(userid);
 		if (isPlay != null && isPlay != ""){
-			re.createCriteria().andUseridEqualTo(userid).andIsplayEqualTo("未支付");
-		}else{
-			Map<String,Object> rentinfo = (Map<String,Object>) request.getSession().getAttribute("tempRentinfo");
-			if(rentinfo.size() > 0){
-				System.out.println("临时租赁信息:");
-				System.out.println(rentinfo);
-				re.createCriteria().andUseridEqualTo(userid).andRentidEqualTo((Integer) rentinfo.get("RENTID"));
-			}else {
-				re.createCriteria().andUseridEqualTo(userid);
-			}
-
+			re.andUseridEqualTo(userid).andIsplayEqualTo(isPlay);
 		}
-		List<Map<String,Object>> rentinfoList = rentinfoService.findRentinfoByExample(re);
+		if (rid != null && rid > 0){
+			re.andRentidEqualTo(rid);
+		}
+		List<Map<String,Object>> rentinfoList = rentinfoService.findRentinfoByExample(rentinfoExample);
 		
 		if(rentinfoList.size() == 0|| rentinfoList == null) {
 			Map<String,Object> rentinfo = new HashMap<String,Object>();
@@ -61,7 +56,6 @@ public class ReturnCarController {
 		}else {
 			Map<String,Object> rentinfo = rentinfoList.get(0);
 			rentinfo.put("result", "true");
-			request.getSession().setAttribute("tempRentinfo",rentinfo);
 			return new JsonResult<Map<String,Object>>(rentinfo);
 		}
 	}
