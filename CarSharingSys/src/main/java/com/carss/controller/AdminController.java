@@ -124,7 +124,7 @@ public class AdminController {
                     return new JsonResult("homepage");
                 } else {
 //                    request.setAttribute("msg", "您输入的用户名密码有误，请重新登录");
-                    return new JsonResult(JsonResult.ERROR,"您输入的用户名密码有误，请重新登录");
+                    return new JsonResult(JsonResult.ERROR,"用户名或密码错误！");
                 }
             }
         }

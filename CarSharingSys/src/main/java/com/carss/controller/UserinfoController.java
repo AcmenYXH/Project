@@ -134,7 +134,10 @@ public class UserinfoController {
 
 	/**
 	 * 修改用户信息
-	 * @param userinfo
+	 * @param user
+	 * @param icon
+	 * @param licence
+	 * @param request
 	 * @return
 	 */
 	@PutMapping("restuserinfo")
@@ -149,7 +152,7 @@ public class UserinfoController {
 		rentinfoExample.createCriteria().andUseridEqualTo(user.getUserid()).andIsplayEqualTo("未支付").andReturntimeIsNull();
     	List<Map<String,Object>> rentinfoList1 = rentinfoService.findRentinfoByExample(rentinfoExample);
     	if(rentinfoList1.size() > 0) {
-    		return new JsonResult(JsonResult.ERROR,"修改失败，编号:"+user.getUserid()+"用户正在使用系统！");
+    		return new JsonResult(JsonResult.ERROR,"修改失败，编号:"+user.getUserid()+"用户正在使用车辆！");
     	}
 		rentinfoExample.clear();
 		//查询用户是否有未支付订单
@@ -196,6 +199,15 @@ public class UserinfoController {
 		userinfoService.editUserinfo(userinfo);
 		return new JsonResult("修改成功");
 
+	}
+
+	@PutMapping("userpwd")
+	public JsonResult editUserPwd(Userinfo user){
+		UserinfoWithBLOBs userinfo = new UserinfoWithBLOBs();
+		//使用BeanUtils工具将user对象的属性copy到userinfo对象上
+		BeanUtils.copyProperties(user, userinfo);
+		userinfoService.editUserinfo(userinfo);
+		return new JsonResult("修改成功");
 	}
 
 	/**

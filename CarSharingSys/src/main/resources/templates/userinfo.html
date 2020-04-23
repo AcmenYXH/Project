@@ -24,7 +24,7 @@ modal-body span {
 	<div th:replace="part/user_navmenu::#header"></div>
 
 	<!-- model -->
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+	<div class="modal fade" name="myModal" id="editInfoModal" tabindex="-1" role="dialog"
 		aria-labelledby="myModalLabel" aria-hidden="true"
 		data-backdrop="static">
 		<div class="modal-dialog">
@@ -37,35 +37,24 @@ modal-body span {
 				<div class="modal-body">
 					<form role="form" id="editUserForm" enctype="multipart/form-data">
 						<div class="form-group">
-							<table class="table" style="font: '黑体';">
+							<table class="table">
 								<thead>
 									<tr>
-										<th><input type="hidden" id="userid" name="userid">
-											<input type="hidden" id="purse" name="purse"> <input
-											type="hidden" id="integral" name="integral"> <input
-											type="hidden" id="credit" name="credit"></th>
+										<th><input type="hidden" id="userid" name="userid"></th>
 										<th></th>
 										<th></th>
 									</tr>
 								</thead>
 								<tbody>
 									<tr>
-										<td><b>原密码:</b></td>
-										<td><input type="password" id="oldpassword"
-											name="oldpassword" class="form-control" /></td>
-										<td><span id="txtOldPassword"></span></td>
-									</tr>
-									<tr>
-										<td><b>新密码：</b></td>
-										<td><input type="password" id="password" name="password"
-											class="form-control" required /></td>
-										<td><span id="txtPassword"></span></td>
-									</tr>
-									<tr>
 										<td><b>头像：</b></td>
-										<td><input type="hidden" id="icon" name="icon"
-											class="form-control" /> <input type="file" id="icon1"
-											name="icon1" class="form-control" /></td>
+										<td style="display: none"><input type="file" id="icon1" name="icon1" /></td>
+										<td th:if="${session.iconString} eq 'null'" id="iconTd">
+											<input type="button" id="selectIcon" value="上传头像" />
+										</td>
+										<td th:if="${session.iconString} ne 'null'">
+											<a><img id="usericon1" name="usericon" style="width: 60px; height: 40px;"></a>
+										</td>
 										<td><span id="txtIcon"></span></td>
 									</tr>
 									<tr>
@@ -88,9 +77,15 @@ modal-body span {
 									</tr>
 									<tr>
 										<td><b>驾照：</b></td>
-										<td><input type="hidden" id="licence" name="licence"
-											class="form-control" /> <input type="file" id="licence1"
-											name="licence1" class="form-control" /></td>
+										<td style="display: none"><input  type="file" id="licence1" name="licence1"/></td>
+										<td th:if="${session.licenceString} eq 'null'" id="licenceTd">
+											<input type="text" id="selectLicence" value="上传驾照" />
+										</td>
+										<td th:if="${session.licenceString} ne 'null'">
+											<a><img id="userlicence" name="userlicence"
+													style="width: 60px; height: 40px;">
+											</a>
+										</td>
 										<td><span id="txtLicence"></span></td>
 									</tr>
 								</tbody>
@@ -98,6 +93,56 @@ modal-body span {
 							<div class="modal-footer">
 								<a class="btn btn-default" data-dismiss="modal">关闭</a> <a
 									class="btn btn-primary" id="editUsertBtn">修改</a>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<div class="modal fade" name="myModal" id="editPwdModal" tabindex="-1" role="dialog"
+		 aria-labelledby="editPwdLabel" aria-hidden="true"
+		 data-backdrop="static">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">×</button>
+					<h4 class="modal-title" id="editPwdLabel">个人信息：</h4>
+				</div>
+				<div class="modal-body">
+					<form role="form" id="editPwdForm" enctype="multipart/form-data">
+						<div class="form-group">
+							<table class="table" style="font: '黑体';">
+								<thead>
+								<tr>
+									<th><input type="hidden" id="epwd_userid" name="userid"></th>
+									<th></th>
+									<th></th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr>
+									<td><b>原密码:</b></td>
+									<td><input type="password" id="oldpassword"
+											   name="oldpassword" class="form-control" autocomplete="new-password"/></td>
+									<td><span id="txtOldPassword"></span></td>
+								</tr>
+								<tr>
+									<td><b>新密码：</b></td>
+									<td><input type="password" id="password" name="password"
+											   class="form-control" autocomplete="new-password" /></td>
+									<td><span id="txtPassword"></span></td>
+								</tr>
+								</tbody>
+							</table>
+							<div class="modal-footer">
+								<a class="btn btn-default" data-dismiss="modal">关闭</a> <a
+									class="btn btn-primary" id="editPwdBtn">修改</a>
 							</div>
 						</div>
 					</form>
@@ -152,29 +197,29 @@ modal-body span {
 
 								</tr>
 								<tr>
-									<th><label for="inputPassword"
+									<th><label
 										class="col-sm-2 control-label" style="width: 400px;"><span
 											class="fa fa-phone"></span>&nbsp;手&emsp;机&nbsp;:</label></th>
 									<td><span th:text="${session.currentUser.phone}"></span></td>
 
 								</tr>
 								<tr>
-									<th><label for="inputPassword"
+									<th><label
 										class="col-sm-2 control-label" style="width: 400px;"><span
 											class="fa fa-id-card"></span>&nbsp;身份证&nbsp;:</label></th>
 									<td><span th:text="${session.currentUser.idcard}"></span></td>
 								</tr>
 								<tr>
-									<th><label for="inputPassword"
+									<th><label
 										class="col-sm-2 control-label" style="width: 400px;"><span
 											class="fa fa-id-card-o"></span>&nbsp;驾&emsp;照&nbsp;:</label></th>
-									<td style=""><a> <img id="userlicence"
+									<td style=""><a> <img name="userlicence"
 											style="width: 60px; height: 40px;">
 									</a></td>
 								</tr>
 
 								<tr>
-									<th><label for="inputPassword"
+									<th><label
 										class="col-sm-2 control-label" style="width: 400px;">
 											<span class="fa fa-tint"></span>&nbsp;余&emsp;额&nbsp;:
 									</label></th>
@@ -182,7 +227,7 @@ modal-body span {
 
 								</tr>
 								<tr>
-									<th><label for="inputPassword"
+									<th><label
 										class="col-sm-2 control-label" style="width: 400px;">
 											<span class="fa fa-tint"></span>&nbsp;积&emsp;分&nbsp;:
 									</label></th>
@@ -190,7 +235,7 @@ modal-body span {
 
 								</tr>
 								<tr>
-									<th><label for="inputPassword"
+									<th><label
 										class="col-sm-2 control-label" style="width: 400px;">
 											<span class="fa fa-tint"></span>&nbsp;信&emsp;用&nbsp;:
 									</label></th>
@@ -198,7 +243,7 @@ modal-body span {
 
 								</tr>
 								<tr>
-									<th><label for="inputPassword"
+									<th><label
 										class="col-sm-2 control-label" style="width: 400px;"><span
 											class="fa fa-check"></span>是否已缴押金:</label></th>
 									<td><span th:text="${session.currentUser.isdeposit}"></span></td>
@@ -207,7 +252,10 @@ modal-body span {
 								<tr>
 									<td colspan="3"><a href="#" id="editUserInfo"
 										class="btn btn-default" data-toggle="modal"
-										data-target="#myModal"> <span class="fa fa-edit"></span>修改信息
+										data-target="#editInfoModal"> <span class="fa fa-edit"></span>基本信息
+									</a><a href="#" id="editUserPwd"
+										   class="btn btn-default" data-toggle="modal"
+										   data-target="#editPwdModal"> <span class="fa fa-edit"></span>修改密码
 									</a></td>
 								</tr>
 							</tbody>
@@ -236,18 +284,16 @@ modal-body span {
 			var licenceArry = [[${session.licenceString}]]; 
 			iconArry = JSON.parse(iconArry);
 			licenceArry = JSON.parse(licenceArry);
-			
 			var useraccount = [[${session.currentUserName}]];
-			
 			//当有用户登录时，显示头像
 			if(useraccount != null && useraccount != ""){
 				//转换字符串
 				var str12 = arrayBufferToBase64(iconArry);
-			    var str13 = arrayBufferToBase64(licenceArry);
-				console.log(str13);
+			   var str13 = arrayBufferToBase64(licenceArry);
 				$("#usericon").css("background-image","url(data:image/png;base64,"+str12+")");
 				$("#usericon").css("background-size","100%");
-				$("#userlicence").attr("src","data:image/png;base64,"+str13);
+				$("[name='userlicence']").attr("src","data:image/png;base64,"+str13);
+				$("[name='usericon']").attr("src","data:image/png;base64,"+str12);
 			}
 		});
 		function arrayBufferToBase64( buffer ) {
@@ -261,12 +307,12 @@ modal-body span {
 		}
 	</script>
 <script>
-		$('#myModal').on('show.bs.modal', function(e) {
+		$('[name="myModal"]').on('show.bs.modal', function(e) {
 			//设置模态框的水平垂直方向的位置；
 		});
 
 		function centerModals() {　　
-			$('#myModal').each(function(i) {　　　　
+			$('[name="myModal"]').each(function(i) {　　　　
 				var $clone = $(this).clone().css('display', 'block').appendTo('body');　　　　
 				var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);　　　　
 				top = top > 0 ? top : 0;　　　　
@@ -274,7 +320,7 @@ modal-body span {
 				$(this).find('.modal-content').css("margin-top", top);　　
 			});
 		};
-		$('#myModal').on('show.bs.modal', centerModals);
+		$('[name="myModal"]').on('show.bs.modal', centerModals);
 		$(window).on('resize', centerModals);
 	</script>
 <script>
@@ -286,9 +332,11 @@ modal-body span {
 		});
 	</script>
 
-<script type="text/javascript">
+<script type="text/javascript" th:inline="javascript">
 		
 		var userpassword = [[${session.currentUser.password}]];
+		var iconString = [[${session.iconString}]];
+		var licenceString = [[${session.licenceString}]];
 		var uniqueLicence = false;
 		var uniquePhone = true;
 		var checkpsd1 = false;
@@ -299,9 +347,9 @@ modal-body span {
 			});
 		$("#phone").bind("blur", function() {
 			var phone = $("#phone").val().trim();
-			console.log(phone);
 			if(phone == "" || phone == null || phone == undefined) {
 				$("#txtphone").html("手机号不能为空");
+				$("#txtphone").css("color","red");
 				$("#txtphone").show();
 				uniquePhone = false;
 			} else {
@@ -316,9 +364,9 @@ modal-body span {
 						async: false,
 						success: function(data) {
 							/* data = JSON.parse(data); */
-							console.log(data.data);
 							if(data.data == false) {
 								$("#txtphone").html("手机号已被注册!");
+								$("#txtphone").css("color","red");
 								$("#txtphone").show();
 							} else if(data.data == true) {
 								$("#txtphone").hide();
@@ -328,6 +376,7 @@ modal-body span {
 					});
 				} else {
 					$("#txtphone").html("手机号格式错误");
+					$("#txtphone").css("color","red");
 					$("#txtphone").show();
 					uniquePhone = false;
 				}
@@ -341,22 +390,17 @@ modal-body span {
 		});
 		$("#oldpassword").bind("blur", function() {
 			var olpsd = $("#oldpassword").val().trim();
-			console.log(olpsd);
 			if(olpsd == "" || olpsd == null || olpsd == undefined) {
 				$("#txtOldPassword").html("密码不能为空！");
+				$("#txtOldPassword").css("color","red");
 				$("#txtOldPassword").show();
 			} else {
-				var myreg = /^([a-zA-Z0-9]|[._]){6,15}$/;
-				if(!myreg.test(olpsd)) {
-					$("#txtOldPassword").html("密码格式错误(英文+数字+'.'+'_')!");
+				if(userpassword == olpsd){
+					checkpsd1 = true;
+				}else{
+					$("#txtOldPassword").html("原密码不正确!");
+					$("#txtOldPassword").css("color","red");
 					$("#txtOldPassword").show();
-				} else {
-					if(userpassword == olpsd){
-						checkpsd1 = true;
-					}else{
-						$("#txtOldPassword").html("原密码不正确!");
-						$("#txtOldPassword").show();
-					}
 				}
 			}
 		});
@@ -370,11 +414,13 @@ modal-body span {
 			var upsd = $("#password").val();
 			if(upsd == "" || upsd == null || upsd == undefined) {
 				$("#txtPassword").html("密码不能为空！");
+				$("#txtPassword").css("color","red");
 				$("#txtPassword").show();
 			} else {	
 				var myreg = /^([a-zA-Z0-9]|[._]){6,15}$/;
 				if(!myreg.test(upsd)) {
-					$("#txtPassword").html("密码格式错误(英文+数字+'.'+'_')!");
+					$("#txtPassword").html("密码由6-15个英文数字或“.”“_”组成");
+					$("#txtPassword").css("color","red");
 					$("#txtPassword").show();
 				}else{
 					checkpsd2 = true;					
@@ -386,6 +432,19 @@ modal-body span {
 		//验证驾照
 		
 		$(function() {
+			var upsd = [[${session.licenceString}]];
+			if(upsd == "" || upsd == null || upsd == undefined) {
+				$("#txtLicence").html("驾照不能为空！");
+				$("#txtLicence").css("color","red");
+				$("#txtLicence").show();
+			} else {		
+				uniqueLicence = true;
+			}
+		});
+		/**
+		 * 提交修改基本信息表单
+		 */
+		$("#editUsertBtn").click(function check() {
 			var upsd = $("#licence").val();
 			console.log("upsd"+upsd);
 			if(upsd == "" || upsd == null || upsd == undefined) {
@@ -395,22 +454,9 @@ modal-body span {
 			} else {		
 				uniqueLicence = true;
 			}
-		});
-		
-		$("#editUsertBtn").click(function check() {
-			var upsd = $("#licence").val();
-			console.log("upsd"+upsd);
-			if(upsd == "" || upsd == null || upsd == undefined) {
-				$("#txtLicence").html("驾照不能为空！");
-				$("#txtLicence").show();
-			} else {		
-				uniqueLicence = true;
-			}
-			console.log(checkpsd1);
-			console.log(checkpsd2);
 			console.log(uniquePhone);
 			console.log(uniqueLicence);
-			if(checkpsd1 && checkpsd2 && uniquePhone && uniqueLicence){
+			if(uniquePhone && uniqueLicence){
 				var param = new FormData($('#editUserForm')[0]);
 				console.log(param);
 				$.ajax({  
@@ -422,7 +468,6 @@ modal-body span {
 					success: function(data){
 						if(data.message == "修改成功"){
 							alert("修改成功！");
-							location.href = "userinfo.html";
 						}
 					}, 
 					error: function(req, status, ex) {toastr.error("操作异常！");},  
@@ -431,17 +476,115 @@ modal-body span {
 			}
 			
 		});
+		/**
+		 * 提交修改密码表单
+		 */
+		$("#editPwdBtn").click(function check() {
+			if(checkpsd1 && checkpsd2 ){
+				var userid = [[${session.currentUser.userid}]];
+				var password = $("#password").val();
+				console.log("userid:"+userid+"  password:"+password);
+				$.ajax({
+					type: "PUT",
+					url:  "userpwd",
+					data: {
+						userid:userid,
+						password:password
+					},
+					success: function(data){
+						if(data.message == "修改成功"){
+							alert("修改成功，请重新登录！");
+							location.href = "logout";
+						}
+					},
+					error: function(req, status, ex) {toastr.error("操作异常！");},
+					timeout:60000
+				});
+			}
+
+		});
 
 		$("#editUserInfo").click(function () {
-			$("#userid").val('[[${session.currentUser.userid}]]');
-			$("#icon").val('[[${session.currentUser.icon}]]');
-			$("#username").val('[[${session.currentUser.username}]]');
-			$("#idcard").val('[[${session.currentUser.idcard}]]');
-			$("#phone").val('[[${session.currentUser.phone}]]');
-			$("#licence").val('[[${session.currentUser.licence}]]');			
-			$("#purse").val('[[${session.currentUser.purse}]]');			
-			$("#integral").val('[[${session.currentUser.integral}]]');			
-			$("#credit").val('[[${session.currentUser.credit}]]');			
+			$("#userid").val([[${session.currentUser.userid}]]);
+			$("#username").val([[${session.currentUser.username}]]);
+			$("#idcard").val([[${session.currentUser.idcard}]]);
+			$("#phone").val([[${session.currentUser.phone}]]);
+			$("#purse").val([[${session.currentUser.purse}]]);
+			$("#integral").val([[${session.currentUser.integral}]]);
+			$("#credit").val([[${session.currentUser.credit}]]);
+		});
+		$("#userlicence,#selectLicence").click(function () {
+			$("#licence1").click();
+		});
+		$("#licence1").change(function (e) {
+			console.log(e);
+			//$('#licence1')获取的是jQuery对象，.get(0)转为原生对象;
+			//这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
+			var file = $("#licence1").get(0).files[0];
+			console.log(file);
+			//创建用来读取此文件的对象
+			var reader = new FileReader();
+			if (/image/.test(file.type)) {
+				//使用该对象读取file文件
+				reader.readAsDataURL(file);
+			} else {
+				alert('请选择图片!');
+				obj.value = "";
+				return;
+			}
+			// 图片加载错误
+			reader.onerror = function () {
+				document.write("图片加载错误");
+			}
+			//读取文件成功后执行的方法函数
+			reader.onload = function (e) {
+				//读取成功后返回的一个参数e，整个的一个进度事件
+				console.log(e);
+				//选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+				//的base64编码格式的地址
+				$('#userlicence').get(0).src = e.target.result;
+			}
+		});
+		$("#usericon1,#selectIcon").click(function () {
+			$("#icon1").click();
+		});
+		$("#icon1").change(function (e) {
+			console.log(e);
+			//$('#licence1')获取的是jQuery对象，.get(0)转为原生对象;
+			//这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
+			var file = $("#icon1").get(0).files[0];
+			console.log(file);
+			//创建用来读取此文件的对象
+			var reader = new FileReader();
+			if (/image/.test(file.type)) {
+				//使用该对象读取file文件
+				reader.readAsDataURL(file);
+			} else {
+				alert('请选择图片!');
+				obj.value = "";
+				return;
+			}
+			// 图片加载错误
+			reader.onerror = function () {
+				document.write("图片加载错误");
+			}
+			//读取文件成功后执行的方法函数
+			reader.onload = function (e) {
+				//读取成功后返回的一个参数e，整个的一个进度事件
+				console.log(e);
+				//选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+				//的base64编码格式的地址
+				if(iconString != "null"){
+					$('#usericon1').get(0).src = e.target.result;
+				}else{
+					iconString = reader;
+					$("#selectIcon").css("display","none");
+					$("#iconTd").append("<a><img id='usericon1'name='usericon'src='"+e.target.result+"' style='width: 60px; height: 40px;'></a>");
+					$("#usericon1,#selectIcon").click(function () {
+						$("#icon1").click();
+					});
+				}
+			}
 		});
 	</script>
 

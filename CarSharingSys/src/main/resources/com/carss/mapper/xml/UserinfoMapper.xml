@@ -306,37 +306,37 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.carss.entity.UserinfoWithBLOBs" >
     update CARSHARINGDB.USERINFO
     <set >
-      <if test="useraccount != null" >
+      <if test="useraccount != null and useraccount != ''">
         USERACCOUNT = #{useraccount,jdbcType=VARCHAR},
       </if>
-      <if test="password != null" >
+      <if test="password != null and password != ''" >
         PASSWORD = #{password,jdbcType=VARCHAR},
       </if>
-      <if test="username != null" >
+      <if test="username != null and username != ''" >
         USERNAME = #{username,jdbcType=VARCHAR},
       </if>
-      <if test="idcard != null" >
+      <if test="idcard != null and idcard != ''" >
         IDCARD = #{idcard,jdbcType=VARCHAR},
       </if>
-      <if test="phone != null" >
+      <if test="phone != null and phone != ''" >
         PHONE = #{phone,jdbcType=VARCHAR},
       </if>
-      <if test="isdeposit != null" >
+      <if test="isdeposit != null and isdeposit != ''" >
         ISDEPOSIT = #{isdeposit,jdbcType=VARCHAR},
       </if>
-      <if test="purse != null" >
+      <if test="purse != null and purse != ''" >
         PURSE = #{purse,jdbcType=DECIMAL},
       </if>
-      <if test="integral != null" >
+      <if test="integral != null and integral != ''" >
         INTEGRAL = #{integral,jdbcType=DECIMAL},
       </if>
-      <if test="credit != null" >
+      <if test="credit != null and credit != ''" >
         CREDIT = #{credit,jdbcType=DECIMAL},
       </if>
-      <if test="icon != null" >
+      <if test="icon != null and icon != ''" >
         ICON = #{icon,jdbcType=BLOB},
       </if>
-      <if test="licence != null" >
+      <if test="licence != null and licence != ''" >
         LICENCE = #{licence,jdbcType=BLOB},
       </if>
     </set>
