@@ -31,10 +31,17 @@
 							<div class="panel-body">
 								<form id="formSearch" class="form-horizontal">
 									<div class="form-group" style="margin:15px">
-										<label class="control-label col-sm-1" for="brand">品牌:</label>
-										<div class="col-sm-1">
+										<label class="control-label col-sm-2" for="selectCarId">车辆编号:</label>
+										<div class="col-sm-2">
+											<input type="text" class="form-control" id="selectCarId"/>
+										</div>
+										<label class="control-label col-sm-2" for="brand">品牌:</label>
+										<div class="col-sm-2">
 											<input type="text" class="form-control" id="brand"/>
 										</div>
+
+									</div>
+									<div class="form-group" style="margin:15px">
 										<label class="control-label col-sm-2" for="minAmount">最小租赁单价:</label>
 										<div class="col-sm-2">
 											<input type="text" class="form-control" id="minAmount" value="0" />
@@ -43,7 +50,7 @@
 										<div class="col-sm-2">
 											<input type="text" class="form-control" id="maxAmount" value="100"/>
 										</div>
-										<div class="col-sm-2" style="text-align:center;">
+										<div class="col-sm-4" style="text-align:center;">
 											<button type="button" id="btn_query" class="btn btn-primary">
 												<span class="glyphicon glyphicon-search" aria-hidden="true"></span> 查 询
 											</button>
@@ -79,7 +86,7 @@
 										<!-- 表单嵌套表格：规范表单格式 -->
 										<form role="form" id="editForm">
 											<div class="form-group">
-												<table class="table" style="font: '黑体';">
+												<table class="table">
 													<thead>
 														<tr>
 															<th>车辆信息：<input type="hidden" id="carid" name="carid" class="form-control"></th>
@@ -95,7 +102,7 @@
 															<td><b>入库时间：</b></td>
 															<td><input type="date" id="addtime" name="addtime" class="form-control"/></td>
 														</tr>
-														<tr>
+														<tr style="display: none">
 															<td><b>车辆状态：</b></td>
 															<td>
 																<select id="statusSelect" name="status" class="form-control">
@@ -240,17 +247,21 @@
 	                    		var status = '<span class="btn btn-primary btn-sm">'+value+'</span>';  
 	                    	}else if(value == "维修中"){
 	                    		var status = '<span class="btn btn-info btn-sm">'+value+'</span>';
+	                    	}else if(value == "需要维修"){
+	                    		var status = '<span class="btn btn-danger btn-sm">'+value+'</span>';
 	                    	}else{
-	                    		var status = '<span class="btn btn-success btn-sm">'+value+'</span>';
-	                    	}
+								var status = '<span class="btn btn-success btn-sm">'+value+'</span>';
+							}
 	                    	return status;
 	                    }
 					}, {
 						field : "unitprice",
 						title : "租赁单价",
 						align: "center",
-	                    valign: "middle",
-	                    sortable: true // 开启排序功能
+	                    sortable: true,
+						formatter: function(value){
+							return '<span>'+value+'￥/小时</span>';
+						}
 					},{
 						field : "longitude",
 						title : "经度",
@@ -288,6 +299,7 @@
 					//search: params.search,  //搜索框
 					sort: params.sortName,    //排序字段
 					order: params.sortOrder,  //排序方式
+					carid : $("#selectCarId").val(),
 					brand : $("#brand").val(),
 					minAmount : $("#minAmount").val(),
 					maxAmount : $("#maxAmount").val()

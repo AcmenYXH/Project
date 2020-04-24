@@ -34,7 +34,7 @@ public class RentinfoService {
 
     /**
      * 批量删除租赁
-     * @param rentinfos
+     * @param rentids
      * @return
      */
     public boolean removeRentinfo(List<Integer> rentids) {
@@ -49,7 +49,6 @@ public class RentinfoService {
      * @return
      */
     public boolean editRentinfo(Rentinfo rentinfo) {
-        System.out.println("对象rentid："+rentinfo.getRentid());
         return rentinfoMapper.updateByPrimaryKeySelective(rentinfo)>0;
     }
 

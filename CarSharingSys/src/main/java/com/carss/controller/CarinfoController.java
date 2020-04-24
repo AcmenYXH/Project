@@ -7,10 +7,12 @@ import javax.validation.Valid;
 import com.carss.entity.Carinfo;
 import com.carss.entity.CarinfoExample;
 import com.carss.entity.JsonResult;
+import com.carss.entity.Malfunction;
 import com.carss.exception.WebException;
 import com.carss.exception.enums.ErrorEnum;
 import com.carss.service.CarinfoService;
 
+import com.carss.service.MalfunctionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,8 @@ public class CarinfoController {
 
 	@Autowired
 	private CarinfoService carinfoService;
+	@Autowired
+	private MalfunctionService malfunctionService;
 
 	/**
 	 * 添加车辆信息
@@ -115,16 +119,18 @@ public class CarinfoController {
 	 * @return
 	 */
 	@GetMapping("restcarinfo")
-	public JsonResult<Carinfo> showPage(int pageSize,int pageNum,String sort,
+	public JsonResult<Carinfo> showPage(int pageSize,int pageNum,String sort,Integer carid,
 			String order,String brand,Double minAmount,Double maxAmount){
 		PageHelper.startPage(pageNum,pageSize,sort+" "+order);
 		CarinfoExample ge = new CarinfoExample();
-//		System.out.println(minAmount+"  "+maxAmount);
+		CarinfoExample.Criteria geCreteria = ge.createCriteria();
 		if(log.isDebugEnabled()) {
 			log.debug(minAmount+"  "+maxAmount);
 		}
-		ge.createCriteria()
-				.andBrandLike("%"+brand+"%")
+		if (carid != null){
+			geCreteria.andCaridEqualTo(carid);
+		}
+		geCreteria.andBrandLike("%"+brand+"%")
 				.andUnitpriceBetween(minAmount,maxAmount);
 		return new JsonResult<Carinfo>(new PageInfo<Carinfo>(carinfoService.findByExample(ge)));
 	}

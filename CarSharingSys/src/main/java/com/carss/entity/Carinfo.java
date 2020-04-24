@@ -13,7 +13,7 @@ public class Carinfo {
     private String brand;
 
     @Past(message = "添加时间不能是未来时间！")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date addtime;
 
     private String status;
@@ -43,7 +43,7 @@ public class Carinfo {
     }
 
     public String getAddtime() {
-    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return addtime == null ? null : sdf.format(addtime);
     }
 

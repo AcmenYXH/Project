@@ -7,6 +7,7 @@ import com.carss.entity.JsonResult;
 import com.carss.exception.WebException;
 import com.carss.exception.enums.ErrorEnum;
 import com.carss.service.RentinfoService;
+import com.carss.utils.OrderUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class RentinfoController {
 	public JsonResult addRentinfo(@Valid @RequestBody Rentinfo rentinfo, BindingResult result) throws Exception {
 		if(result.hasErrors()) {
 			throw new WebException(ErrorEnum.CHECK_FAIL,result.getFieldError().getDefaultMessage());
+		}
+		if (rentinfo.getTradeNo() == null || rentinfo.getTradeNo() == ""){
+			rentinfo.setTradeNo(OrderUtils.getTradeId());
 		}
 		rentinfoService.addRentinfo(rentinfo);
 		return new JsonResult("添加成功");
@@ -106,14 +110,15 @@ public class RentinfoController {
 		rentinfo.setCarid(carid);
 		return new JsonResult<Map<String,Object>>(new PageInfo<Map<String,Object>>(rentinfoService.findRentinfoByRentinfo(rentinfo)));
 	}
-	
+
 	/**
 	 * 组合查询用户租赁信息，返回分页信息
 	 * @param pageSize
 	 * @param pageNum
 	 * @param sort
 	 * @param order
-	 * @param rentid
+	 * @param userid
+	 * @param tradeno
 	 * @param carid
 	 * @return
 	 */

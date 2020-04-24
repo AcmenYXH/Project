@@ -51,7 +51,9 @@ public class UserinfoController {
 
 	/**
 	 * 添加用户信息
-	 * @param userinfo
+	 * @param user
+	 * @param icon
+	 * @param licence
 	 * @param result
 	 * @return
 	 * @throws Exception
@@ -229,23 +231,22 @@ public class UserinfoController {
 	 * @param order
 	 * @param useraccount
 	 * @param idcard
-	 * @param credit
 	 * @return
 	 */
 	@GetMapping("restuserinfo")
-	public JsonResult<UserinfoWithBLOBs> showPage(int pageSize,int pageNum,String sort,
-			String order,String useraccount,String idcard){
-		PageHelper.startPage(pageNum,pageSize,sort+" "+order);
+	public JsonResult<UserinfoWithBLOBs> showPage(int pageSize, int pageNum, String sort,
+												  String order, String useraccount, String idcard) {
+		PageHelper.startPage(pageNum, pageSize, sort + " " + order);
 		UserinfoExample ge = new UserinfoExample();
 		ge.createCriteria()
-				.andUseraccountLike("%"+useraccount+"%")
-				.andIdcardLike("%"+idcard+"%");
+				.andUseraccountLike("%" + useraccount + "%")
+				.andIdcardLike("%" + idcard + "%");
 		return new JsonResult<UserinfoWithBLOBs>(new PageInfo<UserinfoWithBLOBs>(userinfoService.findUserinfoByExample(ge)));
 	}
-	
+
 	@GetMapping("findAll")
 	public JsonResult<UserinfoWithBLOBs> showPage(){
-		
+
 		return new JsonResult<UserinfoWithBLOBs>(new PageInfo<UserinfoWithBLOBs>(userinfoService.findUserinfoByExample(null)));
 	}
 	

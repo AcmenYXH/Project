@@ -1,10 +1,12 @@
 package com.carss.controller;
 
+import com.carss.entity.Carinfo;
 import com.carss.entity.Malfunction;
 import com.carss.entity.MalfunctionExample;
 import com.carss.entity.JsonResult;
 import com.carss.exception.WebException;
 import com.carss.exception.enums.ErrorEnum;
+import com.carss.service.CarinfoService;
 import com.carss.service.MalfunctionService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -20,6 +22,8 @@ public class MalfunctionController {
 
 	@Autowired
 	private MalfunctionService malfunctionService;
+	@Autowired
+	private CarinfoService carinfoService;
 
 	/**
 	 * 添加车辆故障信息
@@ -33,6 +37,16 @@ public class MalfunctionController {
 		if(result.hasErrors()) {
 			throw new WebException(ErrorEnum.CHECK_FAIL,result.getFieldError().getDefaultMessage());
 		}
+		Carinfo carinfo = new Carinfo();
+		carinfo.setCarid(malfunction.getCarid());
+		if ("正在维修".equals(malfunction.getRepairstatus())){
+			carinfo.setStatus("维修中");
+		}else if("已维修".equals(malfunction.getRepairstatus())){
+			carinfo.setStatus("空闲");
+		}else if ("需要维修".equals(malfunction.getRepairstatus())){
+			carinfo.setStatus("需要维修");
+		}
+		carinfoService.editCarinfo(carinfo);
 		malfunctionService.addMalfunction(malfunction);
 		return new JsonResult("添加成功");
 	}
@@ -55,7 +69,16 @@ public class MalfunctionController {
 	 */
 	@PutMapping("restmalfunction")
 	public JsonResult editMalfunction(@RequestBody Malfunction malfunction) {
-		System.out.println(malfunction);
+		Carinfo carinfo = new Carinfo();
+		carinfo.setCarid(malfunction.getCarid());
+		if ("正在维修".equals(malfunction.getRepairstatus())){
+			carinfo.setStatus("维修中");
+		}else if("已维修".equals(malfunction.getRepairstatus())){
+			carinfo.setStatus("空闲");
+		}else if ("需要维修".equals(malfunction.getRepairstatus())){
+			carinfo.setStatus("需要维修");
+		}
+		carinfoService.editCarinfo(carinfo);
 		malfunctionService.editMalfunction(malfunction);
 		return new JsonResult("修改成功");
 
@@ -78,7 +101,6 @@ public class MalfunctionController {
 	 * @param pageNum
 	 * @param sort
 	 * @param order
-	 * @param userid
 	 * @param carid
 	 * @param repairstatus
 	 * @return

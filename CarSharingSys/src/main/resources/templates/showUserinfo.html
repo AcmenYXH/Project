@@ -107,10 +107,23 @@
 															<td><b>手机号：</b></td>
 															<td><input type="text" id="addphone" name="phone" class="form-control"/></td>
 														</tr>
+<!--														<tr>-->
+<!--															<td><b>驾照：</b></td>-->
+<!--															<td><input type="hidden" id="addlicence" name="licence" readonly="true" class="form-control"/>-->
+<!--															<input type="file" id="addlicence1" name="licence1" class="form-control"/></td>-->
+<!--														</tr>-->
 														<tr>
 															<td><b>驾照：</b></td>
-															<td><input type="hidden" id="addlicence" name="licence" readonly="true" class="form-control"/>
-															<input type="file" id="addlicence1" name="licence1" class="form-control"/></td>
+															<td style="display: none"><input  type="file" id="licence1" name="licence1"/></td>
+															<td id="selectLicenceTd">
+																<input type="text" id="selectLicence" value="上传驾照" />
+															</td>
+															<td id="showLicenceTd">
+																<a><img id="userlicence" name="userlicence"
+																		style="width: 60px; height: 40px;">
+																</a>
+															</td>
+															<td><span id="txtLicence"></span></td>
 														</tr>
 														<tr>
 															<td><b>押金：</b></td>
@@ -320,6 +333,15 @@
 					var arrselections = commonCheck(true);
 					if(arrselections==null)return;
 					$("#editForm").setForm(arrselections[0]);
+					//转换字符串
+					console.log(arrselections[0].licence)
+					var str12 = arrayBufferToBase64(arrselections[0].licence);
+					console.log(str12)
+					var outputImg = document.createElement('img');
+					outputImg.src = 'data:image/png;base64,'+str12;
+					$("#selectLicenceTd").css("display","none");
+					$("#showLicenceTd").css("display","block");
+					$("#userlicence").attr("src",outputImg.src+arrselections[0].licence);
 					$("#myModal").modal();
 				});
 				
@@ -403,8 +425,44 @@
 		    for (var i = 0; i < len; i++) {
 		        binary += String.fromCharCode(bytes[i]);
 		    }
+		    console.log("testsgaga")
 		    return window.btoa(binary);
 		}
+
+		$("#userlicence,#selectLicence").click(function () {
+			$("#licence1").click();
+		});
+		$("#licence1").change(function (e) {
+			console.log(e);
+			//$('#licence1')获取的是jQuery对象，.get(0)转为原生对象;
+			//这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
+			var file = $("#licence1").get(0).files[0];
+			console.log(file);
+			//创建用来读取此文件的对象
+			var reader = new FileReader();
+			if (/image/.test(file.type)) {
+				//使用该对象读取file文件
+				reader.readAsDataURL(file);
+			} else {
+				alert('请选择图片!');
+				obj.value = "";
+				return;
+			}
+			// 图片加载错误
+			reader.onerror = function () {
+				document.write("图片加载错误");
+
+			}
+			//读取文件成功后执行的方法函数
+			reader.onload = function (e) {
+				//读取成功后返回的一个参数e，整个的一个进度事件
+				console.log(e);
+				//选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+				//的base64编码格式的地址
+				$('#userlicence').get(0).src = e.target.result;
+			}
+		});
+
 	</script>
 </body>
 </html>

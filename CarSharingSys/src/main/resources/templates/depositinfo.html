@@ -61,33 +61,36 @@
 
 								</tr>
 								<tr>
-									<th><label for="inputPassword"
-										class="col-sm-2 control-label" style="width: 400px;"><span
+									<th><label class="col-sm-2 control-label" style="width: 400px;"><span
 											class="fa fa-phone"></span>&nbsp;手&emsp;机&nbsp;:</label></th>
 									<td><span th:text="${session.currentUser.phone}"></span></td>
 
 								</tr>
 								<tr>
-									<th><label for="inputPassword"
-										class="col-sm-2 control-label" style="width: 400px;"><span
+									<th><label class="col-sm-2 control-label" style="width: 400px;"><span
 											class="fa fa-check"></span>是否已缴押金:</label></th>
 									<td><span id="isdeposit"></span></td>
 
 								</tr>
 								<tr>
-									<td colspan="3"><a href="#" id="paydeposit"
-										class="btn btn-primary"> <span class="fa fa-paypal"></span>支付押金
-									</a> <a href="#" id="returndeposit" class="btn btn-warning"> <span
-											class="fa fa-reply"></span>退还押金
-									</a> <a th:href="@{homepage.html}" id="paydeposit"
-										class="btn btn-default"> <span class="fa fa-share"></span>返回
-									</a></td>
+									<td colspan="3">
+										<a href="#" id="paydeposit" class="btn btn-primary">
+											<span class="fa fa-paypal"></span>支付押金
+										</a>
+										<a href="#" id="returndeposit" class="btn btn-warning">
+											<span class="fa fa-reply"></span>退还押金
+										</a>
+										<a th:href="@{homepage.html}" class="btn btn-default">
+											<span class="fa fa-share"></span>返回
+										</a>
+									</td>
 								</tr>
 							</tbody>
 						</table>
 					</form>
 				</div>
 			</div>
+		</div>
 	</section>
 
 	<!-- 页面底部章节section5 -->
@@ -101,13 +104,13 @@
 	<!-- End Switcher -->
 
 	<!-- 支付宝 -->
-	<form id="alipayment" name="alipayment" action="payamount"
-		method="post" style="display: none;">
-		<input id="WIDout_trade_no" name="WIDout_trade_no" /> <input
-			id="WIDsubject" name="WIDsubject" /> <input id="WIDtotal_amount"
-			name="WIDtotal_amount" /> <input id="WIDbody" name="WIDbody" /> <input
-			id="rid" name="rid" type="number" /> <input type="hidden"
-			name="returntime" id="returntime">
+	<form id="alipayment" name="alipayment" action="payamount" method="post" style="display: none;">
+		<input id="WIDout_trade_no" name="WIDout_trade_no"/>
+		<input id="WIDsubject" name="WIDsubject"/>
+		<input id="WIDtotal_amount" name="WIDtotal_amount"/>
+		<input id="WIDbody" name="WIDbody"/>
+		<input id="rid" name="rid" type="number"/>
+		<input type="hidden" name="returntime" id="returntime">
 	</form>
 
 	<script th:src="@{switcher/switch.js}"></script>
