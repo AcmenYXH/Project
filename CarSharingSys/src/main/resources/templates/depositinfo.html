@@ -110,6 +110,7 @@
 		<input id="WIDtotal_amount" name="WIDtotal_amount"/>
 		<input id="WIDbody" name="WIDbody"/>
 		<input id="rid" name="rid" type="number"/>
+		<input id="isdeposit2" name="isdeposit2" type="text"/>
 		<input type="hidden" name="returntime" id="returntime">
 	</form>
 
@@ -130,7 +131,7 @@
 			if(useraccount != null && useraccount != ""){
 				//转换字符串
 				var str12 = arrayBufferToBase64(iconArry);
-			    var str13 = arrayBufferToBase64(licenceArry);
+			   var str13 = arrayBufferToBase64(licenceArry);
 				$("#usericon").css("background-image","url(data:image/png;base64,"+str12+")");
 				$("#usericon").css("background-size","100%");
 				$("#userlicence").css("background-image","url(data:image/png;base64,"+str13+")");
@@ -177,20 +178,20 @@
 				alert("您已缴纳押金！");
 			}else{
 				//模拟押金缴纳成功
-				$.ajax({
-					type: "PUT",
-					url: "editdeposit",
-					data: {
-						userid: userid,
-						isdeposit: "已缴纳"
-					},
-					async: false,
-					success: function(data){
-						if(data.message == "修改成功"){
-							console.log("缴纳成功！");
-						}
-					}
-				});
+				// $.ajax({
+				// 	type: "PUT",
+				// 	url: "editdeposit",
+				// 	data: {
+				// 		userid: userid,
+				// 		isdeposit: "已缴纳"
+				// 	},
+				// 	async: false,
+				// 	success: function(data){
+				// 		if(data.message == "修改成功"){
+				// 			console.log("缴纳成功！");
+				// 		}
+				// 	}
+				// });
 				//跳转支付页面
 				GetDateNow();
 				console.log("执行returnbike()");
@@ -238,6 +239,7 @@
 			$("#WIDbody").val("用户:" + useraccount + "\t押金:" + deposit+"￥");
 			$("#rid").val(userid);
 			$("#returntime").val(vNow.format("yyyy-MM-dd hh:mm:ss"));
+			$("#isdeposit2").val("true");
 		}
 	</script>
 

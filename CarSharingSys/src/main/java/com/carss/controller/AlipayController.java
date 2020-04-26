@@ -3,24 +3,27 @@ package com.carss.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Resource;
+import javax.annotation.Resources;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.response.AlipayTradeQueryResponse;
-import com.carss.entity.Rentinfo;
-import com.carss.entity.RentinfoExample;
+import com.carss.entity.*;
+import com.carss.service.DepositinfoService;
 import com.carss.service.RentinfoService;
+import com.carss.service.UserinfoService;
+import com.carss.utils.OrderUtils;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +40,13 @@ import com.alipay.config.AlipayConfig;
 public class AlipayController {
     @Autowired
     private RentinfoService rentinfoService;
+    @Autowired
+    private DepositinfoService depositinfoService;
+    @Autowired
+    private UserinfoService userinfoService;
+    @Resource
+	private RedisTemplate<String,Object> redisTemplate;
+
 	private static final Logger logger = LoggerFactory.getLogger(AlipayController.class);
 
 	@RequestMapping("/payamount")
@@ -45,12 +55,9 @@ public class AlipayController {
 		request.setCharacterEncoding("utf-8");
 		//获得初始化的AlipayClient
 		AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.gatewayUrl, AlipayConfig.app_id, AlipayConfig.merchant_private_key, "json", AlipayConfig.charset, AlipayConfig.alipay_public_key, AlipayConfig.sign_type);
-		
-		String rid = request.getParameter("rid");
-		String returntime=request.getParameter("returntime");
 
+		String rid = request.getParameter("rid");
 		request.getSession().setAttribute("temp_rid",rid);
-		
 		//商户订单号，商户网站订单系统中唯一订单号，必填
 		String out_trade_no = request.getParameter("WIDout_trade_no");
 		//付款金额，必填
@@ -59,36 +66,25 @@ public class AlipayController {
 		String subject = request.getParameter("WIDsubject");
 		//商品描述，可空
 		String body = request.getParameter("WIDbody");
-		//当改订单号为交易或者交易未成功
-		if (!alipayTradeQuery(alipayClient,out_trade_no,rid)){
-			//设置快速交易请求参数
-			AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
-			// 服务器异步通知页面路径
-			//alipayRequest.setNotifyUrl(AlipayConfig.notify_url);
-			// 页面跳转同步通知页面路径
-			alipayRequest.setReturnUrl(AlipayConfig.return_url);
-			alipayRequest.setBizContent("{\"out_trade_no\":\""+ out_trade_no +"\","
-					+ "\"total_amount\":\""+ total_amount +"\","
-					+ "\"subject\":\""+ subject +"\","
-					+ "\"body\":\""+ body +"\","
-					+ "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"}");
-			String result="";
-			try {
-				result = alipayClient.pageExecute(alipayRequest).getBody();
-				System.out.println("支付返回结果："+result);
-			} catch (AlipayApiException e) {
-				e.printStackTrace();
+
+		//获取请支付的页面
+		if ("true".equals(request.getParameter("isdeposit2"))){
+			if(!selectDepositInfoStatus(alipayClient, Integer.parseInt(rid))){
+				out_trade_no = OrderUtils.getTradeId();
+				redisTemplate.opsForValue().set("out_trade_no", out_trade_no, 30,TimeUnit.MINUTES);
+				paymentPage(alipayClient,out_trade_no,request,response);
+			}else{
+				response.setContentType("text/html");
+				PrintWriter out=response.getWriter();
+				out.println("<script>" +
+						"alert(\"押金已缴纳，请刷新页面！\");" +
+						"location.href=\"depositinfo.html\";" +
+						"</script>");
+				out.flush();
+				out.close();
 			}
-			response.setContentType("text/html");
-			PrintWriter out=response.getWriter();
-			out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">");
-			out.println("<HTML>");
-			out.println("  <BODY>");
-			out.println(result);
-			out.println("  </BODY>");
-			out.println("</HTML>");
-			out.flush();
-			out.close();
+		}else if (!alipayTradeQuery(alipayClient,out_trade_no,rid)){
+			paymentPage(alipayClient,out_trade_no,request,response);
 		}else {
 			response.setContentType("text/html");
 			PrintWriter out=response.getWriter();
@@ -101,6 +97,58 @@ public class AlipayController {
 		}
 	}
 
+	/**
+	 * 支付页面
+	 * @param alipayClient
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
+	public void paymentPage(AlipayClient alipayClient,String out_trade_no,HttpServletRequest request,HttpServletResponse response) throws IOException {
+		//付款金额，必填
+		String total_amount = request.getParameter("WIDtotal_amount");
+		//订单名称，必填
+		String subject = request.getParameter("WIDsubject");
+		//商品描述，可空
+		String body = request.getParameter("WIDbody");
+		//设置快速交易请求参数
+		AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
+		// 服务器异步通知页面路径
+		//alipayRequest.setNotifyUrl(AlipayConfig.notify_url);
+		// 页面跳转同步通知页面路径
+		alipayRequest.setReturnUrl(AlipayConfig.return_url);
+		alipayRequest.setBizContent("{\"out_trade_no\":\""+ out_trade_no +"\","
+				+ "\"total_amount\":\""+ total_amount +"\","
+				+ "\"subject\":\""+ subject +"\","
+				+ "\"body\":\""+ body +"\","
+				+ "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"}");
+		String result="";
+		try {
+			result = alipayClient.pageExecute(alipayRequest).getBody();
+			System.out.println("支付返回结果："+result);
+		} catch (AlipayApiException e) {
+			e.printStackTrace();
+		}
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+		out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">");
+		out.println("<HTML>");
+		out.println("  <BODY>");
+		out.println(result);
+		out.println("  </BODY>");
+		out.println("</HTML>");
+		out.flush();
+		out.close();
+	}
+
+	/**
+	 * 通过商家订单号查询订单的交易状态，若为交易成功状态，则修改数据库订单状态为已支付
+	 * @param alipayClient
+	 * @param out_trade_no
+	 * @param rid
+	 * @return
+	 * @throws AlipayApiException
+	 */
 	public Boolean alipayTradeQuery(AlipayClient alipayClient,String out_trade_no,String rid) throws AlipayApiException {
 		AlipayTradeQueryRequest alipayRequest = new AlipayTradeQueryRequest();
 		alipayRequest.setBizContent("{" +
@@ -118,6 +166,7 @@ public class AlipayController {
 				rentinfo.setIsplay("已支付");
 				System.out.println("对象："+JSONObject.fromObject(rentinfo).toString());
 				boolean result = rentinfoService.editRentinfo(rentinfo);
+
 				return true;
 			}else{
 				return false;
@@ -127,6 +176,73 @@ public class AlipayController {
 			return false;
 		}
 	}
+
+	/**
+	 * 查询押金是否已经缴纳
+	 * @param alipayClient
+	 * @param userid
+	 * @return
+	 * @throws AlipayApiException
+	 */
+	public Boolean selectDepositInfoStatus(AlipayClient alipayClient,int userid) throws AlipayApiException {
+		redisTemplate.opsForValue().set("userid", userid,30 ,TimeUnit.MINUTES);
+		Depositinfo depositinfo = new Depositinfo();
+		depositinfo.setUserid(userid);
+		DepositinfoExample depositinfoExample = new DepositinfoExample();
+		depositinfoExample.createCriteria().andUseridEqualTo(userid);
+		List<Depositinfo> depositinfoList = depositinfoService.getDepositinfo(depositinfoExample);
+		//判断是否存在用户押金信息
+		if (depositinfoList.size()>0){
+			depositinfoExample.clear();
+			depositinfoExample.createCriteria().andUseridEqualTo(userid).andDepositStatusNotEqualTo("001");
+			depositinfoList = depositinfoService.getDepositinfo(depositinfoExample);
+			if (depositinfoList.size()>0){
+				String out_trade_no = "";
+				if (redisTemplate.hasKey("out_trade_no")){
+					out_trade_no = redisTemplate.opsForValue().get("out_trade_no").toString();
+				}else{
+					out_trade_no = depositinfoList.get(0).getOutTradeNo();
+				}
+				AlipayTradeQueryRequest alipayRequest = new AlipayTradeQueryRequest();
+				alipayRequest.setBizContent("{" +
+						"\"out_trade_no\":\""+ out_trade_no +"\"," +
+						"      \"query_options\":[" +
+						"        \"TRADE_SETTLE_INFO\"" +
+						"      ]" +
+						"  }");
+				AlipayTradeQueryResponse response = alipayClient.execute(alipayRequest);
+				if(response.isSuccess()){
+					if ("TRADE_SUCCESS".equals(response.getTradeStatus())){
+					    //修改押金信息
+						depositinfo = depositinfoList.get(0);
+						depositinfo.setDepositStatus("001");
+						depositinfo.setChangeTime(new Date());
+						depositinfoService.editDepositinfo(depositinfo,depositinfoExample);
+						//修改用户信息
+                        UserinfoWithBLOBs userinfo = new UserinfoWithBLOBs();
+                        userinfo.setUserid(depositinfoList.get(0).getUserid());
+                        userinfo.setIsdeposit("已缴纳");
+                        userinfoService.editUserinfo(userinfo);
+						return true;
+					}else{
+						return false;
+					}
+				} else {
+					System.out.println("调用失败");
+					return false;
+				}
+			}else {
+				return false;
+			}
+		}else {
+			depositinfo.setOutTradeNo(OrderUtils.getTradeId());
+			depositinfo.setChangeTime(new Date());
+			depositinfo.setDepositStatus("000");
+			depositinfoService.addDepositinfo(depositinfo);
+			return false;
+		}
+	}
+
 
 	/**
 	 ** 功能：支付宝服务器同步通知页面
@@ -169,24 +285,50 @@ public class AlipayController {
 			String trade_no = new String(request.getParameter("trade_no").getBytes("ISO-8859-1"),"UTF-8");
 			//付款金额
 			String total_amount = new String(request.getParameter("total_amount").getBytes("ISO-8859-1"),"UTF-8");
-			System.out.println("trade_no:"+trade_no+" out_trade_no:"+out_trade_no+"  total_amount:"+total_amount);
+			//交易状态
+			//String trade_status = new String(request.getParameter("trade_status").getBytes("ISO-8859-1"),"UTF-8");
 
-			RentinfoExample rentinfoExample = new RentinfoExample();
-			rentinfoExample.createCriteria().andTradeNoEqualTo(out_trade_no);
-			List<Rentinfo> rentinfoList = rentinfoService.findSimpleRentinfoByExample(rentinfoExample);
-			if (rentinfoList.size() > 0){
-				Rentinfo rentinfo = rentinfoList.get(0);
-				BigDecimal alipayAmount = new BigDecimal(total_amount);
-				BigDecimal amount = new BigDecimal(rentinfo.getAmount());
-				if (logger.isInfoEnabled()){
-					logger.info("total_amount:{}=======amount:{}",total_amount,rentinfo.getAmount());
-					logger.info("alipayAmount:{}=======amount:{}",alipayAmount,amount);
+				RentinfoExample rentinfoExample = new RentinfoExample();
+				rentinfoExample.createCriteria().andTradeNoEqualTo(out_trade_no);
+				List<Rentinfo> rentinfoList = rentinfoService.findSimpleRentinfoByExample(rentinfoExample);
+				if (rentinfoList.size() > 0){
+					Rentinfo rentinfo = rentinfoList.get(0);
+					BigDecimal alipayAmount = new BigDecimal(total_amount);
+					BigDecimal amount = new BigDecimal(rentinfo.getAmount());
+					if (logger.isInfoEnabled()){
+						logger.info("total_amount:{}=======amount:{}",total_amount,rentinfo.getAmount());
+						logger.info("alipayAmount:{}=======amount:{}",alipayAmount,amount);
+					}
+					if (alipayAmount.compareTo(amount) == 0){
+						rentinfo.setIsplay("已支付");
+						rentinfoService.editRentinfo(rentinfo);
+						return "redirect:/userrentinfo.html";
+					}
+				}else{
+				    //修改押金表信息
+					Depositinfo depositinfo = new Depositinfo();
+					depositinfo.setOutTradeNo(out_trade_no);
+					depositinfo.setAmount(Double.parseDouble(total_amount));
+					depositinfo.setChangeTime(new Date());
+					depositinfo.setTradeNo(trade_no);
+					depositinfo.setDepositStatus("001");
+					DepositinfoExample depositinfoExample = new DepositinfoExample();
+					Integer userid = (Integer) redisTemplate.opsForValue().get("userid");
+					depositinfoExample.createCriteria().andUseridEqualTo(userid);
+					depositinfoService.editDepositinfo(depositinfo,depositinfoExample);
+					//查询押金信息
+                    depositinfoExample.clear();
+                    depositinfoExample.createCriteria().andOutTradeNoEqualTo(out_trade_no).andDepositStatusNotEqualTo("001");
+                    List<Depositinfo> depositinfoList = depositinfoService.getDepositinfo(depositinfoExample);
+					//修改用户表信息
+                    UserinfoWithBLOBs userinfo = new UserinfoWithBLOBs();
+                    userinfo.setUserid(depositinfoList.get(0).getUserid());
+                    userinfo.setIsdeposit("已缴纳");
+                    userinfoService.editUserinfo(userinfo);
+					return "redirect:/depositinfo.html";
 				}
-				if (alipayAmount.compareTo(amount) == 0){
-					rentinfo.setIsplay("已支付");
-					rentinfoService.editRentinfo(rentinfo);
-				}
-			}
+
+
 		}else {
 			if (logger.isInfoEnabled()){
 				logger.info("同步==验签失败");

@@ -1,5 +1,8 @@
 package com.carss.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Depositinfo {
@@ -13,6 +16,7 @@ public class Depositinfo {
 
     private String depositStatus;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date changeTime;
 
     private String refundReason;
@@ -57,8 +61,9 @@ public class Depositinfo {
         this.depositStatus = depositStatus == null ? null : depositStatus.trim();
     }
 
-    public Date getChangeTime() {
-        return changeTime;
+    public String getChangeTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return changeTime == null ? null : sdf.format(changeTime);
     }
 
     public void setChangeTime(Date changeTime) {

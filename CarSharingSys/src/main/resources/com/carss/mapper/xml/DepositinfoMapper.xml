@@ -141,7 +141,7 @@
         #{depositStatus,jdbcType=VARCHAR},
       </if>
       <if test="changeTime != null">
-        #{changeTime,jdbcType=TIMESTAMP},
+        to_date(#{changeTime,jdbcType=TIMESTAMP},'yyyy-mm-dd hh24:mi:ss'),
       </if>
       <if test="refundReason != null">
         #{refundReason,jdbcType=VARCHAR},
@@ -173,7 +173,7 @@
         DEPOSIT_STATUS = #{record.depositStatus,jdbcType=VARCHAR},
       </if>
       <if test="record.changeTime != null">
-        CHANGE_TIME = #{record.changeTime,jdbcType=TIMESTAMP},
+        CHANGE_TIME = to_date(#{record.changeTime,jdbcType=TIMESTAMP},'yyyy-mm-dd hh24:mi:ss'),
       </if>
       <if test="record.refundReason != null">
         REFUND_REASON = #{record.refundReason,jdbcType=VARCHAR},

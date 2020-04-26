@@ -57,19 +57,24 @@
 			<columnOverride column="credit" javaType="Integer"></columnOverride>
 		</table>-->
 
-		<table schema="carsharingdb" tableName="rentinfo" domainObjectName="Rentinfo">
-			<columnOverride column="rentid" javaType="Integer"></columnOverride>
-			<columnOverride column="userid" javaType="Integer"></columnOverride>
-			<columnOverride column="carid" javaType="Integer"></columnOverride>
-			<columnOverride column="amount" javaType="Double"></columnOverride>
-			<columnOverride column="trade_no" javaType="String"></columnOverride>
-		</table>
+<!--		<table schema="carsharingdb" tableName="rentinfo" domainObjectName="Rentinfo">-->
+<!--			<columnOverride column="rentid" javaType="Integer"></columnOverride>-->
+<!--			<columnOverride column="userid" javaType="Integer"></columnOverride>-->
+<!--			<columnOverride column="carid" javaType="Integer"></columnOverride>-->
+<!--			<columnOverride column="amount" javaType="Double"></columnOverride>-->
+<!--			<columnOverride column="trade_no" javaType="String"></columnOverride>-->
+<!--		</table>-->
 
 <!--		<table schema="carsharingdb" tableName="malfunction" domainObjectName="Malfunction">-->
 <!--			<columnOverride column="malid" javaType="Integer"></columnOverride>-->
 <!--			<columnOverride column="userid" javaType="Integer"></columnOverride>-->
 <!--			<columnOverride column="carid" javaType="Integer"></columnOverride>-->
 <!--		</table>-->
+
+		<table schema="carsharingdb" tableName="depositinfo" domainObjectName="Depositinfo">
+			<columnOverride column="userid" javaType="Integer"></columnOverride>
+			<columnOverride column="amount" javaType="Double"></columnOverride>
+		</table>
 
 	</context>
 </generatorConfiguration>

@@ -18,7 +18,7 @@ public class AlipayConfig {
     /**
      * natapp内网映射的地址
      */
-    public static final String NATAPP_URL = "http://6xmrdt.natappfree.cc/";
+    public static final String NATAPP_URL = "http://pf8qyy.natappfree.cc/";
 
 //↓↓↓↓↓↓↓↓↓↓请在这里配置您的基本信息↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
