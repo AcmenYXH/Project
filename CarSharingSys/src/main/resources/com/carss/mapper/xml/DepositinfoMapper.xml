@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.carss.mapper.DepositinfoMapper">
+  <resultMap id="BaseResultMap" type="com.carss.entity.Depositinfo">
+    <result column="USERID" jdbcType="DECIMAL" property="userid" />
+    <result column="OUT_TRADE_NO" jdbcType="VARCHAR" property="outTradeNo" />
+    <result column="TRADE_NO" jdbcType="VARCHAR" property="tradeNo" />
+    <result column="AMOUNT" jdbcType="DECIMAL" property="amount" />
+    <result column="DEPOSIT_STATUS" jdbcType="VARCHAR" property="depositStatus" />
+    <result column="CHANGE_TIME" jdbcType="TIMESTAMP" property="changeTime" />
+    <result column="REFUND_REASON" jdbcType="VARCHAR" property="refundReason" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    USERID, OUT_TRADE_NO, TRADE_NO, AMOUNT, DEPOSIT_STATUS, CHANGE_TIME, REFUND_REASON
+  </sql>
+  <select id="selectByExample" parameterType="com.carss.entity.DepositinfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from CARSHARINGDB.DEPOSITINFO
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.carss.entity.DepositinfoExample">
+    delete from CARSHARINGDB.DEPOSITINFO
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.carss.entity.Depositinfo">
+    insert into CARSHARINGDB.DEPOSITINFO (USERID, OUT_TRADE_NO, TRADE_NO, 
+      AMOUNT, DEPOSIT_STATUS, CHANGE_TIME, 
+      REFUND_REASON)
+    values (#{userid,jdbcType=DECIMAL}, #{outTradeNo,jdbcType=VARCHAR}, #{tradeNo,jdbcType=VARCHAR}, 
+      #{amount,jdbcType=DECIMAL}, #{depositStatus,jdbcType=VARCHAR}, #{changeTime,jdbcType=TIMESTAMP}, 
+      #{refundReason,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.carss.entity.Depositinfo">
+    insert into CARSHARINGDB.DEPOSITINFO
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        USERID,
+      </if>
+      <if test="outTradeNo != null">
+        OUT_TRADE_NO,
+      </if>
+      <if test="tradeNo != null">
+        TRADE_NO,
+      </if>
+      <if test="amount != null">
+        AMOUNT,
+      </if>
+      <if test="depositStatus != null">
+        DEPOSIT_STATUS,
+      </if>
+      <if test="changeTime != null">
+        CHANGE_TIME,
+      </if>
+      <if test="refundReason != null">
+        REFUND_REASON,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=DECIMAL},
+      </if>
+      <if test="outTradeNo != null">
+        #{outTradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeNo != null">
+        #{tradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="depositStatus != null">
+        #{depositStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="changeTime != null">
+        #{changeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="refundReason != null">
+        #{refundReason,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.carss.entity.DepositinfoExample" resultType="java.lang.Long">
+    select count(*) from CARSHARINGDB.DEPOSITINFO
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update CARSHARINGDB.DEPOSITINFO
+    <set>
+      <if test="record.userid != null">
+        USERID = #{record.userid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.outTradeNo != null">
+        OUT_TRADE_NO = #{record.outTradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tradeNo != null">
+        TRADE_NO = #{record.tradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.amount != null">
+        AMOUNT = #{record.amount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.depositStatus != null">
+        DEPOSIT_STATUS = #{record.depositStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.changeTime != null">
+        CHANGE_TIME = #{record.changeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.refundReason != null">
+        REFUND_REASON = #{record.refundReason,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update CARSHARINGDB.DEPOSITINFO
+    set USERID = #{record.userid,jdbcType=DECIMAL},
+      OUT_TRADE_NO = #{record.outTradeNo,jdbcType=VARCHAR},
+      TRADE_NO = #{record.tradeNo,jdbcType=VARCHAR},
+      AMOUNT = #{record.amount,jdbcType=DECIMAL},
+      DEPOSIT_STATUS = #{record.depositStatus,jdbcType=VARCHAR},
+      CHANGE_TIME = #{record.changeTime,jdbcType=TIMESTAMP},
+      REFUND_REASON = #{record.refundReason,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>
