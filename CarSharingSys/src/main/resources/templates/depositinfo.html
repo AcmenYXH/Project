@@ -209,13 +209,15 @@
 					url: "editdeposit",
 					data: {
 						userid: userid,
-						isdeposit: "未缴纳"
+						depositStatus: "002"
 					},
 					async: false,
 					success: function(data){
 						if(data.message == "修改成功"){
 							alert("押金退还成功！");
 							location.reload();
+						}else{
+							toastr.error("操作异常！");
 						}
 					}
 				});

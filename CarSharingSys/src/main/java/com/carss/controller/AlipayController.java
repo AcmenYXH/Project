@@ -60,19 +60,12 @@ public class AlipayController {
 		request.getSession().setAttribute("temp_rid",rid);
 		//商户订单号，商户网站订单系统中唯一订单号，必填
 		String out_trade_no = request.getParameter("WIDout_trade_no");
-		//付款金额，必填
-		String total_amount = request.getParameter("WIDtotal_amount");
-		//订单名称，必填
-		String subject = request.getParameter("WIDsubject");
-		//商品描述，可空
-		String body = request.getParameter("WIDbody");
 
 		//获取请支付的页面
 		if ("true".equals(request.getParameter("isdeposit2"))){
 			if(!selectDepositInfoStatus(alipayClient, Integer.parseInt(rid))){
-				out_trade_no = OrderUtils.getTradeId();
-				redisTemplate.opsForValue().set("out_trade_no", out_trade_no, 30,TimeUnit.MINUTES);
-				paymentPage(alipayClient,out_trade_no,request,response);
+				String orderid = OrderUtils.getTradeId();
+				paymentPage(alipayClient,true,request,response);
 			}else{
 				response.setContentType("text/html");
 				PrintWriter out=response.getWriter();
@@ -84,7 +77,7 @@ public class AlipayController {
 				out.close();
 			}
 		}else if (!alipayTradeQuery(alipayClient,out_trade_no,rid)){
-			paymentPage(alipayClient,out_trade_no,request,response);
+			paymentPage(alipayClient,false,request,response);
 		}else {
 			response.setContentType("text/html");
 			PrintWriter out=response.getWriter();
@@ -104,7 +97,17 @@ public class AlipayController {
 	 * @param response
 	 * @throws IOException
 	 */
-	public void paymentPage(AlipayClient alipayClient,String out_trade_no,HttpServletRequest request,HttpServletResponse response) throws IOException {
+	public void paymentPage(AlipayClient alipayClient,boolean isDeposit,HttpServletRequest request,HttpServletResponse response) throws IOException {
+		//商家订单号
+		String out_trade_no = "";
+		if (isDeposit == true) {
+			out_trade_no = OrderUtils.getTradeId();
+			//保存商家号
+			redisTemplate.opsForValue().set("out_trade_no", out_trade_no, 30,TimeUnit.MINUTES);
+		}else{
+			out_trade_no = request.getParameter("WIDout_trade_no");
+		}
+
 		//付款金额，必填
 		String total_amount = request.getParameter("WIDtotal_amount");
 		//订单名称，必填
@@ -117,6 +120,7 @@ public class AlipayController {
 		//alipayRequest.setNotifyUrl(AlipayConfig.notify_url);
 		// 页面跳转同步通知页面路径
 		alipayRequest.setReturnUrl(AlipayConfig.return_url);
+
 		alipayRequest.setBizContent("{\"out_trade_no\":\""+ out_trade_no +"\","
 				+ "\"total_amount\":\""+ total_amount +"\","
 				+ "\"subject\":\""+ subject +"\","
@@ -193,15 +197,13 @@ public class AlipayController {
 		List<Depositinfo> depositinfoList = depositinfoService.getDepositinfo(depositinfoExample);
 		//判断是否存在用户押金信息
 		if (depositinfoList.size()>0){
-			depositinfoExample.clear();
-			depositinfoExample.createCriteria().andUseridEqualTo(userid).andDepositStatusNotEqualTo("001");
-			depositinfoList = depositinfoService.getDepositinfo(depositinfoExample);
-			if (depositinfoList.size()>0){
+			Depositinfo depositinfo1 = depositinfoList.get(0);
+			if ("001".equals(depositinfo1)){
 				String out_trade_no = "";
 				if (redisTemplate.hasKey("out_trade_no")){
 					out_trade_no = redisTemplate.opsForValue().get("out_trade_no").toString();
 				}else{
-					out_trade_no = depositinfoList.get(0).getOutTradeNo();
+					out_trade_no = depositinfo1.getOutTradeNo();
 				}
 				AlipayTradeQueryRequest alipayRequest = new AlipayTradeQueryRequest();
 				alipayRequest.setBizContent("{" +
@@ -318,7 +320,7 @@ public class AlipayController {
 					depositinfoService.editDepositinfo(depositinfo,depositinfoExample);
 					//查询押金信息
                     depositinfoExample.clear();
-                    depositinfoExample.createCriteria().andOutTradeNoEqualTo(out_trade_no).andDepositStatusNotEqualTo("001");
+                    depositinfoExample.createCriteria().andOutTradeNoEqualTo(out_trade_no).andDepositStatusEqualTo("001");
                     List<Depositinfo> depositinfoList = depositinfoService.getDepositinfo(depositinfoExample);
 					//修改用户表信息
                     UserinfoWithBLOBs userinfo = new UserinfoWithBLOBs();
