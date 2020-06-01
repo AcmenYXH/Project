@@ -99,7 +99,7 @@ img {
 				<div class="modal-body">
 					<form class="form-horizontal" role="form" id="malfunctionform">
 						<div class="form-group">
-							<label for="account" class="col-sm-3 control-label"><span
+							<label for="carid" class="col-sm-3 control-label"><span
 								class="fa fa-user fa-lg"></span>&nbsp;车辆编号：</label>
 							<div class="col-sm-8">
 								<!--<label class="form-control" id="carid" name="carid">6</label>-->
@@ -109,7 +109,7 @@ img {
 
 						</div>
 						<div class="form-group">
-							<label for="account" class="col-sm-3 control-label"><span
+							<label for="useraccount" class="col-sm-3 control-label"><span
 								class="fa fa-user fa-lg"></span>&nbsp;账号：</label>
 							<div class="col-sm-8">
 								<input type="hidden" class="form-control" id="userid"
@@ -120,10 +120,10 @@ img {
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="account" class="col-sm-3 control-label"><span
+							<label for="describe" class="col-sm-3 control-label"><span
 								class="fa fa-user fa-lg"></span>&nbsp;故障描述：</label>
 							<div class="col-sm-8">
-								<textarea cols="49" rows="10" placeholder="故障描述" name="describe"></textarea>
+								<textarea cols="49" rows="10" placeholder="故障描述" id="describe" name="describe"></textarea>
 							</div>
 						</div>
 					</form>
@@ -282,14 +282,14 @@ img {
 				//用户当前的维度
 				userlat=r.point.lat;
 				usercity = r.address.city;
-				alert('您的位置：'+r.point.lng+','+r.point.lat);
+				toastr.info('您的位置：'+r.point.lng+','+r.point.lat);
 				createUserMarker();	
 			} else {
 				if(this.getStatus() == 8) {
-					alert("浏览器定位超时，将使用IP地位！");
+					toastr.warning("浏览器定位超时，将使用IP地位！");
 					
 				}else{
-					alert("定位失败，使用IP地位！");
+					toastr.warning("定位失败，使用IP地位！");
 				}
 				var myCity = new BMap.LocalCity();
 				myCity.get(ipLocationCallback);
@@ -499,7 +499,7 @@ img {
 				// 序列化表单值  
 				async: false,
 				error: function(request) { //失败的话
-					alert("出错了");
+					toastr.warning("网络忙！");
 				},
 				success: function(data) { //成功
 					console.log(data);
@@ -561,7 +561,7 @@ img {
 					}
 				}
 			} else {
-				alert("您还有汽车为归还，请先归还汽车！");
+				toastr.warning("您还有汽车为归还，请先归还汽车！");
 			}
 		}
 
@@ -589,12 +589,12 @@ img {
 						var carPoint = new BMap.Point(car.longitude,car.latitude);
 						var distance = Math.round(map.getDistance(userPoint,carPoint));
 						if(distance>10){
-							alert("租车成功！将为您导航步行到该车辆位置！");
+							toastr.success("租车成功！将为您导航步行到该车辆位置！");
 							//步行路线规划
 							walk();
 							
 						}else{
-							alert("祝您用车愉快！")
+							toastr.info("祝您用车愉快！")
 						}
 					}
 					$("#returnCar").css("display", "block");
@@ -652,7 +652,7 @@ img {
 				processData: false,  
 				contentType: 'application/json',  
 				success: function(data){
-					alert("故障上报成功！");
+					toastr.success("故障上报成功！");
 					$("#myModal").modal("hide");
 				}
 			}); 

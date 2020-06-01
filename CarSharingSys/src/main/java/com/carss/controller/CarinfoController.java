@@ -13,6 +13,7 @@ import com.carss.exception.enums.ErrorEnum;
 import com.carss.service.CarinfoService;
 
 import com.carss.service.MalfunctionService;
+import net.sf.json.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,7 @@ public class CarinfoController {
 		if(result.hasErrors()) {
 			throw new WebException(ErrorEnum.CHECK_FAIL,result.getFieldError().getDefaultMessage());
 		}
+		log.info("=============carinfo:"+ JSONObject.fromObject(carinfo).toString());
 		carinfoService.addCarinfo(carinfo);
 		return new JsonResult("添加成功");
 	}
@@ -64,7 +66,7 @@ public class CarinfoController {
 	 */
 	@DeleteMapping("restcarinfo")
 	public JsonResult removeCarinfo(@RequestBody List<Carinfo> carinfos) {
-		log.info("carinfos"+JSONArray.fromObject(carinfos).toString());
+		log.info("========carinfos:"+JSONArray.fromObject(carinfos).toString());
 		for(Carinfo carinfo:carinfos) {
 			log.info("carinfos==status="+carinfo.getStatus());
 			if("维修中".equals(carinfo.getStatus())) {

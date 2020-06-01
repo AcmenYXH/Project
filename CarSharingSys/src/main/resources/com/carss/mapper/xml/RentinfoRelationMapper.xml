@@ -13,19 +13,19 @@
     inner join userinfo on userinfo.userid = rentinfo.userid
     inner join carinfo on carinfo.carid = rentinfo.carid
     <where>
-    	<if test="rentid != null">
+    	<if test="rentid != null and rentid != ''">
     		and rentinfo.rentid = #{rentid}
     	</if>
-    	<if test="userid != null">
+    	<if test="userid != null and userid != ''">
     		and rentinfo.userid = #{userid}
     	</if>
-    	<if test="carid != null">
+    	<if test="carid != null and carid != ''">
     		and rentinfo.carid = #{carid}
     	</if>
-    	<if test="isplay != null">
+    	<if test="isplay != null and isplay != ''">
     		and rentinfo.isplay = #{isplay}
     	</if>
-        <if test="tradeNo != null">
+        <if test="tradeNo != null and tradeNo != ''">
             and rentinfo.trade_no = #{tradeNo}
         </if>
     </where>

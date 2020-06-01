@@ -14,11 +14,13 @@ public class MessageController {
 	
 	@PostMapping("send")
 	public JsonResult<String> send(String phone,HttpServletRequest request){
-//		System.out.println(phone);
-//		String radom=SendTelMsgUtils.randNum;
-//		String result=SendTelMsgUtils.sendMsgTo(phone);
-//		System.out.println("radom:"+radom+"---result"+result);
-		String radom = "686868";
+		System.out.println(phone);
+		String radom=SendTelMsgUtils.randNum;
+//		真实发送验证码
+		String result=SendTelMsgUtils.sendMsgTo(phone);
+		System.out.println("radom:"+radom+"---result"+result);
+//		模拟验证
+//		String radom = "686868";
 		return new JsonResult<>(radom);
 	}
 }

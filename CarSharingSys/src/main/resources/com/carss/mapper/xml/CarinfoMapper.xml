@@ -146,7 +146,7 @@
         #{brand,jdbcType=VARCHAR},
       </if>
       <if test="addtime != null" >
-        to_date(#{addtime,jdbcType=TIMESTAMP},'yyyy-mm-dd hh24:mi:ss'),
+        to_date(#{addtime,jdbcType=TIMESTAMP},'yyyy-mm-dd'),
       </if>
       <if test="status != null" >
         #{status,jdbcType=VARCHAR},
@@ -224,7 +224,7 @@
         BRAND = #{brand,jdbcType=VARCHAR},
       </if>
       <if test="addtime != null" >
-        ADDTIME = to_date(#{addtime,jdbcType=TIMESTAMP},'yyyy-mm-dd hh24:mi:ss'),
+        ADDTIME = to_date(#{addtime,jdbcType=TIMESTAMP},'yyyy-mm-dd'),
       </if>
       <if test="status != null" >
         STATUS = #{status,jdbcType=VARCHAR},

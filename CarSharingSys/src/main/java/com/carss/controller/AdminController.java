@@ -48,19 +48,20 @@ public class AdminController {
 
 
     /**
-     * 登录操作，判断登录的是用户还是管理员；
-     * 登录是管理员则跳转到共享汽车后台管理系统，是用户的话则跳转到共享汽车用户首页；
-     *
-     * @param account
-     * @param password
+     *登录操作，判断登录的是用户还是管理员；
+     *登录是管理员则跳转到共享汽车后台管理系统，是用户的话则跳转到共享汽车用户首页；
+     * @param loginRequest
      * @param request
      * @return
      */
     @PostMapping("tologin")
     @ResponseBody
-    public JsonResult login(String account, String password,String verifyCode, HttpServletRequest request) {
+    public JsonResult login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
         //验证码
         String captchaCode = "";
+        String account = loginRequest.getAccount();
+        String password = loginRequest.getPassword();
+        String verifyCode = loginRequest.getVerifyCode();
         logger.info("account:{},password:{},verifycode:{}",account,password,verifyCode);
         //获取验证码的key
         //String captchaKey = request.getSession().getAttribute("captchaKey").toString();

@@ -30,9 +30,9 @@
 							<div class="panel-body">
 								<form id="formSearch" class="form-horizontal">
 									<div class="form-group" style="margin:15px">
-										<label class="control-label col-sm-2" for="rentid">租赁编号:</label>
+										<label class="control-label col-sm-2" for="trade_no">订单编号:</label>
 										<div class="col-sm-2">
-											<input type="text" class="form-control" id="rentid"/>
+											<input type="text" class="form-control" id="trade_no"/>
 										</div>
 										<label class="control-label col-sm-2" for="carid">车辆编号:</label>
 										<div class="col-sm-2">
@@ -282,7 +282,7 @@
 					//search: params.search,  //搜索框
 					sort: params.sortName,    //排序字段
 					order: params.sortOrder,  //排序方式
-					rentid : $("#rentid").val(),
+					trade_no : $("#trade_no").val(),
 					carid : $("#carid").val(),
 				};
 				return temp;

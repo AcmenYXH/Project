@@ -89,13 +89,13 @@ public class RentinfoController {
 	 * @param pageNum
 	 * @param sort
 	 * @param order
-	 * @param rentid
+	 * @param trade_no
 	 * @param carid
 	 * @return
 	 */
 	@GetMapping("restrentinfo")
 	public JsonResult<Map<String,Object>> showPage(int pageSize,int pageNum,String sort,
-			String order,Integer rentid,Integer carid){
+			String order,String trade_no,Integer carid){
 		PageHelper.startPage(pageNum,pageSize,sort+" "+order);
 		Rentinfo rentinfo = new Rentinfo();
 //		if(rentid != null && carid != null){
@@ -106,7 +106,7 @@ public class RentinfoController {
 //		}else if(carid != null){
 //			rentinfo.setCarid(carid);
 //		}
-		rentinfo.setRentid(rentid);
+		rentinfo.setTradeNo(trade_no);
 		rentinfo.setCarid(carid);
 		return new JsonResult<Map<String,Object>>(new PageInfo<Map<String,Object>>(rentinfoService.findRentinfoByRentinfo(rentinfo)));
 	}

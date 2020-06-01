@@ -28,8 +28,8 @@ public class WeatherService {
         //appkey
 //        String urlname="http://v.juhe.cn/weather/index?format=2&cityname=%E5%8E%A6%E9%97%A8&key=ff59f5169a3ad9990f41c24cd8d05748";
 //        可用链接
-//        String urlname="http://v.juhe.cn/weather/index?format=2&cityname="+usercity+"&key=dc8ad03947d7bfc9cc347a805dddc41a";
-        String urlname="http://v.juhe.cn/weather/index?format=2&cityname="+usercity+"&key=ff59f5169a3ad9990f41c24cd8d05748";
+        String urlname="http://v.juhe.cn/weather/index?format=2&cityname="+usercity+"&key=dc8ad03947d7bfc9cc347a805dddc41a";
+//        String urlname="http://v.juhe.cn/weather/index?format=2&cityname="+usercity+"&key=ff59f5169a3ad9990f41c24cd8d05748";
         //得到JSON字符串
         String jsonResult = get(urlname, charset);
         return JSONObject.fromObject(jsonResult);

@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.validation.constraints.Past;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class Carinfo {
@@ -13,7 +14,7 @@ public class Carinfo {
     private String brand;
 
     @Past(message = "添加时间不能是未来时间！")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date addtime;
 
     private String status;
@@ -43,7 +44,7 @@ public class Carinfo {
     }
 
     public String getAddtime() {
-    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return addtime == null ? null : sdf.format(addtime);
     }
 

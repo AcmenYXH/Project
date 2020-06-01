@@ -433,8 +433,9 @@ modal-body span {
 		
 		$(function() {
 			var upsd = [[${session.licenceString}]];
+			console.log("test111")
 			if(upsd == "" || upsd == null || upsd == undefined) {
-				$("#txtLicence").html("驾照不能为空！");
+				// $("#txtLicence").html("驾照不能为空！");
 				$("#txtLicence").css("color","red");
 				$("#txtLicence").show();
 			} else {		
@@ -445,13 +446,18 @@ modal-body span {
 		 * 提交修改基本信息表单
 		 */
 		$("#editUsertBtn").click(function check() {
-			var upsd = $("#licence").val();
-			console.log("upsd"+upsd);
+			var upsd = $("#licence1").val();
+			console.log("test222===upsd"+upsd);
 			if(upsd == "" || upsd == null || upsd == undefined) {
-				$("#txtLicence").html("驾照不能为空！");
-				$("#txtLicence").css("color","red");
-				$("#txtLicence").show();
-			} else {		
+				var upsd2 = $("#userlicence");
+				console.log(upsd2);
+				console.log("333"+upsd2);
+				if(upsd2 == "" || upsd2 == null || upsd2 == undefined){
+					// $("#txtLicence").html("驾照不能为空！");
+					$("#txtLicence").css("color","red");
+					$("#txtLicence").show();
+				}
+			} else {
 				uniqueLicence = true;
 			}
 			console.log(uniquePhone);
@@ -468,6 +474,8 @@ modal-body span {
 					success: function(data){
 						if(data.message == "修改成功"){
 							alert("修改成功！");
+							//toastr.success("修改成功！11");
+							location.reload();
 						}
 					}, 
 					error: function(req, status, ex) {toastr.error("操作异常！");},  
@@ -494,6 +502,7 @@ modal-body span {
 					success: function(data){
 						if(data.message == "修改成功"){
 							alert("修改成功，请重新登录！");
+							console.log("登出！");
 							location.href = "logout";
 						}
 					},

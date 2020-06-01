@@ -7,13 +7,14 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
-import javax.annotation.Resources;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradeQueryRequest;
+import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.api.response.AlipayTradeQueryResponse;
+import com.alipay.api.response.AlipayTradeRefundResponse;
 import com.carss.entity.*;
 import com.carss.service.DepositinfoService;
 import com.carss.service.RentinfoService;
@@ -26,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.alipay.api.AlipayApiException;
@@ -33,6 +35,8 @@ import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.alipay.config.AlipayConfig;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 /**
  * 支付宝控制模块
  * **/
@@ -198,47 +202,46 @@ public class AlipayController {
 		//判断是否存在用户押金信息
 		if (depositinfoList.size()>0){
 			Depositinfo depositinfo1 = depositinfoList.get(0);
-			if ("001".equals(depositinfo1)){
-				String out_trade_no = "";
-				if (redisTemplate.hasKey("out_trade_no")){
-					out_trade_no = redisTemplate.opsForValue().get("out_trade_no").toString();
+
+			String out_trade_no = "";
+			if (redisTemplate.hasKey("out_trade_no")){
+				out_trade_no = redisTemplate.opsForValue().get("out_trade_no").toString();
+			}else{
+				out_trade_no = depositinfo1.getOutTradeNo();
+			}
+			AlipayTradeQueryRequest alipayRequest = new AlipayTradeQueryRequest();
+			alipayRequest.setBizContent("{" +
+					"\"out_trade_no\":\""+ out_trade_no +"\"," +
+					"      \"query_options\":[" +
+					"        \"TRADE_SETTLE_INFO\"" +
+					"      ]" +
+					"  }");
+			AlipayTradeQueryResponse response = alipayClient.execute(alipayRequest);
+			if(response.isSuccess()){
+				if ("TRADE_SUCCESS".equals(response.getTradeStatus())){
+					//修改押金信息
+					depositinfo = depositinfoList.get(0);
+					depositinfo.setDepositStatus("001");
+					depositinfo.setChangeTime(new Date());
+					depositinfoService.editDepositinfo(depositinfo,depositinfoExample);
+					//修改用户信息
+					UserinfoWithBLOBs userinfo = new UserinfoWithBLOBs();
+					userinfo.setUserid(depositinfoList.get(0).getUserid());
+					userinfo.setIsdeposit("已缴纳");
+					userinfoService.editUserinfo(userinfo);
+					return true;
 				}else{
-					out_trade_no = depositinfo1.getOutTradeNo();
-				}
-				AlipayTradeQueryRequest alipayRequest = new AlipayTradeQueryRequest();
-				alipayRequest.setBizContent("{" +
-						"\"out_trade_no\":\""+ out_trade_no +"\"," +
-						"      \"query_options\":[" +
-						"        \"TRADE_SETTLE_INFO\"" +
-						"      ]" +
-						"  }");
-				AlipayTradeQueryResponse response = alipayClient.execute(alipayRequest);
-				if(response.isSuccess()){
-					if ("TRADE_SUCCESS".equals(response.getTradeStatus())){
-					    //修改押金信息
-						depositinfo = depositinfoList.get(0);
-						depositinfo.setDepositStatus("001");
-						depositinfo.setChangeTime(new Date());
-						depositinfoService.editDepositinfo(depositinfo,depositinfoExample);
-						//修改用户信息
-                        UserinfoWithBLOBs userinfo = new UserinfoWithBLOBs();
-                        userinfo.setUserid(depositinfoList.get(0).getUserid());
-                        userinfo.setIsdeposit("已缴纳");
-                        userinfoService.editUserinfo(userinfo);
-						return true;
-					}else{
-						return false;
-					}
-				} else {
-					System.out.println("调用失败");
 					return false;
 				}
-			}else {
+			} else {
+				System.out.println("调用失败");
 				return false;
 			}
+
 		}else {
 			depositinfo.setOutTradeNo(OrderUtils.getTradeId());
 			depositinfo.setChangeTime(new Date());
+			depositinfo.setAmount(200D);
 			depositinfo.setDepositStatus("000");
 			depositinfoService.addDepositinfo(depositinfo);
 			return false;
@@ -432,8 +435,39 @@ public class AlipayController {
 		//——请在这里编写您的程序（以上代码仅作参考）——
 	}
 
-	@GetMapping("go/homepage")
-	public String goToHomepage(){
-		return "redirect:/homepage";
+
+	@PutMapping("/deposit_refund")
+	@ResponseBody
+	public JsonResult depositRefund(Integer userid) throws AlipayApiException {
+		DepositinfoExample depositinfoExample = new DepositinfoExample();
+		depositinfoExample.createCriteria().andUseridEqualTo(userid).andDepositStatusEqualTo("001");
+		List<Depositinfo> depositinfoList = depositinfoService.getDepositinfo(depositinfoExample);
+		if (depositinfoList.size() > 0){
+			AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.gatewayUrl, AlipayConfig.app_id, AlipayConfig.merchant_private_key, "json", AlipayConfig.charset, AlipayConfig.alipay_public_key, AlipayConfig.sign_type);
+			AlipayTradeRefundRequest request = new AlipayTradeRefundRequest();
+			Depositinfo depositinfo = depositinfoList.get(0);
+			request.setBizContent("{" +
+					"\"out_trade_no\":\""+depositinfo.getOutTradeNo()+"\"," +
+					"\"trade_no\":\""+depositinfo.getTradeNo()+"\"," +
+					"\"refund_amount\":"+depositinfo.getAmount()+"," +
+					"\"refund_reason\":\"正常退款\"" +
+					"  }");
+			AlipayTradeRefundResponse response = alipayClient.execute(request);
+			if(response.isSuccess()){
+				depositinfo.setDepositStatus("002");
+				depositinfoExample.clear();
+				depositinfoExample.createCriteria().andUseridEqualTo(userid).andOutTradeNoEqualTo(depositinfo.getOutTradeNo());
+				depositinfoService.editDepositinfo(depositinfo, depositinfoExample);
+				UserinfoWithBLOBs userinfoWithBLOBs = new UserinfoWithBLOBs();
+				userinfoWithBLOBs.setUserid(userid);
+				userinfoWithBLOBs.setIsdeposit("未缴纳");
+				userinfoService.editUserinfo(userinfoWithBLOBs);
+				return new JsonResult("退款成功!");
+			} else {
+				return new JsonResult(JsonResult.ERROR,"退款失败!");
+			}
+		}else {
+			return new JsonResult(JsonResult.ERROR,"您尚未缴纳押金");
+		}
 	}
 }

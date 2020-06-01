@@ -72,3 +72,15 @@ document.write('<script src="'+getRootPath()+'/js/main.js"></script>');
 //document.write('<script src="'+getRootPath()+'/js/main2.js"></script>');
 //主题样式切换
 //document.write('<script src="'+getRootPath()+'/js/switch.js"></script>');
+//消息提示框插件
+document.write('<script src="'+getRootPath()+'/js/toastr.js"></script>');
+document.write('<link rel="stylesheet" href="'+getRootPath()+'/css/toastr.css"/>');
+//弹出框插件（alert、confirm、dialog）
+document.write('<script src="'+getRootPath()+'/js/tip.js"></script>');
+//rest风格插件（包含表单数据封装）
+document.write('<script src="'+getRootPath()+'/js/restful.js"></script>');
+//echart图表
+document.write('<script src="'+getRootPath()+'/js/echarts.common.min.js"></script>');
+
+//3、初始化提示框
+document.write("<script>toastr.options.positionClass = 'toast-top-center'</script>");

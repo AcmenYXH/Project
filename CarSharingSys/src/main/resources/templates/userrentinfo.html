@@ -72,46 +72,44 @@
 
 								</tr>
 								<tr>
-									<th><label for="inputPassword"
-										class="col-sm-2 control-label" style="width: 400px;"><span
+									<th><label class="col-sm-2 control-label" style="width: 400px;"><span
 											class="fa fa-send"></span>&nbsp;汽车编号&nbsp;:</label></th>
 									<td><span id="carid"></span></td>
 
 								</tr>
 								<tr>
-									<th><label for="inputPassword"
-										class="col-sm-2 control-label" style="width: 400px;"><span
+									<th><label class="col-sm-2 control-label" style="width: 400px;"><span
 											class="fa fa-envelope"></span>&nbsp;租车时间&nbsp;:</label></th>
 									<td><span id="rentaltime"></span></td>
 								</tr>
 								<tr>
-									<th><label for="inputPassword"
-										class="col-sm-2 control-label" style="width: 400px;"><span
+									<th><label class="col-sm-2 control-label" style="width: 400px;"><span
 											class="fa fa-envelope"></span>&nbsp;还车时间&nbsp;:</label></th>
 									<td><span id="returntime"></span></td>
 								</tr>
 								<tr>
-									<th><label for="inputPassword"
-										class="col-sm-2 control-label" style="width: 400px;">
+									<th><label class="col-sm-2 control-label" style="width: 400px;">
 											<span class="fa fa-tint fa-lg"></span>&nbsp;租&emsp;&emsp;金&nbsp;:
 									</label></th>
 									<td><span id="amount"></span></td>
 
 								</tr>
 								<tr>
-									<th><label for="inputPassword"
-										class="col-sm-2 control-label" style="width: 400px;">
+									<th><label class="col-sm-2 control-label" style="width: 400px;">
 											<span class="fa fa-paypal fa-lg"></span>&nbsp;是否支付&nbsp;:
 									</label></th>
 									<td><span id="isplay"></span></td>
 
 								</tr>
 								<tr>
-									<td colspan="3"><a class="btn btn-primary"
-										onclick="payment()"> <span class="fa fa-paypal"></span> 支付
-									</a> <a class="btn btn-default" th:href="@{rentCar.html}"> <span
-											class="fa fa-share"></span> 返回
-									</a></td>
+									<td colspan="3">
+										<a class="btn btn-primary" id="payBtu" onclick="payment()">
+											<span class="fa fa-paypal"></span> 支付
+										</a>
+										<a class="btn btn-default" th:href="@{rentCar.html}">
+											<span class="fa fa-share"></span> 返回
+										</a>
+									</td>
 								</tr>
 							</tbody>
 						</table>
@@ -212,10 +210,10 @@
 				async: false,
 				success: function(data) { //成功
 					console.log(data);
-					if(data.message == "Index: 0, Size: 0" || data == ""){
-						alert("支付成功！");
-						location.href = "homepage.html";
-					}else{
+					if(data.state == 0){
+						if (data.data.ISPLAY == "已支付"){
+							$("#payBtu").attr("disabled",true);
+						}
 						var rentaltime = data.data.RENTALTIME;
 						var returntime = data.data.RETURNTIME;
 						rentaltime = new Date(rentaltime.replace(/-/g, "/"));
@@ -232,6 +230,8 @@
 						$("#returntime").html(data.data.RETURNTIME);
 						$("#useraccount").html('[[${session.currentUser.useraccount}]]');
 						$("#isplay").html(data.data.ISPLAY);
+					}else{
+						toastr.warning(data.message);
 					}
 				}
 			});
@@ -239,21 +239,6 @@
 		
 		//returncar()事件：还车
 		function payment() {
-			//模拟押金缴纳成功
-			// $.ajax({
-			// 	type: "PUT",
-			// 	url: "payrent",
-			// 	data: {
-			// 		rentid: rentid,
-			// 		isplay: "已支付"
-			// 	},
-			// 	async: false,
-			// 	success: function(data){
-			// 		if(data.message == "修改成功"){
-			// 			console.log("支付成功！");
-			// 		}
-			// 	}
-			// });
 			GetDateNow();
 			console.log("执行returncar()");
 			$("#alipayment").submit();

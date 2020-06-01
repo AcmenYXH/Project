@@ -165,6 +165,7 @@ public class UserinfoController {
 		}
 		try {
 			if(!licence.isEmpty()) {
+
 				InputStream licenceis = licence.getInputStream();
 				byte[] licencebuffer=new byte[2048];
 				int len2=0;
@@ -175,8 +176,10 @@ public class UserinfoController {
 				bos2.flush();
 				byte licencedata[] = bos2.toByteArray();
 				userinfo.setLicence(licencedata);
+				request.getSession().setAttribute("licenceString",Arrays.toString(licencedata));
 			}
 			if(!icon.isEmpty()) {
+
 				InputStream iconis = icon.getInputStream();
 				byte[] iconbuffer=new byte[2048];
 				int len1=0;
@@ -187,18 +190,15 @@ public class UserinfoController {
 				bos1.flush();
 				byte icondata[] = bos1.toByteArray();
 				userinfo.setIcon(icondata);
+				request.getSession().setAttribute("iconString",Arrays.toString(icondata));
 			}
 		} catch (Exception e) {
 	        // TODO Auto-generated catch block
 	        e.printStackTrace();
 	    }
-		request.getSession().setAttribute("currentUserName",userinfo.getUseraccount());
-		request.getSession().setAttribute("currentUser",userinfo);
-		String iconString =  Arrays.toString(userinfo.getIcon());
-		String licenceString =  Arrays.toString(userinfo.getLicence());
-		request.getSession().setAttribute("iconString",iconString);
-		request.getSession().setAttribute("licenceString",licenceString);
+
 		userinfoService.editUserinfo(userinfo);
+		request.getSession().setAttribute("currentUser",userinfoService.findUserinfoByUserid(userinfo.getUserid()));
 		return new JsonResult("修改成功");
 
 	}

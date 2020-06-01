@@ -38,6 +38,10 @@ public class SessionInterceptor implements HandlerInterceptor {
 				||path.indexOf("verifyCode")!=-1) {
 			return true;
 		}else {
+			System.out.println("拦截登录！");
+			if(request.getSession().getAttribute("currentUserName") != null){
+				return true;
+			}
 			request.setAttribute("msg", "请重新登录！");
 			request.getRequestDispatcher("login.html").forward(request, response);
 			return false;

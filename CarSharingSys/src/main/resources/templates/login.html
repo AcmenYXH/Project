@@ -90,14 +90,14 @@
 
 		<script type="text/javascript" th:inline="javascript">
 		 	//$.backstretch("/images/login-bg.jpg", {speed: 500}); 
-		  	// var msg = [[${msg}]];
-		  	// if(msg!=""&&msg!=undefined){
-		  	// 	toastr.warning(msg);
-		  	// }
+		  	var msg = [[${msg}]];
+		  	if(msg!=""&&msg!=undefined){
+		  		toastr.warning(msg);
+		  	}
 
 			getvCode();
 			function getvCode() {
-				document.getElementById("verifyimg").src = timestamp("http://pf8qyy.natappfree.cc/verifyCode");
+				document.getElementById("verifyimg").src = timestamp("http://9ftk27.natappfree.cc/verifyCode");
 			}
 			$("#verifyimg").click(getvCode);
 
